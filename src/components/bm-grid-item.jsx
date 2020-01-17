@@ -8,7 +8,7 @@ class BMGridItem extends React.Component {
   }
 
   render() {
-    let { id, collectionId, url, iconUrl, name, description } = this.props;
+    let { id, url, iconUrl, name, description } = this.props;
     return (
       <a href={url}>
         <div>
@@ -16,6 +16,7 @@ class BMGridItem extends React.Component {
             src={iconUrl || `${url}/favicon.ico`}
             height="30px"
             width="30px"
+            alt=""
             ref={this.itemImg}
           />
           <h3>{name}</h3>
