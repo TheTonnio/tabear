@@ -1,7 +1,6 @@
 /* eslint react/no-unused-state: 0 */
 
 import React from 'react';
-import './app.css';
 import BookmarksGrid from './components/bookmarks-grid';
 import AddBookmarkForm from './components/add-bookmark-form';
 import CreateCollectionForm from './components/create-collection-form';
@@ -10,6 +9,14 @@ import { Collection } from '../models/collection';
 import Storage from './utils/storage';
 import LocalStorage from './utils/localStorage';
 import { ENV_DEVELOPMENT } from './constants';
+import styled from 'styled-components'
+import { DndProvider } from 'react-dnd'
+import Backend from 'react-dnd-html5-backend'
+
+const AppWrapper = styled.div`
+  height: 100vh;
+  width: 100%;
+`;
 
 class App extends React.Component<undefined, StateTypes> {
   storage: Storage;
@@ -34,6 +41,7 @@ class App extends React.Component<undefined, StateTypes> {
     this.onAddBookmarkButtonClick = this.onAddBookmarkButtonClick.bind(this);
     this.onCreateCollection = this.onCreateCollection.bind(this);
     this.onCreateCollectionButtonClick = this.onCreateCollectionButtonClick.bind(this);
+    this.setBookmarks = this.setBookmarks.bind(this);
   }
 
   async componentDidMount(): Promise<void> {
@@ -63,6 +71,12 @@ class App extends React.Component<undefined, StateTypes> {
     this.setState({
       bookmarks: [...updateBookmarks],
       selectedCollectionId: null,
+    });
+  }
+
+  setBookmarks(bookmarks: Bookmark[]): void {
+    this.setState({
+      bookmarks: bookmarks,
     });
   }
 
@@ -96,35 +110,38 @@ class App extends React.Component<undefined, StateTypes> {
     } = this.state;
 
     return (
-      <div className="app">
-        <button type="button" onClick={this.onCreateCollectionButtonClick}>Create Collection +</button>
-        {
-          isAddCollectionFormShown && (
-            <div>
-              <h3>Create Collection</h3>
-              <CreateCollectionForm onCreateCollection={this.onCreateCollection} />
-            </div>
-          )
-        }
+      <DndProvider backend={Backend}>
+        <AppWrapper>
+          <button type="button" onClick={this.onCreateCollectionButtonClick}>Create Collection +</button>
+          {
+            isAddCollectionFormShown && (
+              <div>
+                <h3>Create Collection</h3>
+                <CreateCollectionForm onCreateCollection={this.onCreateCollection} />
+              </div>
+            )
+          }
 
-        {
-          selectedCollectionId && (
-            <div>
-              <h3>Add Bookmark</h3>
-              <AddBookmarkForm
-                collectionId={selectedCollectionId}
-                onAddBookmark={this.onAddBookmark}
-              />
-            </div>
-          )
-        }
+          {
+            selectedCollectionId && (
+              <div>
+                <h3>Add Bookmark</h3>
+                <AddBookmarkForm
+                  collectionId={selectedCollectionId}
+                  onAddBookmark={this.onAddBookmark}
+                />
+              </div>
+            )
+          }
 
-        <BookmarksGrid
-          collections={collections}
-          bookmarks={bookmarks}
-          onAddBookmarkButtonClick={this.onAddBookmarkButtonClick}
-        />
-      </div>
+          <BookmarksGrid
+            collections={collections}
+            bookmarks={bookmarks}
+            onAddBookmarkButtonClick={this.onAddBookmarkButtonClick}
+            onBookmarksUpdate={this.setBookmarks}
+          />
+        </AppWrapper>
+      </DndProvider>
     );
   }
 }

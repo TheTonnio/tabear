@@ -7,6 +7,7 @@ const BookmarksGrid = ({
   bookmarks = [],
   collections = [],
   onAddBookmarkButtonClick,
+ onBookmarksUpdate,
 }: PropTypes) => (
   <div>
     {
@@ -18,6 +19,7 @@ const BookmarksGrid = ({
             key={collection.id}
             bookmarks={filteredBookmarks}
             onAddBookmarkButtonClick={onAddBookmarkButtonClick}
+            onBookmarksUpdate={onBookmarksUpdate}
             record={collection}
           />
         );
@@ -32,4 +34,5 @@ type PropTypes = {
   bookmarks: Bookmark[]
   collections: Collection[]
   onAddBookmarkButtonClick: (id: string) => void
+  onBookmarksUpdate: (items: Bookmark[]) => void
 }
