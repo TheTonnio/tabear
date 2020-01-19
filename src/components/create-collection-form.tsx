@@ -1,7 +1,6 @@
-import React, {FormEvent} from 'react';
-import * as PropTypes from 'prop-types';
+import React, { FormEvent } from 'react';
 import v4 from 'uuid/v4';
-import {Collection} from "../../models/collection";
+import { Collection } from '../../models/collection';
 
 class CreateCollectionForm extends React.Component<PropTypes, StateTypes> {
   constructor(props: PropTypes) {
@@ -45,6 +44,7 @@ class CreateCollectionForm extends React.Component<PropTypes, StateTypes> {
   }
 
   render() {
+    const { name, description, emoji } = this.state;
     return (
       <div>
         <form onSubmit={this.handleSubmit}>
@@ -53,7 +53,7 @@ class CreateCollectionForm extends React.Component<PropTypes, StateTypes> {
             <input
               type="text"
               name="name"
-              value={this.state.name}
+              value={name}
               onChange={(e) => this.handleChange('name', e)}
             />
           </label>
@@ -62,7 +62,7 @@ class CreateCollectionForm extends React.Component<PropTypes, StateTypes> {
             <input
               type="text"
               name="description"
-              value={this.state.description}
+              value={description}
               onChange={(e) => this.handleChange('description', e)}
             />
           </label>
@@ -71,7 +71,7 @@ class CreateCollectionForm extends React.Component<PropTypes, StateTypes> {
             <input
               type="text"
               name="emoji"
-              value={this.state.emoji}
+              value={emoji}
               onChange={(e) => this.handleChange('emoji', e)}
             />
           </label>

@@ -23,6 +23,21 @@ module.exports = {
         "react",
         "@typescript-eslint"
     ],
+    "settings": {
+        "import/resolver": {
+            "node": {
+                "extensions": [".js", ".jsx", ".ts", ".tsx"]
+            }
+        }
+    },
     "rules": {
+        "import/extensions": "off",
+        "no-unused-vars": "off",
+        "class-methods-use-this": "off",
+        "react/jsx-filename-extension": [2, { "extensions": [".js", ".jsx", ".ts", ".tsx"] }],
+        "jsx-a11y/label-has-associated-control": [
+            "error",
+            { labelComponents: ['Label'], labelAttributes: ['for'], controlComponents: ['Input'], depth: 4 }
+        ]
     }
 };

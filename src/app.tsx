@@ -1,17 +1,34 @@
+/* eslint react/no-unused-state: 0 */
+
 import React from 'react';
 import './app.css';
 import BookmarksGrid from './components/bookmarks-grid';
-import mockData from './mock-state';
 import AddBookmarkForm from './components/add-bookmark-form';
 import CreateCollectionForm from './components/create-collection-form';
-import { Bookmark } from "../models/bookmark";
-import { Collection } from "../models/collection";
+import { Bookmark } from '../models/bookmark';
+import { Collection } from '../models/collection';
+import Storage from './utils/storage';
+import LocalStorage from './utils/localStorage';
+import { ENV_DEVELOPMENT } from './constants';
 
-class App extends React.Component<any, StateTypes> {
-  constructor(props: any) {
+class App extends React.Component<undefined, StateTypes> {
+  storage: Storage;
+
+  constructor(props: undefined) {
     super(props);
 
-    this.state = { ...this.getAppData(), selectedCollectionId: null, isAddCollectionFormShown: false };
+    this.storage = process.env.NODE_ENV === ENV_DEVELOPMENT
+      ? new LocalStorage() // Is used to imitate Chrome Extensions Storage API during dev process
+      : new Storage();
+
+    this.state = {
+      tabs: [],
+      collections: [],
+      bookmarks: [],
+      tags: [],
+      selectedCollectionId: null,
+      isAddCollectionFormShown: false,
+    };
 
     this.onAddBookmark = this.onAddBookmark.bind(this);
     this.onAddBookmarkButtonClick = this.onAddBookmarkButtonClick.bind(this);
@@ -19,15 +36,32 @@ class App extends React.Component<any, StateTypes> {
     this.onCreateCollectionButtonClick = this.onCreateCollectionButtonClick.bind(this);
   }
 
-  getAppData() {
-    return mockData;
+  async componentDidMount(): Promise<void> {
+    const {
+      tabs, collections, bookmarks, tags,
+    } = await this.storage.getDataObject([
+      'tabs',
+      'collections',
+      'bookmarks',
+      'tags',
+    ]);
+
+    this.setState({
+      tabs: tabs || [],
+      collections: collections || [],
+      bookmarks: bookmarks || [],
+      tags: tags || [],
+    });
   }
 
   onAddBookmark(newBookmark: Bookmark): void {
     const { bookmarks } = this.state;
+    const updateBookmarks = [...bookmarks, newBookmark];
+
+    this.storage.saveData('bookmarks', updateBookmarks);
 
     this.setState({
-      bookmarks: [...bookmarks, newBookmark],
+      bookmarks: [...updateBookmarks],
       selectedCollectionId: null,
     });
   }
@@ -35,8 +69,12 @@ class App extends React.Component<any, StateTypes> {
   onCreateCollection(newCollection: Collection): void {
     const { collections } = this.state;
 
+    const updateCollections = [...collections, newCollection];
+
+    this.storage.saveData('collections', updateCollections);
+
     this.setState({
-      collections: [...collections, newCollection],
+      collections: [...updateCollections],
       isAddCollectionFormShown: false,
     });
   }
@@ -51,12 +89,15 @@ class App extends React.Component<any, StateTypes> {
 
   render() {
     const {
-      collections, bookmarks, selectedCollectionId, isAddCollectionFormShown
+      collections,
+      bookmarks,
+      selectedCollectionId,
+      isAddCollectionFormShown,
     } = this.state;
 
     return (
       <div className="app">
-        <button onClick={this.onCreateCollectionButtonClick}>Create Collection +</button>
+        <button type="button" onClick={this.onCreateCollectionButtonClick}>Create Collection +</button>
         {
           isAddCollectionFormShown && (
             <div>
@@ -70,7 +111,10 @@ class App extends React.Component<any, StateTypes> {
           selectedCollectionId && (
             <div>
               <h3>Add Bookmark</h3>
-              <AddBookmarkForm collectionId={selectedCollectionId} onAddBookmark={this.onAddBookmark} />
+              <AddBookmarkForm
+                collectionId={selectedCollectionId}
+                onAddBookmark={this.onAddBookmark}
+              />
             </div>
           )
         }
@@ -88,8 +132,10 @@ class App extends React.Component<any, StateTypes> {
 export default App;
 
 type StateTypes = {
+  tabs: any[]
   bookmarks: Bookmark[]
   collections: Collection[]
+  tags: any[]
   selectedCollectionId: string | null
   isAddCollectionFormShown: boolean
 }

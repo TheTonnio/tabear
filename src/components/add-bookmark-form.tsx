@@ -1,7 +1,6 @@
 import React, { FormEvent } from 'react';
-import * as PropTypes from 'prop-types';
 import v4 from 'uuid/v4';
-import { Bookmark } from "../../models/bookmark";
+import { Bookmark } from '../../models/bookmark';
 
 class AddBookmarkForm extends React.Component<PropTypes, StateTypes> {
   constructor(props: PropTypes) {
@@ -52,15 +51,18 @@ class AddBookmarkForm extends React.Component<PropTypes, StateTypes> {
   }
 
   render() {
+    const {
+      name, description, url, iconUrl,
+    } = this.state;
+
     return (
       <div>
         <form onSubmit={this.handleSubmit}>
           <label>
-            Name:
             <input
               type="text"
               name="name"
-              value={this.state.name}
+              value={name}
               onChange={(e) => this.handleChange('name', e)}
             />
           </label>
@@ -69,7 +71,7 @@ class AddBookmarkForm extends React.Component<PropTypes, StateTypes> {
             <input
               type="text"
               name="description"
-              value={this.state.description}
+              value={description}
               onChange={(e) => this.handleChange('description', e)}
             />
           </label>
@@ -78,7 +80,7 @@ class AddBookmarkForm extends React.Component<PropTypes, StateTypes> {
             <input
               type="text"
               name="url"
-              value={this.state.url}
+              value={url}
               onChange={(e) => this.handleChange('url', e)}
             />
           </label>
@@ -87,7 +89,7 @@ class AddBookmarkForm extends React.Component<PropTypes, StateTypes> {
             <input
               type="text"
               name="iconUrl"
-              value={this.state.iconUrl}
+              value={iconUrl}
               onChange={(e) => this.handleChange('iconUrl', e)}
             />
           </label>

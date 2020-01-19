@@ -1,19 +1,26 @@
 import React from 'react';
 import BookmarksGridCollection from './bookmarks-grid-collection';
-import { Bookmark } from "../../models/bookmark";
-import { Collection } from "../../models/collection";
+import { Bookmark } from '../../models/bookmark';
+import { Collection } from '../../models/collection';
 
-const BookmarksGrid = ({ bookmarks = [], collections = [], onAddBookmarkButtonClick }: PropTypes) => (
+const BookmarksGrid = ({
+  bookmarks = [],
+  collections = [],
+  onAddBookmarkButtonClick,
+}: PropTypes) => (
   <div>
     {
-      collections.map((record) => {
-        const filteredBookmarks = bookmarks.filter(({ collectionId }) => collectionId === record.id);
-        return <BookmarksGridCollection
-          key={record.id}
-          bookmarks={filteredBookmarks}
-          onAddBookmarkButtonClick={onAddBookmarkButtonClick}
-          {...record}
-        />;
+      collections.map((collection) => {
+        const filteredBookmarks = bookmarks
+          .filter(({ collectionId }) => collectionId === collection.id);
+        return (
+          <BookmarksGridCollection
+            key={collection.id}
+            bookmarks={filteredBookmarks}
+            onAddBookmarkButtonClick={onAddBookmarkButtonClick}
+            record={collection}
+          />
+        );
       })
     }
   </div>
@@ -26,4 +33,3 @@ type PropTypes = {
   collections: Collection[]
   onAddBookmarkButtonClick: (id: string) => void
 }
-

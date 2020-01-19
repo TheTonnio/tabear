@@ -8,5 +8,8 @@
   },
   "browser_action": {
     "default_icon": "extension-icon.png"
-  }
+  },
+  "permissions": [
+    "storage"
+  ]
 }

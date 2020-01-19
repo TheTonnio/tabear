@@ -1,15 +1,24 @@
 import React from 'react';
-import * as PropTypes from 'prop-types';
+import { Bookmark } from '../../models/bookmark';
 
 class BookmarksGridItem extends React.Component<PropTypes> {
   private itemImgRef = React.createRef<HTMLImageElement>();
 
-  constructor(props: PropTypes) {
-    super(props);
+  componentDidMount() {
+    return this.itemImgRef.current
+      && this.itemImgRef.current.addEventListener('error', this.handleImgError, { once: true });
+  }
+
+  handleImgError(this: HTMLImageElement): void {
+    this.src = 'https://de.seaicons.com/wp-content/uploads/2015/06/file-picture-icon.png';
   }
 
   render() {
-    const { url, iconUrl, name, description } = this.props;
+    const { props } = this;
+    const {
+      url, iconUrl, name, description,
+    } = props.record;
+
     return (
       <a href={url}>
         <div>
@@ -26,23 +35,10 @@ class BookmarksGridItem extends React.Component<PropTypes> {
       </a>
     );
   }
-
-  handleImgError(this: HTMLImageElement): void {
-    this.src = 'https://de.seaicons.com/wp-content/uploads/2015/06/file-picture-icon.png';
-  }
-
-  componentDidMount() {
-    this.itemImgRef.current
-      && this.itemImgRef.current.addEventListener('error', this.handleImgError, { once: true });
-  }
 }
 
 export default BookmarksGridItem;
 
 type PropTypes = {
-  id: string
-  url: string
-  name: string
-  description: string
-  iconUrl?: string | null
+  record: Bookmark
 }
