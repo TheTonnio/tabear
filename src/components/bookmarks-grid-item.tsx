@@ -3,8 +3,6 @@ import { Bookmark } from '../../models/bookmark';
 import styled from "styled-components";
 import { PrimaryCardAnimated } from "../shared/styles/primary-card";
 import { useDrag, useDrop, DropTargetMonitor } from 'react-dnd'
-import { XYCoord } from 'dnd-core'
-
 
 interface DragItem {
   index: number
@@ -14,13 +12,56 @@ interface DragItem {
 
 function BookmarksGridItem({ record, index, moveCard }: PropTypes) {
   const {
-    url, iconUrl, name, description, id,
+    url, iconUrl, name, description, id, collectionId
   } = record;
 
+  // const ref = useRef<HTMLDivElement>(null);
+  // const [, drop] = useDrop({
+  //   accept: 'bookmark',
+  //   hover(item: DragItem, monitor: DropTargetMonitor) {
+  //     if (!ref.current) {
+  //       return
+  //     }
+  //     const dragIndex = item.index;
+  //     const hoverIndex = index;
+  //
+  //     if (dragIndex === hoverIndex) {
+  //       return
+  //     }
+  //
+  //     // moveCard(dragIndex, hoverIndex); // TODO: Uncomment
+  //     item.index = hoverIndex
+  //   },
+  // });
+  //
+  // const [{ isDragging }, drag] = useDrag({
+  //   item: { type: 'bookmark' as any, id, index, rawRecord: record },
+  //   collect: (monitor: any) => ({
+  //     // @ts-ignore
+  //     monitorRecord: record,
+  //     isDragging: monitor.isDragging(),
+  //   }),
+  // });
+  //
+  // const visible = !isDragging;
+  // drag(drop(ref));
+
   const ref = useRef<HTMLDivElement>(null);
-  const [, drop] = useDrop({
-    accept: 'card',
-    hover(item: DragItem, monitor: DropTargetMonitor) {
+
+  const [{isDragging}, drag] = useDrag({
+    item: { type: 'bookmark', id: record.id, collectionId: record.collectionId, index },
+    collect: monitor => ({
+      isDragging: !!monitor.isDragging(),
+    }),
+  });
+
+  const [{ isOver, canDrop }, drop] = useDrop({
+    accept: 'bookmark',
+    collect: mon => ({
+      isOver: !!mon.isOver(),
+      canDrop: !!mon.canDrop(),
+    }),
+    hover(item: any) {
       if (!ref.current) {
         return
       }
@@ -32,57 +73,19 @@ function BookmarksGridItem({ record, index, moveCard }: PropTypes) {
         return
       }
 
-      // Determine rectangle on screen
-      const hoverBoundingRect = ref.current!.getBoundingClientRect();
+      moveCard(item.id, dragIndex, hoverIndex, item.collectionId, record.collectionId);
 
-      // Get vertical middle
-      const hoverMiddleY =
-        (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
-
-      // Determine mouse position
-      const clientOffset = monitor.getClientOffset();
-
-      // Get pixels to the top
-      const hoverClientY = (clientOffset as XYCoord).y - hoverBoundingRect.top;
-
-      // Only perform the move when the mouse has crossed half of the items height
-      // When dragging downwards, only move when the cursor is below 50%
-      // When dragging upwards, only move when the cursor is above 50%
-
-      // Dragging downwards
-      if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
-        return
-      }
-
-      // Dragging upwards
-      if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
-        return
-      }
-
-      // Time to actually perform the action
-      moveCard(dragIndex, hoverIndex);
-
-      // Note: we're mutating the monitor item here!
-      // Generally it's better to avoid mutations,
-      // but it's good here for the sake of performance
-      // to avoid expensive index searches.
       item.index = hoverIndex
     },
   });
 
-  const [{ isDragging }, drag] = useDrag({
-    item: { type: 'card' as any, id, index },
-    collect: (monitor: any) => ({
-      isDragging: monitor.isDragging(),
-    }),
-  });
+  const visible = !isDragging;
 
-  const opacity = isDragging ? 0 : 1;
   drag(drop(ref));
 
   return (
     // @ts-ignore
-    <BookmarkCard href={url} as="a" ref={ref}>
+    <BookmarkCard href={url} as="a" ref={ref} visible={visible}>
       <BookmarkCardMainInfo>
         <BookmarkCardImageWrapper>
           <BookmarkCardImage
@@ -101,19 +104,15 @@ export default BookmarksGridItem;
 type PropTypes = {
   record: Bookmark
   index: number
-  moveCard: (a: any, b: any) => void
+  moveCard: (a: any, b: any, c: any, d: any, f: any) => void
 }
 
 const BookmarkCard = styled(PrimaryCardAnimated)`
   display: flex;
   flex-direction: column;
-  transition: .3s;
   overflow: hidden;
   text-decoration: none;
-  
-  &:hover {
-    transform: scale(1.04);
-  }
+  opacity: ${(props: { visible: boolean }) => props.visible ? 1 : .6};
 `;
 
 const BookmarkCardMainInfo = styled.div`

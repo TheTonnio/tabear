@@ -7,33 +7,31 @@ import { PrimaryCard, PrimaryCardAnimated } from "../shared/styles/primary-card"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import update from 'immutability-helper'
+import { useDrop } from 'react-dnd'
 
 const BookmarksGridCollection = ({
-  bookmarks, record, onAddBookmarkButtonClick, onBookmarksUpdate,
+  bookmarks, record, onAddBookmarkButtonClick, moveCard
 }: PropTypes) => {
   const {
     id, name, description, emoji,
   } = record;
 
-  const setCards = (updatedBookmarks: Bookmark[]) => onBookmarksUpdate(updatedBookmarks);
-
-  const moveCard = useCallback(
-    (dragIndex: number, hoverIndex: number) => {
-      const dragCard = bookmarks[dragIndex];
-      setCards(
-        update(bookmarks, {
-          $splice: [
-            [dragIndex, 1],
-            [hoverIndex, 0, dragCard],
-          ],
-        }),
-      )
+  const [{ isOver, canDrop }, drop] = useDrop({
+    accept: 'bookmark',
+    collect: mon => ({
+      isOver: !!mon.isOver(),
+      canDrop: !!mon.canDrop(),
+    }),
+    hover(item: any) {
+      if (bookmarks.length === 0 && item.collectionId !== record.id) {
+        moveCard(item.id, -1, -1, item.collectionId, record.id);
+        item.collectionId = record.id
+      }
     },
-    [bookmarks],
-  );
+  });
 
   return (
-    <BookmarksCollection>
+    <BookmarksCollection ref={drop}>
       <BookmarksCollectionHeader>
         {/*<span>{emoji}</span>*/}
         <BookmarksCollectionHeaderTitle>{name}</BookmarksCollectionHeaderTitle>
@@ -41,11 +39,11 @@ const BookmarksGridCollection = ({
       </BookmarksCollectionHeader>
       <BookmarksCollectionBookmarks>
         {
-          bookmarks.map((bookmark, i) => (
+          bookmarks.map((bookmark: any) => (
             <BookmarksGridItem
               key={bookmark.id}
               record={bookmark}
-              index={i}
+              index={bookmark.index}
               moveCard={moveCard}
             />
           ))
@@ -67,8 +65,10 @@ export default BookmarksGridCollection;
 type PropTypes = {
   bookmarks: Bookmark[]
   record: Collection
+  collectionIndex: number
   onAddBookmarkButtonClick: (id:string) => void
-  onBookmarksUpdate: (items: Bookmark[]) => void
+  moveCard: (id: string, fromIndex: number, toIndex: number, fromContainerId: string, toContainerId: string) => void
+  // onDrop: (item: any) => any
 }
 
 const BookmarksCollection = styled.div`
@@ -120,4 +120,5 @@ const AddBookmarkButton = styled(PrimaryCardAnimated)`
   background-color: #F3F2F8;
   font-size: 30px;
   color: #3c78bf;
+  border: 0;
 `;

@@ -12,6 +12,7 @@ import { ENV_DEVELOPMENT } from './constants';
 import styled from 'styled-components'
 import { DndProvider } from 'react-dnd'
 import Backend from 'react-dnd-html5-backend'
+import DNDDemo from "./components/dnd-demo/demo";
 
 const AppWrapper = styled.div`
   height: 100vh;
@@ -42,6 +43,7 @@ class App extends React.Component<undefined, StateTypes> {
     this.onCreateCollection = this.onCreateCollection.bind(this);
     this.onCreateCollectionButtonClick = this.onCreateCollectionButtonClick.bind(this);
     this.setBookmarks = this.setBookmarks.bind(this);
+    this.updateBookmark = this.updateBookmark.bind(this);
   }
 
   async componentDidMount(): Promise<void> {
@@ -78,6 +80,17 @@ class App extends React.Component<undefined, StateTypes> {
     this.setState({
       bookmarks: bookmarks,
     });
+  }
+
+  updateBookmark(updatedBookmark: Bookmark) {
+    const { bookmarks } = this.state;
+    return [...bookmarks].map((item: Bookmark) => {
+      return item.id === updatedBookmark.id
+        ? updatedBookmark
+        : item;
+    });
+
+    // this.setBookmarks(updatedBookmarks);
   }
 
   onCreateCollection(newCollection: Collection): void {
@@ -139,8 +152,10 @@ class App extends React.Component<undefined, StateTypes> {
             bookmarks={bookmarks}
             onAddBookmarkButtonClick={this.onAddBookmarkButtonClick}
             onBookmarksUpdate={this.setBookmarks}
+            updateBookmark={this.updateBookmark}
           />
         </AppWrapper>
+        {/*<DNDDemo/>*/}
       </DndProvider>
     );
   }
