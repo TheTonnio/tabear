@@ -1,6 +1,6 @@
 import React, { Dispatch, useRef } from 'react'
 import styled from "styled-components";
-import { PrimaryCardAnimated } from "../shared/styles/primary-card";
+import { PrimaryCard } from "../shared/styles/primary-card";
 import { useDrag, useDrop } from "react-dnd";
 import { DraggableItemTypes } from "../constants";
 import DraggableBookmark from "../models/draggable-bookmark";
@@ -60,7 +60,7 @@ const BookmarkCard = ({
 
   return (
     // @ts-ignore
-    <BookmarkCardWrapper
+    <Wrapper
       href={url}
       ref={ref}
       as="a"
@@ -72,7 +72,7 @@ const BookmarkCard = ({
         url={url}
         iconUrl={iconUrl}
       />
-    </BookmarkCardWrapper>
+    </Wrapper>
   );
 };
 
@@ -86,7 +86,7 @@ type PropTypes = {
   moveCard: (dragItemId: string, dragIndex: number, hoverIndex: number, dragItemCollectionId: string, collectionId: string) => void
 }
 
-const BookmarkCardWrapper = styled(PrimaryCardAnimated)`
+const Wrapper = styled(PrimaryCard)`
   overflow: hidden;
   text-decoration: none;
   opacity: ${(props: { visible: boolean }) => props.visible ? 1 : .4};
