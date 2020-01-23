@@ -1,6 +1,6 @@
 import React, { FormEvent } from 'react';
 import v4 from 'uuid/v4';
-import { Collection } from '../../models/collection';
+import { Collection } from '../models/collection';
 
 class CreateCollectionForm extends React.Component<PropTypes, StateTypes> {
   constructor(props: PropTypes) {

@@ -8,9 +8,10 @@ export const PrimaryCard = styled.div`
 `;
 
 export const PrimaryCardAnimated = styled(PrimaryCard)`
-  transition: transform .3s;
+  transition: transform .3s, opacity .3s;
   
   &:hover {
+    opacity: 1;
     transform: scale(1.04);
   }
   

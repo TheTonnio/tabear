@@ -4,5 +4,5 @@ export interface Bookmark {
   name: string
   description: string
   url: string
-  iconUrl?: string | null
+  iconUrl?: string
 }

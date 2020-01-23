@@ -1,6 +1,6 @@
 import React, { FormEvent } from 'react';
 import v4 from 'uuid/v4';
-import { Bookmark } from '../../models/bookmark';
+import { Bookmark } from '../models/bookmark';
 
 class AddBookmarkForm extends React.Component<PropTypes, StateTypes> {
   constructor(props: PropTypes) {
