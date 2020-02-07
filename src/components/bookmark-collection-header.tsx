@@ -10,7 +10,7 @@ const BookmarkCollectionHeader = ({ name, description, isCollapsed, toggleCollec
       <Title>{name}</Title>
       <Description>{description}</Description>
       <CollapseButton onClick={toggleCollection}>
-        <Icon icon={faAngleDown} isCollapsed={isCollapsed} />
+        <Icon icon={faAngleDown}/>
       </CollapseButton>
     </Header>
   );
@@ -73,7 +73,6 @@ const CollapseButton = styled.button`
 
 const Icon = styled(FontAwesomeIcon)`
   transition: transform .3s;
-  transform: rotate(${(props: { isCollapsed: boolean }) => props.isCollapsed ? '180' : '0'}deg);
 `;
 
 export default BookmarkCollectionHeader;

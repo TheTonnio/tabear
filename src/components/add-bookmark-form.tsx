@@ -24,14 +24,13 @@ class AddBookmarkForm extends React.Component<PropTypes, StateTypes> {
   handleSubmit(event: FormEvent): void {
     event.preventDefault();
 
-    const { collectionId, onAddBookmark } = this.props;
+    const { onAddBookmark } = this.props;
     const {
       name, description, url, iconUrl,
     } = this.state;
 
     onAddBookmark({
       id: v4(),
-      collectionId,
       name,
       description,
       url,

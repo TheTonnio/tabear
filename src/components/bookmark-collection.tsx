@@ -11,7 +11,7 @@ import BookmarkCollectionHeader from "./bookmark-collection-header";
 
 const BookmarkCollection = ({
   bookmarks,
-  record,
+  collection,
   onAddBookmarkButtonClick,
   moveCard,
   setDraggableItem,
@@ -19,23 +19,23 @@ const BookmarkCollection = ({
 }: PropTypes) => {
   const {
     id, name, description,
-  } = record;
+  } = collection;
 
   const [ isCollapsed, toggleCollection ] = useState<boolean>(false);
 
-  const [, drop] = useDrop({
-    accept: DraggableItemTypes.BOOKMARK,
-    hover(dragItem: DraggableBookmark) {
-      const { id: dragItemId, collectionId: dragItemCollectionId } = dragItem;
-      if (dragItemCollectionId !== id) {
-        moveCard(dragItemId, -1, -1, dragItemCollectionId, id);
-        dragItem.collectionId = id
-      }
-    },
-  });
+  // const [, drop] = useDrop({
+  //   accept: DraggableItemTypes.BOOKMARK,
+  //   hover(dragItem: DraggableBookmark) {
+  //     const { id: dragItemId, collectionId: dragItemCollectionId } = dragItem;
+  //     if (dragItemCollectionId !== id) {
+  //       // moveCard(dragItemId, -1, -1, dragItemCollectionId, id);
+  //       dragItem.collectionId = id
+  //     }
+  //   },
+  // });
 
   return (
-    <Wrapper ref={drop}>
+    <Wrapper /*ref={drop}*/>
       <BookmarkCollectionHeader
         name={name}
         description={description}
@@ -46,11 +46,13 @@ const BookmarkCollection = ({
         isCollapsed || (
           <Grid>
             {
-              bookmarks.map((bookmark: IndexedBookmark) => (
+              // @ts-ignore
+              bookmarks.map((bookmark: Bookmark, index: number) => (
                 <BookmarkCard
                   key={bookmark.id}
-                  index={bookmark.index}
-                  record={bookmark}
+                  index={index}
+                  collectionId={id}
+                  bookmark={bookmark}
                   isDragging={bookmark.id === draggableItemId}
                   moveCard={moveCard}
                   setDraggableItem={setDraggableItem}
@@ -68,13 +70,13 @@ const BookmarkCollection = ({
 export default BookmarkCollection;
 
 type PropTypes = {
-  bookmarks: IndexedBookmark[]
-  record: Collection
+  bookmarks: Bookmark[]
+  collection: Collection
   collectionIndex: number
   draggableItemId: string | null
   onAddBookmarkButtonClick: (id: string) => void
   setDraggableItem: Dispatch<string | null>
-  moveCard: (id: string, fromIndex: number, toIndex: number, fromContainerId: string, toContainerId: string) => void
+  moveCard: (source: any, destination: any, draggableId: string) => void
 }
 
 interface IndexedBookmark extends Bookmark {

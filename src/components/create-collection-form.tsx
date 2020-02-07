@@ -23,13 +23,13 @@ class CreateCollectionForm extends React.Component<PropTypes, StateTypes> {
     event.preventDefault();
 
     const { onCreateCollection } = this.props;
-    const { name, description, emoji } = this.state;
+    const { name, description } = this.state;
 
     onCreateCollection({
       id: v4(),
       name,
       description,
-      emoji,
+      bookmarksIds: []
     });
 
     this.resetFrom();

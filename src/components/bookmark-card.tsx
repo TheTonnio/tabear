@@ -8,27 +8,27 @@ import { Bookmark } from "../models/bookmark";
 import BookmarkCardInfo from "./bookmark-card-info";
 
 const BookmarkCard = ({
-  record: {
+  bookmark: {
     url,
     iconUrl,
     name,
     description,
-    collectionId,
     id
   },
   index,
   isDragging,
   moveCard,
-  setDraggableItem
+  setDraggableItem,
+  collectionId
 }: PropTypes) => {
   const ref = useRef<HTMLDivElement>(null);
 
   const [, drag] = useDrag({
     item: {
       type: DraggableItemTypes.BOOKMARK,
-      id,
-      collectionId,
+      id: collectionId,
       index,
+      draggableId: id,
     },
     begin: () => setDraggableItem(id),
     end: () => setDraggableItem(null)
@@ -36,23 +36,24 @@ const BookmarkCard = ({
 
   const [, drop] = useDrop({
     accept: DraggableItemTypes.BOOKMARK,
-    hover(dragItem: DraggableBookmark) {
+    hover(source: DraggableBookmark) {
       if (!ref.current) {
         return
       }
-      const dragIndex = dragItem.index;
-      const hoverIndex = index;
-      const {
-        id: dragItemId,
-        collectionId: dragItemCollectionId,
-      } = dragItem;
+      //
+      // if (source.index === index) {
+      //   return
+      // }
 
-      if (dragIndex === hoverIndex) {
-        return
-      }
+      const destination = {
+        type: DraggableItemTypes.BOOKMARK,
+        id: collectionId,
+        index
+      };
 
-      moveCard(dragItemId, dragIndex, hoverIndex, dragItemCollectionId, collectionId);
-      dragItem.index = hoverIndex
+      moveCard(source, destination, source.draggableId);
+      source.index = index;
+      source.id = collectionId;
     },
   });
 
@@ -79,11 +80,12 @@ const BookmarkCard = ({
 export default BookmarkCard;
 
 type PropTypes = {
-  record: Bookmark
-  isDragging: boolean
+  bookmark: Bookmark
   index: number
+  collectionId: string
+  isDragging: boolean
   setDraggableItem: Dispatch<string | null>
-  moveCard: (dragItemId: string, dragIndex: number, hoverIndex: number, dragItemCollectionId: string, collectionId: string) => void
+  moveCard: (source: any, destination: any, draggableId: string) => void
 }
 
 const Wrapper = styled(PrimaryCard)`

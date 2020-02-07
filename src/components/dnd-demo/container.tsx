@@ -11,8 +11,6 @@ const Container = ({ data, tasks, moveCard }: any) => {
       canDrop: !!mon.canDrop(),
     }),
     hover(item: any) {
-      console.log(item);
-
       if (tasks.length === 0 && item.containerId !== data.id) {
         moveCard(item.id, -1, -1, item.containerId, data.id);
         item.containerId = data.containerId

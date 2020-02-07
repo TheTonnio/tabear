@@ -3,53 +3,96 @@ import BookmarkCollection from './bookmark-collection';
 import { Bookmark } from '../models/bookmark';
 import { Collection } from '../models/collection';
 import update from "immutability-helper";
+import {Bookmarks} from "../models/bookmarks";
+import {Collections} from "../models/collections";
 
 const BookmarksContainer = (props: PropTypes) => {
   const {
     bookmarks,
     collections,
+    collectionsOrder,
     onAddBookmarkButtonClick,
     onBookmarksUpdate,
+    onCollectionsUpdate,
   } = props;
 
   const [ draggingItemId, setDraggingItemId] = useState<string | null>(null);
 
-  const setCards = (updatedBookmarks: Bookmark[]) => onBookmarksUpdate(updatedBookmarks);
-  const moveCard = (id: string, fromIndex: number, toIndex: number, fromContainerId: string, toContainerId: string) => {
-    const bookmark: Bookmark | undefined = bookmarks.find((bookmark: any) => bookmark.id === id);
-    if (bookmark) {
-      bookmark.collectionId = toContainerId;
-      let updatedList = bookmarks;
-
-      if (fromIndex > -1 && toIndex > -1) {
-        updatedList = update(bookmarks, {
-          $splice: [
-            [fromIndex, 1],
-            [toIndex, 0, bookmark],
-          ],
-        });
-      }
-
-      setCards(updatedList);
+  const setCards = (updatedCollections: Collections) => onCollectionsUpdate(updatedCollections);
+  const moveCard = (source: any, destination: any, draggableId: string) => {
+    if (!destination) {
+      return
     }
-  };
 
-  const mappedBookmarks = bookmarks.map((item: any, index: any) => ({...item, index}));
+    if (
+      destination.id === source.id &&
+      destination.index === source.index
+    ) {
+      return
+    }
+
+    const start = collections[source.id];
+    const finish = collections[destination.id];
+
+
+    if (start === finish) {
+      const newBookmarkIds = Array.from(start.bookmarksIds);
+      newBookmarkIds.splice(source.index, 1);
+      newBookmarkIds.splice(destination.index, 0, draggableId);
+
+      const newCollection = {
+        ...start,
+        bookmarksIds: newBookmarkIds
+      };
+
+      setCards({
+        ...collections,
+        [newCollection.id]: newCollection
+      });
+
+      return;
+    }
+
+    console.log(1);
+
+    const startBookmarkIds = Array.from(start.bookmarksIds);
+    startBookmarkIds.splice(source.index, 1);
+    const newStart = {
+      ...start,
+      bookmarksIds: startBookmarkIds
+    };
+
+    const finishBookmarkIds = Array.from(finish.bookmarksIds);
+    finishBookmarkIds.splice(destination.index, 0, draggableId);
+
+    const newFinish = {
+      ...finish,
+      bookmarksIds: finishBookmarkIds
+    };
+
+    setCards({
+      ...collections,
+      [newStart.id]: newStart,
+      [newFinish.id]: newFinish
+    });
+  };
 
   return (
     <div>
       {
-        collections.map((collection, index: number) => {
-          const filteredBookmarks = mappedBookmarks
-            .filter(({collectionId}) => collectionId === collection.id);
+        collectionsOrder.map((collectionId, index: number) => {
+          const collection: Collection = collections[collectionId];
+          const bookmarksList: Bookmark[] = collection.bookmarksIds.map(
+            (id: string) => bookmarks[id]
+          );
 
           return (
             <BookmarkCollection
-              key={collection.id}
-              bookmarks={filteredBookmarks}
+              key={collectionId}
+              bookmarks={bookmarksList}
               onAddBookmarkButtonClick={onAddBookmarkButtonClick}
               moveCard={moveCard}
-              record={collection}
+              collection={collection}
               collectionIndex={index}
               setDraggableItem={setDraggingItemId}
               draggableItemId={draggingItemId}
@@ -57,14 +100,17 @@ const BookmarksContainer = (props: PropTypes) => {
           );
         })
       }
-    </div>)
+    </div>
+  )
 };
 
 export default BookmarksContainer;
 
 type PropTypes = {
-  bookmarks: Bookmark[]
-  collections: Collection[]
+  bookmarks: Bookmarks
+  collections: Collections
+  collectionsOrder: string[]
   onAddBookmarkButtonClick: (id: string) => void
-  onBookmarksUpdate: (items: Bookmark[]) => void
+  onBookmarksUpdate: (items: Bookmarks) => void
+  onCollectionsUpdate: (items: Collections) => void
 }

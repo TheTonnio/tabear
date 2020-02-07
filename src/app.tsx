@@ -12,6 +12,9 @@ import { ENV_DEVELOPMENT } from './constants';
 import styled from 'styled-components'
 import { DndProvider } from 'react-dnd'
 import Backend from 'react-dnd-html5-backend'
+import initialState from './initial-data';
+import {Bookmarks} from "./models/bookmarks";
+import {Collections} from "./models/collections";
 
 const AppWrapper = styled.div`
   height: 100vh;
@@ -29,10 +32,9 @@ class App extends React.Component<undefined, StateTypes> {
       : new Storage();
 
     this.state = {
-      tabs: [],
-      collections: [],
-      bookmarks: [],
-      tags: [],
+      bookmarks: {},
+      collections: {},
+      collectionsOrder: [],
       selectedCollectionId: null,
       isAddCollectionFormShown: false,
     };
@@ -42,39 +44,42 @@ class App extends React.Component<undefined, StateTypes> {
     this.onCreateCollection = this.onCreateCollection.bind(this);
     this.onCreateCollectionButtonClick = this.onCreateCollectionButtonClick.bind(this);
     this.setBookmarks = this.setBookmarks.bind(this);
+    this.setCollections = this.setCollections.bind(this);
   }
 
   async componentDidMount(): Promise<void> {
     const {
-      tabs, collections, bookmarks, tags,
+      collections, bookmarks, collectionsOrder
     } = await this.storage.getDataObject([
-      'tabs',
-      'collections',
       'bookmarks',
-      'tags',
+      'collections',
+      'collectionsOrder',
     ]);
 
     this.setState({
-      tabs: tabs || [],
-      collections: collections || [],
-      bookmarks: bookmarks || [],
-      tags: tags || [],
+      bookmarks: bookmarks || {},
+      collections: collections || {},
+      collectionsOrder: collectionsOrder || [],
     });
+
+    // this.storage.saveData('bookmarks', initialState.bookmarks);
+    // this.storage.saveData('collections', initialState.collections);
+    // this.storage.saveData('collectionsOrder', initialState.collectionsOrder);
   }
 
   onAddBookmark(newBookmark: Bookmark): void {
     const { bookmarks } = this.state;
-    const updateBookmarks = [...bookmarks, newBookmark];
+    const updateBookmarks = { ...bookmarks, newBookmark };
 
     this.storage.saveData('bookmarks', updateBookmarks);
 
     this.setState({
-      bookmarks: [...updateBookmarks],
+      bookmarks: { ...updateBookmarks },
       selectedCollectionId: null,
     });
   }
 
-  setBookmarks(bookmarks: Bookmark[]): void {
+  setBookmarks(bookmarks: Bookmarks): void {
     this.storage.saveData('bookmarks', bookmarks);
 
     this.setState({
@@ -82,15 +87,23 @@ class App extends React.Component<undefined, StateTypes> {
     });
   }
 
+  setCollections(collections: Collections): void {
+    // this.storage.saveData('collections', collections);
+
+    this.setState({
+      collections: collections,
+    });
+  }
+
   onCreateCollection(newCollection: Collection): void {
     const { collections } = this.state;
 
-    const updateCollections = [...collections, newCollection];
+    const updateCollections = { ...collections, [newCollection.id]: newCollection };
 
     this.storage.saveData('collections', updateCollections);
 
     this.setState({
-      collections: [...updateCollections],
+      collections: { ...updateCollections },
       isAddCollectionFormShown: false,
     });
   }
@@ -105,8 +118,9 @@ class App extends React.Component<undefined, StateTypes> {
 
   render() {
     const {
-      collections,
       bookmarks,
+      collections,
+      collectionsOrder,
       selectedCollectionId,
       isAddCollectionFormShown,
     } = this.state;
@@ -137,10 +151,13 @@ class App extends React.Component<undefined, StateTypes> {
           }
 
           <BookmarksContainer
-            collections={collections}
+            // @ts-ignore
             bookmarks={bookmarks}
+            collections={collections}
+            collectionsOrder={collectionsOrder}
             onAddBookmarkButtonClick={this.onAddBookmarkButtonClick}
             onBookmarksUpdate={this.setBookmarks}
+            onCollectionsUpdate={this.setCollections}
           />
         </AppWrapper>
       </DndProvider>
@@ -151,10 +168,9 @@ class App extends React.Component<undefined, StateTypes> {
 export default App;
 
 type StateTypes = {
-  tabs: any[]
-  bookmarks: Bookmark[]
-  collections: Collection[]
-  tags: any[]
+  bookmarks: Bookmarks
+  collections: Collections
+  collectionsOrder: string[]
   selectedCollectionId: string | null
   isAddCollectionFormShown: boolean
 }
