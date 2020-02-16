@@ -17,11 +17,13 @@ import { Bookmarks } from "./models/bookmarks";
 import { Collections } from "./models/collections";
 import TopBar from "./components/top-bar/top-bar";
 import {LayoutType} from "./models/layout-type";
+import { LayoutTypeContext } from './store/layout-type-context'
 
 const AppWrapper = styled.div`
   height: 100vh;
   width: 100%;
 `;
+
 
 class App extends React.Component<undefined, StateTypes> {
   storage: Storage;
@@ -39,7 +41,7 @@ class App extends React.Component<undefined, StateTypes> {
       collectionsOrder: [],
       selectedCollectionId: null,
       isAddCollectionFormShown: false,
-      layoutType: LAYOUT_TYPES_CODES.Grid
+      layoutType: LAYOUT_TYPES_CODES.List
     };
 
     this.onAddBookmark = this.onAddBookmark.bind(this);
@@ -48,7 +50,7 @@ class App extends React.Component<undefined, StateTypes> {
     this.onCreateCollectionButtonClick = this.onCreateCollectionButtonClick.bind(this);
     this.setBookmarks = this.setBookmarks.bind(this);
     this.setCollections = this.setCollections.bind(this);
-    this.setLayoutType = this.setLayoutType.bind(this);
+    this.onSetLayoutType = this.onSetLayoutType.bind(this);
   }
 
   async componentDidMount(): Promise<void> {
@@ -120,7 +122,7 @@ class App extends React.Component<undefined, StateTypes> {
     this.setState({ isAddCollectionFormShown: true });
   }
 
-  setLayoutType(layoutType: LayoutType) {
+  onSetLayoutType(layoutType: LayoutType) {
     this.setState({ layoutType });
   }
 
@@ -135,43 +137,48 @@ class App extends React.Component<undefined, StateTypes> {
     } = this.state;
 
     return (
-      <DndProvider backend={Backend}>
-        <AppWrapper>
-          <TopBar setLayoutType={this.setLayoutType}/>
+      <LayoutTypeContext.Provider value={layoutType}>
+        <DndProvider backend={Backend}>
+          <AppWrapper>
+            <TopBar
+              onSetLayoutType={this.onSetLayoutType}
+              onCreateCollectionButtonClick={this.onCreateCollectionButtonClick}
+            />
 
-          <button type="button" onClick={this.onCreateCollectionButtonClick}>Create Collection +</button>
-          {
-            isAddCollectionFormShown && (
-              <div>
-                <h3>Create Collection</h3>
-                <CreateCollectionForm onCreateCollection={this.onCreateCollection} />
-              </div>
-            )
-          }
+            {
+              isAddCollectionFormShown && (
+                <div>
+                  <h3>Create Collection</h3>
+                  <CreateCollectionForm onCreateCollection={this.onCreateCollection} />
+                </div>
+              )
+            }
 
-          {
-            selectedCollectionId && (
-              <div>
-                <h3>Add Bookmark</h3>
-                <AddBookmarkForm
-                  collectionId={selectedCollectionId}
-                  onAddBookmark={this.onAddBookmark}
-                />
-              </div>
-            )
-          }
+            {
+              selectedCollectionId && (
+                <div>
+                  <h3>Add Bookmark</h3>
+                  <AddBookmarkForm
+                    collectionId={selectedCollectionId}
+                    onAddBookmark={this.onAddBookmark}
+                  />
+                </div>
+              )
+            }
 
-          <BookmarksContainer
-            // @ts-ignore
-            bookmarks={bookmarks}
-            collections={collections}
-            collectionsOrder={collectionsOrder}
-            onAddBookmarkButtonClick={this.onAddBookmarkButtonClick}
-            onBookmarksUpdate={this.setBookmarks}
-            onCollectionsUpdate={this.setCollections}
-          />
-        </AppWrapper>
-      </DndProvider>
+            <BookmarksContainer
+              // @ts-ignore
+              bookmarks={bookmarks}
+              collections={collections}
+              collectionsOrder={collectionsOrder}
+              onAddBookmarkButtonClick={this.onAddBookmarkButtonClick}
+              onBookmarksUpdate={this.setBookmarks}
+              onCollectionsUpdate={this.setCollections}
+              layoutType={layoutType}
+            />
+          </AppWrapper>
+        </DndProvider>
+      </LayoutTypeContext.Provider>
     );
   }
 }

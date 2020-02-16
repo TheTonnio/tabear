@@ -1,11 +1,14 @@
-import React, { Dispatch, useRef } from 'react'
+// @ts-nocheck
+import React, { Dispatch, useRef, useContext } from 'react'
 import styled from "styled-components";
 import { PrimaryCard } from "../shared/styles/primary-card";
 import { useDrag, useDrop } from "react-dnd";
-import { DraggableItemTypes } from "../constants";
+import {DraggableItemTypes, LAYOUT_TYPES_CODES} from "../constants";
 import DraggableBookmark from "../models/draggable-bookmark";
 import { Bookmark } from "../models/bookmark";
 import BookmarkCardInfo from "./bookmark-card-info";
+import {LayoutType} from "../models/layout-type";
+import { LayoutTypeContext } from '../store/layout-type-context'
 
 const BookmarkCard = ({
   bookmark: {
@@ -21,8 +24,8 @@ const BookmarkCard = ({
   setDraggableItem,
   collectionId
 }: PropTypes) => {
+  const layoutType = useContext(LayoutTypeContext);
   const ref = useRef<HTMLDivElement>(null);
-
   const [, drag] = useDrag({
     item: {
       type: DraggableItemTypes.BOOKMARK,
@@ -57,19 +60,31 @@ const BookmarkCard = ({
 
   return (
     // @ts-ignore
-    <Wrapper
+    layoutType === LAYOUT_TYPES_CODES.Grid ? (<CardWrapper
       href={url}
       ref={ref}
       as="a"
       visible={!isDragging}
     >
       <BookmarkCardInfo
+        layoutType={layoutType}
         name={name}
         description={description}
         url={url}
         iconUrl={iconUrl}
       />
-    </Wrapper>
+    </CardWrapper>)
+      : (
+        <ListItemWrapper
+          href={url}
+          ref={ref}
+          as="a"
+          visible={!isDragging}
+        >
+          <ListItemImage iconUrl={iconUrl}/>
+          {name} {description}
+        </ListItemWrapper>
+      )
   );
 };
 
@@ -84,8 +99,28 @@ type PropTypes = {
   moveCard: (source: any, destination: any, draggableId: string) => void
 }
 
-const Wrapper = styled(PrimaryCard)`
+const CardWrapper = styled(PrimaryCard)`
   overflow: hidden;
   text-decoration: none;
   opacity: ${(props: { visible: boolean }) => props.visible ? 1 : .4};
 `;
+
+const ListItemWrapper = styled.div`
+  overflow: hidden;
+  text-decoration: none;
+  opacity: ${(props: { visible: boolean }) => props.visible ? 1 : .4};
+  background: #FFFFFF;
+  border-radius: 5px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, .2);
+  cursor: pointer;
+`;
+
+
+const ListItemImage = styled.div`
+  width: 30px;
+  height: 30px;
+  background-image: url("${(props: { iconUrl: string }) => props.iconUrl}");
+  background-size: cover;
+  background-repeat: no-repeat;
+`;
+

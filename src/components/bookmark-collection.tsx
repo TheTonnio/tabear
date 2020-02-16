@@ -8,6 +8,7 @@ import { DraggableItemTypes } from "../constants";
 import DraggableBookmark from "../models/draggable-bookmark";
 import BookmarkCardAddButton from "./bookmark-card-add-button";
 import BookmarkCollectionHeader from "./bookmark-collection-header";
+import {LayoutType} from "../models/layout-type";
 
 const BookmarkCollection = ({
   bookmarks,
@@ -15,7 +16,8 @@ const BookmarkCollection = ({
   onAddBookmarkButtonClick,
   moveCard,
   setDraggableItem,
-  draggableItemId
+  draggableItemId,
+  layoutType,
 }: PropTypes) => {
   const {
     id, name, description,
@@ -66,7 +68,6 @@ const BookmarkCollection = ({
                 />
               ))
             }
-            <BookmarkCardAddButton onAddClick={() => onAddBookmarkButtonClick(id)}/>
           </Grid>
         )
       }
@@ -83,17 +84,15 @@ type PropTypes = {
   draggableItemId: string | null
   onAddBookmarkButtonClick: (id: string) => void
   setDraggableItem: Dispatch<string | null>
+  layoutType: LayoutType
   moveCard: (source: any, destination: any, draggableId: string) => void
-}
-
-interface IndexedBookmark extends Bookmark {
-  index: number
 }
 
 const Wrapper = styled.div`
   margin: 20px 0;
   padding: 0 20px;
   width: 100%;
+  break-inside: avoid;
 `;
 
 const Grid = styled.div`

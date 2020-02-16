@@ -4,6 +4,9 @@ import { Bookmark } from '../models/bookmark';
 import { Collection } from '../models/collection';
 import {Bookmarks} from "../models/bookmarks";
 import {Collections} from "../models/collections";
+import {LayoutType} from "../models/layout-type";
+import styled from "styled-components";
+import CollectionLayout from "./collection-layout";
 
 const BookmarksContainer = (props: PropTypes) => {
   const {
@@ -13,6 +16,7 @@ const BookmarksContainer = (props: PropTypes) => {
     onAddBookmarkButtonClick,
     onBookmarksUpdate,
     onCollectionsUpdate,
+    layoutType,
   } = props;
 
   const [ draggingItemId, setDraggingItemId] = useState<string | null>(null);
@@ -75,7 +79,7 @@ const BookmarksContainer = (props: PropTypes) => {
   };
 
   return (
-    <div>
+    <CollectionLayout layoutType={layoutType}>
       {
         collectionsOrder.map((collectionId, index: number) => {
           const collection: Collection = collections[collectionId];
@@ -93,11 +97,12 @@ const BookmarksContainer = (props: PropTypes) => {
               collectionIndex={index}
               setDraggableItem={setDraggingItemId}
               draggableItemId={draggingItemId}
+              layoutType={layoutType}
             />
           );
         })
       }
-    </div>
+    </CollectionLayout>
   )
 };
 
@@ -110,4 +115,5 @@ type PropTypes = {
   onAddBookmarkButtonClick: (id: string) => void
   onBookmarksUpdate: (items: Bookmarks) => void
   onCollectionsUpdate: (items: Collections) => void
+  layoutType: LayoutType
 }

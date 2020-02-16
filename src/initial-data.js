@@ -18,6 +18,24 @@ export default {
       description: "My favorite recipes",
       bookmarksIds: ["b9832cc7-0182-494f-ba65-60b42e8ff8cf"]
     },
+    "1f937618-f994-44ad-aaf8-fed3207d1b7e": {
+      id: "1f937618-f994-44ad-aaf8-fed3207d1b7e",
+      name: "Universities",
+      description: "Universities",
+      bookmarksIds: ["3bdd8ecd-9611-43bb-b82b-2ae19c18e39b", "8922394c-763d-40b2-b8c1-d73d3c6eb8e7"]
+    },
+    "a3b56e9a-39f7-468e-9385-665479d19ea0": {
+      id: "a3b56e9a-39f7-468e-9385-665479d19ea0",
+      name: "Videos",
+      description: "Videos",
+      bookmarksIds: ["bb89fd87-a577-41b1-95b9-15f569e324b0", "f2a134b8-5de6-4b58-ba66-8498d6d53454", "b7b75b76-9352-4ad0-aa0f-0c914b75b4ab"]
+    },
+    "f090cb39-0b68-4472-827a-d46530c62d19": {
+      id: "f090cb39-0b68-4472-827a-d46530c62d19",
+      name: "Music",
+      description: "Music",
+      bookmarksIds: ["255897c8-84e9-44a0-8bb5-c1fc66245f42"]
+    },
   },
   bookmarks: {
     "72edff57-636d-49ea-a925-3f2ba12bc374": {
@@ -68,7 +86,56 @@ export default {
       iconUrl: null,
       name: "Jamie Oliver",
       description: "Jamie Oliver Recipes",
-    }
+    },
+    "3bdd8ecd-9611-43bb-b82b-2ae19c18e39b": {
+      id: "3bdd8ecd-9611-43bb-b82b-2ae19c18e39b",
+      url: "https://www.jamieoliver.com",
+      iconUrl: null,
+      name: "Test 1",
+      description: "Test 1",
+    },
+    "8922394c-763d-40b2-b8c1-d73d3c6eb8e7": {
+      id: "8922394c-763d-40b2-b8c1-d73d3c6eb8e7",
+      url: "https://www.jamieoliver.com",
+      iconUrl: null,
+      name: "Test 2",
+      description: "Test 2",
+    },
+    "bb89fd87-a577-41b1-95b9-15f569e324b0": {
+      id: "bb89fd87-a577-41b1-95b9-15f569e324b0",
+      url: "https://www.jamieoliver.com",
+      iconUrl: null,
+      name: "Test 3",
+      description: "Test 3",
+    },
+    "f2a134b8-5de6-4b58-ba66-8498d6d53454": {
+      id: "f2a134b8-5de6-4b58-ba66-8498d6d53454",
+      url: "https://www.jamieoliver.com",
+      iconUrl: null,
+      name: "Test 4",
+      description: "Test 4",
+    },
+    "b7b75b76-9352-4ad0-aa0f-0c914b75b4ab": {
+      id: "b7b75b76-9352-4ad0-aa0f-0c914b75b4ab",
+      url: "https://www.jamieoliver.com",
+      iconUrl: null,
+      name: "Test 5",
+      description: "Test 5",
+    },
+    "255897c8-84e9-44a0-8bb5-c1fc66245f42": {
+      id: "255897c8-84e9-44a0-8bb5-c1fc66245f42",
+      url: "https://www.jamieoliver.com",
+      iconUrl: null,
+      name: "Test 6",
+      description: "Test 6",
+    },
   },
-  collectionsOrder: ["dc629064-20a3-42c7-bcc9-6ae3bc1a110c", "be1e1597-60c8-4e45-90fc-a781f7f43f9a", "8edb85f9-1474-4bca-8e92-d6692831347c"]
+  collectionsOrder: [
+    "dc629064-20a3-42c7-bcc9-6ae3bc1a110c",
+    "be1e1597-60c8-4e45-90fc-a781f7f43f9a",
+    "8edb85f9-1474-4bca-8e92-d6692831347c",
+    "1f937618-f994-44ad-aaf8-fed3207d1b7e",
+    "a3b56e9a-39f7-468e-9385-665479d19ea0",
+    "f090cb39-0b68-4472-827a-d46530c62d19"
+  ]
 };

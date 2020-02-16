@@ -6,7 +6,8 @@ const BookmarkCardInfo = ({
   name,
   description,
   url,
-  iconUrl
+  iconUrl,
+  layoutType
 }: PropTypes) => {
   return (
     <Wrapper>
@@ -22,6 +23,7 @@ const BookmarkCardInfo = ({
 interface PropTypes {
   name: string
   description: string
+  layoutType: string
   url?: string
   iconUrl?: string
 }
