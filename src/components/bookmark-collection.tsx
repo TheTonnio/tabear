@@ -23,19 +23,26 @@ const BookmarkCollection = ({
 
   const [ isCollapsed, toggleCollection ] = useState<boolean>(false);
 
-  // const [, drop] = useDrop({
-  //   accept: DraggableItemTypes.BOOKMARK,
-  //   hover(dragItem: DraggableBookmark) {
-  //     const { id: dragItemId, collectionId: dragItemCollectionId } = dragItem;
-  //     if (dragItemCollectionId !== id) {
-  //       // moveCard(dragItemId, -1, -1, dragItemCollectionId, id);
-  //       dragItem.collectionId = id
-  //     }
-  //   },
-  // });
+  const [, drop] = useDrop({
+    accept: DraggableItemTypes.BOOKMARK,
+    hover(source: DraggableBookmark) {
+      const destinationIndex = 0;
+      const destination = {
+        type: DraggableItemTypes.BOOKMARK,
+        id,
+        index: destinationIndex
+      };
+
+      if (source.id !== id) {
+        moveCard(source, destination, source.draggableId);
+        source.index = destinationIndex;
+        source.id = id;
+      }
+    },
+  });
 
   return (
-    <Wrapper /*ref={drop}*/>
+    <Wrapper ref={drop}>
       <BookmarkCollectionHeader
         name={name}
         description={description}

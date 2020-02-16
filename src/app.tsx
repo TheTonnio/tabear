@@ -8,13 +8,15 @@ import { Bookmark } from './models/bookmark';
 import { Collection } from './models/collection';
 import Storage from './utils/storage';
 import LocalStorage from './utils/localStorage';
-import { ENV_DEVELOPMENT } from './constants';
+import {ENV_DEVELOPMENT, LAYOUT_TYPES_CODES} from './constants';
 import styled from 'styled-components'
 import { DndProvider } from 'react-dnd'
 import Backend from 'react-dnd-html5-backend'
 import initialState from './initial-data';
-import {Bookmarks} from "./models/bookmarks";
-import {Collections} from "./models/collections";
+import { Bookmarks } from "./models/bookmarks";
+import { Collections } from "./models/collections";
+import TopBar from "./components/top-bar/top-bar";
+import {LayoutType} from "./models/layout-type";
 
 const AppWrapper = styled.div`
   height: 100vh;
@@ -37,6 +39,7 @@ class App extends React.Component<undefined, StateTypes> {
       collectionsOrder: [],
       selectedCollectionId: null,
       isAddCollectionFormShown: false,
+      layoutType: LAYOUT_TYPES_CODES.Grid
     };
 
     this.onAddBookmark = this.onAddBookmark.bind(this);
@@ -45,6 +48,7 @@ class App extends React.Component<undefined, StateTypes> {
     this.onCreateCollectionButtonClick = this.onCreateCollectionButtonClick.bind(this);
     this.setBookmarks = this.setBookmarks.bind(this);
     this.setCollections = this.setCollections.bind(this);
+    this.setLayoutType = this.setLayoutType.bind(this);
   }
 
   async componentDidMount(): Promise<void> {
@@ -88,7 +92,7 @@ class App extends React.Component<undefined, StateTypes> {
   }
 
   setCollections(collections: Collections): void {
-    // this.storage.saveData('collections', collections);
+    this.storage.saveData('collections', collections);
 
     this.setState({
       collections: collections,
@@ -116,6 +120,10 @@ class App extends React.Component<undefined, StateTypes> {
     this.setState({ isAddCollectionFormShown: true });
   }
 
+  setLayoutType(layoutType: LayoutType) {
+    this.setState({ layoutType });
+  }
+
   render() {
     const {
       bookmarks,
@@ -123,11 +131,14 @@ class App extends React.Component<undefined, StateTypes> {
       collectionsOrder,
       selectedCollectionId,
       isAddCollectionFormShown,
+      layoutType,
     } = this.state;
 
     return (
       <DndProvider backend={Backend}>
         <AppWrapper>
+          <TopBar setLayoutType={this.setLayoutType}/>
+
           <button type="button" onClick={this.onCreateCollectionButtonClick}>Create Collection +</button>
           {
             isAddCollectionFormShown && (
@@ -173,4 +184,5 @@ type StateTypes = {
   collectionsOrder: string[]
   selectedCollectionId: string | null
   isAddCollectionFormShown: boolean
+  layoutType: LayoutType
 }

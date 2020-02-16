@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import BookmarkCollection from './bookmark-collection';
 import { Bookmark } from '../models/bookmark';
 import { Collection } from '../models/collection';
-import update from "immutability-helper";
 import {Bookmarks} from "../models/bookmarks";
 import {Collections} from "../models/collections";
 
@@ -52,8 +51,6 @@ const BookmarksContainer = (props: PropTypes) => {
 
       return;
     }
-
-    console.log(1);
 
     const startBookmarkIds = Array.from(start.bookmarksIds);
     startBookmarkIds.splice(source.index, 1);

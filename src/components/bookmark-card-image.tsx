@@ -26,6 +26,7 @@ const Image = styled.div`
   height: 30px;
   background-image: url("${(props: { iconUrl: string }) => props.iconUrl}");
   background-size: cover;
+  background-repeat: no-repeat;
 `;
 
 export default BookmarkCardImage;

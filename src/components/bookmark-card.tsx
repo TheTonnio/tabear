@@ -40,10 +40,6 @@ const BookmarkCard = ({
       if (!ref.current) {
         return
       }
-      //
-      // if (source.index === index) {
-      //   return
-      // }
 
       const destination = {
         type: DraggableItemTypes.BOOKMARK,
