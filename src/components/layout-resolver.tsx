@@ -2,9 +2,9 @@ import React from 'react';
 import { LayoutType } from "../models/layout-type";
 import styled from "styled-components";
 import {MIN_CARD_WIDTH, LAYOUT_TYPES_CODES, LIST_GAP} from "../constants";
-import MasonryLayout from "./masonry-layout";
+import MasonryLayout from "./lists-masonry/lists-wrapper";
 
-class CollectionLayout extends React.Component<PropTypes, StateTypes> {
+class LayoutResolver extends React.Component<PropTypes, StateTypes> {
   gridRef: any;
 
   constructor(props: any) {
@@ -57,4 +57,4 @@ type StateTypes = {
   height: number
 }
 
-export default CollectionLayout;
+export default LayoutResolver;

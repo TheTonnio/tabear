@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from "styled-components";
 
-const MasonryLayout = ({ children, columns, gap }: PropTypes) => {
+const ListsWrapper = ({ children, columns, gap }: PropTypes) => {
   const colsNumber = columns > 1 ? columns - 1 : 1;
   const layout = getMasonryLayout(children, colsNumber, gap);
   return (
@@ -51,4 +51,4 @@ type PropTypes = {
   children: any
 }
 
-export default MasonryLayout;
+export default ListsWrapper;

@@ -41,7 +41,7 @@ class App extends React.Component<undefined, StateTypes> {
       collectionsOrder: [],
       selectedCollectionId: null,
       isAddCollectionFormShown: false,
-      layoutType: LAYOUT_TYPES_CODES.List
+      layoutType: LAYOUT_TYPES_CODES.Grid
     };
 
     this.onAddBookmark = this.onAddBookmark.bind(this);

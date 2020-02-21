@@ -2,7 +2,7 @@ import React from 'react';
 import styled from "styled-components";
 
 
-const BookmarkCardImage = ({ url, iconUrl}: PropTypes) => {
+const CardImage = ({ url, iconUrl}: PropTypes) => {
   return (
     <ImageWrapper>
       <Image iconUrl={iconUrl || `${url}/favicon.ico`}/>
@@ -24,9 +24,12 @@ const ImageWrapper = styled.div`
 const Image = styled.div`
   width: 30px;
   height: 30px;
+  padding: 10px;
   background-image: url("${(props: { iconUrl: string }) => props.iconUrl}");
-  background-size: cover;
+  background-size: 90%;
+  background-position: center;
   background-repeat: no-repeat;
+  border-radius: 5px;
 `;
 
-export default BookmarkCardImage;
+export default CardImage;

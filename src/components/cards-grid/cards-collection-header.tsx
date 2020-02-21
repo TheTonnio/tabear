@@ -1,16 +1,27 @@
 import React, { Dispatch } from 'react';
 import styled from "styled-components";
-import { PrimaryCard } from "../shared/styles/primary-card";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
 
-const BookmarkCollectionHeader = ({ name, description, isCollapsed, toggleCollection }: PropTypes) => {
+const CardsCollectionHeader = ({
+  name,
+  description,
+  isCollapsed,
+  toggleCollection,
+  disabled,
+}: PropTypes) => {
   return (
     <Header>
       <Title>{name}</Title>
       <Description>{description}</Description>
-      <CollapseButton onClick={toggleCollection}>
-        <Icon icon={faAngleDown}/>
+      <CollapseButton
+        onClick={toggleCollection}
+        disabled={disabled}
+      >
+        <Icon
+          icon={faAngleDown}
+          isCollapsed={isCollapsed}
+        />
       </CollapseButton>
     </Header>
   );
@@ -21,14 +32,15 @@ interface PropTypes {
   description: string
   isCollapsed: boolean
   toggleCollection: () => void
+  disabled: boolean
 }
 
-const Header = styled(PrimaryCard)`
+const Header = styled.div`
   display: flex;
   align-items: center;
   width: 100%;
-  padding: 7px 12px;
-  margin: 0 auto 20px;
+  padding: 0;
+  margin: 0 auto 0;
 `;
 
 const Title = styled.span`
@@ -36,43 +48,52 @@ const Title = styled.span`
   padding-right: 10px;
   font-size: 18px;
   font-weight: bold;
+  color: #0F93FE;
   
   &::after {
   content: '';
     position: absolute;
     top: 0;
     right: 0;
-    background: #3c78bf;
-    width: 1px;
+    background: #0F93FE;
+    width: 2px;
+    border-radius: 2px;
     height: 100%;
   }
 `;
 
 const Description = styled.span`
-  margin-top: -1px;
-  padding-left: 10px;
-  color: #3c78bf;
+  margin-top: 2px;
+  padding-left: 7px;
+  color: #6784A3;
+  font-weight: 500;
 `;
 
 const CollapseButton = styled.button`
   width: 25px;
   height: 25px;
+  margin-top: -6px;
   margin-left: auto;
-  background: #f5f4f9;
   border: 0;
   border-radius: 5px;
   cursor: pointer;
-  box-shadow: 0 0 3px rgba(0, 0, 0, .2);
   transition: transform .3s, opacity .3s;
-  color: #3c78bf;
+  color: #6784A3;
+  font-size: 25px;
 
   &:hover {
-  opacity: .7;
+    opacity: .7;
+  }
+  
+  &:disabled {
+    cursor: default;
+    opacity: .5;
   }
 `;
 
 const Icon = styled(FontAwesomeIcon)`
+  transform: ${({ isCollapsed }: { isCollapsed: boolean }) => `rotate(${isCollapsed ? 180 : 0}deg)`};
   transition: transform .3s;
 `;
 
-export default BookmarkCollectionHeader;
+export default CardsCollectionHeader;

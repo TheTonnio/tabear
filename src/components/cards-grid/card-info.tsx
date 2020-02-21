@@ -1,8 +1,8 @@
 import React from 'react';
-import BookmarkCardImage from "./bookmark-card-image";
+import CardImage from "./card-image";
 import styled from "styled-components";
 
-const BookmarkCardInfo = ({
+const CardInfo = ({
   name,
   description,
   url,
@@ -12,7 +12,7 @@ const BookmarkCardInfo = ({
   return (
     <Wrapper>
       <Header>
-        <BookmarkCardImage url={url} iconUrl={iconUrl}/>
+        <CardImage url={url} iconUrl={iconUrl}/>
         <Title>{name}</Title>
       </Header>
       <Description>{description}</Description>
@@ -33,6 +33,13 @@ const Wrapper = styled.div`
   flex-direction: column;
   justify-content: space-between;
   height: 100%;
+  border: 3px solid #e8f2fc;
+  border-radius: 5px;
+  transition: border-color .25s;
+  
+  &:hover {
+    border-color: #0F93FE
+  }
 `;
 
 const Header = styled.div`
@@ -50,7 +57,7 @@ const Description = styled.div`
   padding: 13px 0 13px 10px;
   overflow: hidden;
   box-sizing: content-box;
-  background: #F3F2F8;
+  //background: #F3F2F8;
   color: #3c78bf;
 `;
 
@@ -63,4 +70,4 @@ const Title = styled.p`
   font-weight: 600;
 `;
 
-export default BookmarkCardInfo;
+export default CardInfo;
