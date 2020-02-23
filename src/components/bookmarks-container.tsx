@@ -80,30 +80,16 @@ const BookmarksContainer = (props: PropTypes) => {
   };
 
   return (
-    <LayoutResolver layoutType={layoutType}>
-      {
-        collectionsOrder.map((collectionId, index: number) => {
-          const collection: Collection = collections[collectionId];
-          const bookmarksList: Bookmark[] = collection.bookmarksIds.map(
-            (id: string) => bookmarks[id]
-          );
-
-          return (
-            <BookmarkCollection
-              key={collectionId}
-              bookmarks={bookmarksList}
-              onAddBookmarkButtonClick={onAddBookmarkButtonClick}
-              moveCard={moveCard}
-              collection={collection}
-              collectionIndex={index}
-              setDraggableItem={setDraggingItemId}
-              draggableItemId={draggingItemId}
-              layoutType={layoutType}
-            />
-          );
-        })
-      }
-    </LayoutResolver>
+    <LayoutResolver
+      layoutType={layoutType}
+      collectionsOrder={collectionsOrder}
+      onAddBookmarkButtonClick={onAddBookmarkButtonClick}
+      moveCard={moveCard}
+      setDraggingItemId={setDraggingItemId}
+      draggingItemId={draggingItemId}
+      bookmarks={bookmarks}
+      collections={collections}
+    />
   )
 };
 

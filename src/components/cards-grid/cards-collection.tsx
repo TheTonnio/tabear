@@ -50,7 +50,6 @@ const CardsCollection = ({
               hasBookmarks ? (
                 <Grid>
                   {
-                    // @ts-ignore
                     bookmarks.map((bookmark: Bookmark, index: number) => (
                       <BookmarkCard
                         key={bookmark.id}
@@ -103,9 +102,10 @@ const Wrapper = styled.div`
 `;
 
 const InnerWrapper = styled.div`
-  max-height: ${({ isCollapsed }: { isCollapsed: boolean }) => isCollapsed ? 0 : '9999px' };
-  transition: max-height .8s cubic-bezier(0, 1, 0, 1) -.1s, margin-top .3s;
-  ${({ isCollapsed }: { isCollapsed: boolean }) => !isCollapsed ? 'transition-timing-function: cubic-bezier(0.5, 0, 1, 0);' : null };
+  // max-height: ${({ isCollapsed }: { isCollapsed: boolean }) => isCollapsed ? 0 : '9999px' };
+  // transition: max-height .8s cubic-bezier(0, 1, 0, 1) -.1s, margin-top .3s;
+  // ${({ isCollapsed }: { isCollapsed: boolean }) => !isCollapsed ? 'transition-timing-function: cubic-bezier(0.5, 0, 1, 0);' : null };
+
   overflow: hidden;
 `;
 

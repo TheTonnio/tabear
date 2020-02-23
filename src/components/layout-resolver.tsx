@@ -1,15 +1,26 @@
 import React from 'react';
 import { LayoutType } from "../models/layout-type";
-import styled from "styled-components";
-import {MIN_CARD_WIDTH, LAYOUT_TYPES_CODES, LIST_GAP} from "../constants";
-import MasonryLayout from "./lists-masonry/lists-wrapper";
+import { LAYOUT_TYPES_CODES } from "../constants";
+import MasonryLayout from "./lists-masonry/lists-masonry";
+import { Collection } from "../models/collection";
+import { Bookmark } from "../models/bookmark";
+import BookmarkCollection from "./cards-grid/cards-collection";
+import CardsGrid from "./cards-grid/cards-grid";
 
-class LayoutResolver extends React.Component<PropTypes, StateTypes> {
-  gridRef: any;
+class LayoutResolver extends React.Component<any, StateTypes> {
+
+  private layoutComponents = {
+    masonry: MasonryLayout,
+    grid: CardsGrid
+  };
+
+  private layoutCollectionComponents = {
+    masonry: BookmarkCollection,
+    grid: BookmarkCollection
+  };
 
   constructor(props: any) {
     super(props);
-    this.gridRef = React.createRef();
     this.state = { width: 0, height: 0 };
     this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
   }
@@ -28,22 +39,48 @@ class LayoutResolver extends React.Component<PropTypes, StateTypes> {
   }
 
   render() {
-    const  { layoutType, children } = this.props;
-    const  { width } = this.state;
+    const { width } = this.state;
+    const {
+      layoutType,
+      collectionsOrder,
+      onAddBookmarkButtonClick,
+      moveCard,
+      setDraggingItemId,
+      draggingItemId,
+      bookmarks,
+      collections
+    } = this.props;
+
+    const componentName = layoutType === LAYOUT_TYPES_CODES.Grid ? 'grid' : 'masonry';
+    const Layout = this.layoutComponents[componentName];
+    const LayoutCollection = this.layoutCollectionComponents[componentName];
+
 
     return (
-      layoutType === LAYOUT_TYPES_CODES.Grid
-        ? (
-          <div>
-            {children}
-          </div>
-        ) : (
-          // @ts-ignore
-          <MasonryLayout columns={Math.ceil((width - LIST_GAP) / (MIN_CARD_WIDTH + LIST_GAP))} gap={LIST_GAP}>
-            {children}
-          </MasonryLayout>
-        )
-    );
+      <Layout
+        width={width}
+      >
+        {
+          collectionsOrder.map((collectionId: string, index: number) => {
+            const collection: Collection = collections[collectionId];
+            const bookmarksList: Bookmark[] = collection.bookmarksIds.map((id: string) => bookmarks[id]);
+            return (
+              <LayoutCollection
+                key={collectionId}
+                bookmarks={bookmarksList}
+                onAddBookmarkButtonClick={onAddBookmarkButtonClick}
+                moveCard={moveCard}
+                collection={collection}
+                collectionIndex={index}
+                setDraggableItem={setDraggingItemId}
+                draggableItemId={draggingItemId}
+                layoutType={layoutType}
+              />
+            );
+          })
+        }
+      </Layout>
+    )
   }
 }
 

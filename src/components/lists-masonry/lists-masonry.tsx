@@ -1,8 +1,12 @@
 import React from 'react';
 import styled from "styled-components";
+import {LIST_GAP, MIN_CARD_WIDTH} from "../../constants";
 
-const ListsWrapper = ({ children, columns, gap }: PropTypes) => {
+const ListsMasonry = ({ children, width }: any) => {
+  const columns = Math.ceil((width - LIST_GAP) / (MIN_CARD_WIDTH + LIST_GAP));
   const colsNumber = columns > 1 ? columns - 1 : 1;
+  const gap = LIST_GAP;
+
   const layout = getMasonryLayout(children, colsNumber, gap);
   return (
     <Wrapper>
@@ -17,14 +21,15 @@ const getMasonryLayout = (children: Element[] = [], colsNumber: number = 0, gap:
   children.forEach((child: Element, index: number) => {
     const columnIndex = index % colsNumber;
     columns[columnIndex].push(
-      <Column gap={gap}>
+      <Column gap={gap} key={index}>
         {child}
       </Column>
     );
   });
 
+
   return columns.map((col: ChildrenNodes, index: number) => (
-    <ColumnWrapper gap={index ? gap : 0}>
+    <ColumnWrapper gap={index ? gap : 0} key={index}>
       {columns[index]}
     </ColumnWrapper>
   ));
@@ -51,4 +56,4 @@ type PropTypes = {
   children: any
 }
 
-export default ListsWrapper;
+export default ListsMasonry;
