@@ -1,8 +1,8 @@
 // @ts-nocheck
-import React, { Dispatch, useRef, useContext } from 'react'
+import React, { Dispatch, useContext } from 'react'
 import styled from "styled-components";
 import { PrimaryCard } from "../../shared/styles/primary-card";
-import {DraggableItemTypes} from "../../constants";
+import { DraggableItemTypes } from "../../constants";
 import { Bookmark } from "../models/bookmark";
 import CardInfo from "./card-info";
 import { LayoutTypeContext } from '../../store/layout-type-context'
@@ -17,12 +17,13 @@ const Card = ({
     id
   },
   index,
-  isDragging,
+  draggableItemId,
   moveCard,
-  setDraggableItem,
+  setDraggingItemId,
   collectionId
 }: PropTypes) => {
 
+  const isDragging = draggableItemId === id;
   const dragSource = {
       type: DraggableItemTypes.BOOKMARK,
       id: collectionId,
@@ -42,13 +43,11 @@ const Card = ({
       dragSource={dragSource}
       dropDestination={dropDestination}
       moveCard={moveCard}
-      setDraggableItem={setDraggableItem}
+      setDraggingItemId={setDraggingItemId}
     >
       <CardWrapper
         href={url}
-
         as="a"
-        visible={!isDragging}
       >
         <CardInfo
           layoutType={layoutType}
@@ -56,6 +55,8 @@ const Card = ({
           description={description}
           url={url}
           iconUrl={iconUrl}
+          draggableItemId={draggableItemId}
+          isDragging={isDragging}
         />
       </CardWrapper>
     </DnDDragDropProvider>
@@ -68,33 +69,12 @@ type PropTypes = {
   bookmark: Bookmark
   index: number
   collectionId: string
-  isDragging: boolean
-  setDraggableItem: Dispatch<string | null>
+  draggableItemId?: string | null
+  setDraggingItemId: Dispatch<string | null>
   moveCard: (source: any, destination: any, draggableId: string) => void
 }
 
 const CardWrapper = styled(PrimaryCard)`
   overflow: hidden;
   text-decoration: none;
-  opacity: ${(props: { visible: boolean }) => props.visible ? 1 : .4};
 `;
-
-const ListItemWrapper = styled.div`
-  overflow: hidden;
-  text-decoration: none;
-  opacity: ${(props: { visible: boolean }) => props.visible ? 1 : .4};
-  background: #FFFFFF;
-  border-radius: 5px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, .2);
-  cursor: pointer;
-`;
-
-
-const ListItemImage = styled.div`
-  width: 30px;
-  height: 30px;
-  background-image: url("${(props: { iconUrl: string }) => props.iconUrl}");
-  background-size: cover;
-  background-repeat: no-repeat;
-`;
-

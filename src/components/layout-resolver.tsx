@@ -72,7 +72,7 @@ class LayoutResolver extends React.Component<any, StateTypes> {
                 moveCard={moveCard}
                 collection={collection}
                 collectionIndex={index}
-                setDraggableItem={setDraggingItemId}
+                setDraggingItemId={setDraggingItemId}
                 draggableItemId={draggingItemId}
                 layoutType={layoutType}
               />

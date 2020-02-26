@@ -7,10 +7,16 @@ const CardInfo = ({
   description,
   url,
   iconUrl,
-  layoutType
+  layoutType,
+  isDragging,
+  draggableItemId,
 }: PropTypes) => {
   return (
-    <Wrapper>
+    <Wrapper
+  // @ts-ignore
+      isOutlined={!!draggableItemId}
+      isDragging={isDragging}
+    >
       <Header>
         <CardImage url={url} iconUrl={iconUrl}/>
         <Title>{name}</Title>
@@ -26,6 +32,8 @@ interface PropTypes {
   layoutType: string
   url?: string
   iconUrl?: string
+  isDragging: boolean
+  draggableItemId?: string | null
 }
 
 const Wrapper = styled.div`
@@ -36,9 +44,12 @@ const Wrapper = styled.div`
   border: 3px solid #e8f2fc;
   border-radius: 5px;
   transition: border-color .25s;
+  opacity: ${(props: { isDragging: boolean }) => !props.isDragging ? 1 : .4};
+  overflow: hidden;
   
+  }
   &:hover {
-    border-color: #0F93FE
+    border-color: ${(props: any) => props.isOutlined ? "#e8f2fc" : "#0F93FE"}
   }
 `;
 
@@ -57,7 +68,6 @@ const Description = styled.div`
   padding: 13px 0 13px 10px;
   overflow: hidden;
   box-sizing: content-box;
-  //background: #F3F2F8;
   color: #3c78bf;
 `;
 

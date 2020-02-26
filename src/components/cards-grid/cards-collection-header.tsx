@@ -6,7 +6,7 @@ import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
 const CardsCollectionHeader = ({
   name,
   description,
-  isCollapsed,
+  isCollectionCollapsed,
   toggleCollection,
   disabled,
 }: PropTypes) => {
@@ -17,10 +17,10 @@ const CardsCollectionHeader = ({
       <CollapseButton
         onClick={toggleCollection}
         disabled={disabled}
+        isCollectionCollapsed={isCollectionCollapsed}
       >
-        <Icon
+        <FontAwesomeIcon
           icon={faAngleDown}
-          isCollapsed={isCollapsed}
         />
       </CollapseButton>
     </Header>
@@ -30,7 +30,7 @@ const CardsCollectionHeader = ({
 interface PropTypes {
   name: string
   description: string
-  isCollapsed: boolean
+  isCollectionCollapsed: boolean
   toggleCollection: () => void
   disabled: boolean
 }
@@ -70,8 +70,6 @@ const Description = styled.span`
 `;
 
 const CollapseButton = styled.button`
-  width: 25px;
-  height: 25px;
   margin-top: -6px;
   margin-left: auto;
   border: 0;
@@ -80,7 +78,8 @@ const CollapseButton = styled.button`
   transition: transform .3s, opacity .3s;
   color: #6784A3;
   font-size: 25px;
-
+  transform: ${({ isCollectionCollapsed }: { isCollectionCollapsed: boolean }) => `rotate(${isCollectionCollapsed ? 180 : 0}deg)`};
+  
   &:hover {
     opacity: .7;
   }
@@ -89,11 +88,6 @@ const CollapseButton = styled.button`
     cursor: default;
     opacity: .5;
   }
-`;
-
-const Icon = styled(FontAwesomeIcon)`
-  transform: ${({ isCollapsed }: { isCollapsed: boolean }) => `rotate(${isCollapsed ? 180 : 0}deg)`};
-  transition: transform .3s;
 `;
 
 export default CardsCollectionHeader;

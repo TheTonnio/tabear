@@ -4,7 +4,7 @@ import { DraggableItemTypes } from "../../constants";
 
 const DragDropProvider = ({
   dragSource,
-  setDraggableItem,
+  setDraggingItemId,
   dropDestination,
   moveCard,
   children
@@ -17,8 +17,8 @@ const DragDropProvider = ({
       index: dragSource.index,
       draggableId: dragSource.draggableId,
     },
-    begin: () => setDraggableItem(dragSource.id),
-    end: () => setDraggableItem(null)
+    begin: () => setDraggingItemId(dragSource.draggableId),
+    end: () => setDraggingItemId(null)
   });
 
   const [, drop] = useDrop({

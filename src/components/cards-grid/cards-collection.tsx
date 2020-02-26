@@ -2,7 +2,7 @@ import React, { Dispatch, useState } from 'react';
 import { Bookmark } from '../../models/bookmark';
 import { Collection } from '../../models/collection';
 import styled from "styled-components";
-import BookmarkCard from "./card";
+import Card from "./card";
 import { DraggableItemTypes } from "../../constants";
 import CardsCollectionHeader from "./cards-collection-header";
 import { LayoutType } from "../../models/layout-type";
@@ -14,7 +14,7 @@ const CardsCollection = ({
   collection,
   onAddBookmarkButtonClick,
   moveCard,
-  setDraggableItem,
+  setDraggingItemId,
   draggableItemId,
   layoutType,
 }: PropTypes) => {
@@ -22,7 +22,7 @@ const CardsCollection = ({
     id, name, description,
   } = collection;
 
-  const [ isCollapsed, toggleCollection ] = useState<boolean>(false);
+  const [ isCollectionCollapsed, toggleCollection ] = useState<boolean>(false);
   const hasBookmarks = !!bookmarks.length;
   const destination = {
     type: DraggableItemTypes.BOOKMARK,
@@ -41,24 +41,24 @@ const CardsCollection = ({
             <CardsCollectionHeader
               name={name}
               description={description}
-              isCollapsed={isCollapsed}
+              isCollectionCollapsed={isCollectionCollapsed}
               disabled={!hasBookmarks}
-              toggleCollection={() => toggleCollection(!isCollapsed)}
+              toggleCollection={() => toggleCollection(!isCollectionCollapsed)}
             />
-          <InnerWrapper isCollapsed={isCollapsed}>
+          <InnerWrapper>
             {
               hasBookmarks ? (
                 <Grid>
                   {
                     bookmarks.map((bookmark: Bookmark, index: number) => (
-                      <BookmarkCard
+                      <Card
                         key={bookmark.id}
                         index={index}
                         collectionId={id}
                         bookmark={bookmark}
-                        isDragging={bookmark.id === draggableItemId}
+                        draggableItemId={draggableItemId}
                         moveCard={moveCard}
-                        setDraggableItem={setDraggableItem}
+                        setDraggingItemId={setDraggingItemId}
                       />
                     ))
                   }
@@ -82,7 +82,7 @@ type PropTypes = {
   collectionIndex: number
   draggableItemId: string | null
   onAddBookmarkButtonClick: (id: string) => void
-  setDraggableItem: Dispatch<string | null>
+  setDraggingItemId: Dispatch<string | null>
   layoutType: LayoutType
   moveCard: (source: any, destination: any, draggableId: string) => void
 }
@@ -102,9 +102,6 @@ const Wrapper = styled.div`
 `;
 
 const InnerWrapper = styled.div`
-  // max-height: ${({ isCollapsed }: { isCollapsed: boolean }) => isCollapsed ? 0 : '9999px' };
-  // transition: max-height .8s cubic-bezier(0, 1, 0, 1) -.1s, margin-top .3s;
-  // ${({ isCollapsed }: { isCollapsed: boolean }) => !isCollapsed ? 'transition-timing-function: cubic-bezier(0.5, 0, 1, 0);' : null };
 
   overflow: hidden;
 `;
