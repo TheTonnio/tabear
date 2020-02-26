@@ -1,13 +1,21 @@
-import React, { Dispatch, useState } from 'react';
+import React, {Dispatch, useContext, useState} from 'react';
 import { Bookmark } from '../../models/bookmark';
 import { Collection } from '../../models/collection';
 import styled from "styled-components";
 import Card from "./card";
-import { DraggableItemTypes } from "../../constants";
+import {
+  CARD_GAP,
+  CARD_HEIGHT,
+  COLLECTION_BOTTOM_MARGIN,
+  COLLECTION_TOP_MARGIN,
+  DraggableItemTypes
+} from "../../constants";
 import CardsCollectionHeader from "./cards-collection-header";
 import { LayoutType } from "../../models/layout-type";
 import DropWrapper from "../dnd/drop-wrapper";
 import CardsPlaceholder from "./cards-placeholder";
+import {LayoutTypeContext} from "../../store/layout-type-context";
+import {LayoutConfigContext} from "../../store/layout-config-context";
 
 const CardsCollection = ({
   bookmarks,
@@ -22,7 +30,10 @@ const CardsCollection = ({
     id, name, description,
   } = collection;
 
+  const { maxItemsPerRow } = useContext(LayoutConfigContext);
+  const rows = Math.ceil(bookmarks.length / maxItemsPerRow);
   const [ isCollectionCollapsed, toggleCollection ] = useState<boolean>(false);
+  const maxCollectionHeight = isCollectionCollapsed ? 0 : ((CARD_HEIGHT + CARD_GAP + COLLECTION_TOP_MARGIN + COLLECTION_BOTTOM_MARGIN) * rows - CARD_GAP);
   const hasBookmarks = !!bookmarks.length;
   const destination = {
     type: DraggableItemTypes.BOOKMARK,
@@ -45,7 +56,10 @@ const CardsCollection = ({
               disabled={!hasBookmarks}
               toggleCollection={() => toggleCollection(!isCollectionCollapsed)}
             />
-          <InnerWrapper>
+          <InnerWrapper
+            // @ts-ignore
+            maxCollectionHeight={maxCollectionHeight}
+          >
             {
               hasBookmarks ? (
                 <Grid>
@@ -102,8 +116,9 @@ const Wrapper = styled.div`
 `;
 
 const InnerWrapper = styled.div`
-
   overflow: hidden;
+  max-height: ${(props: any) => props.maxCollectionHeight}px;
+  transition: max-height .3s;
 `;
 
 const Grid = styled.div`
