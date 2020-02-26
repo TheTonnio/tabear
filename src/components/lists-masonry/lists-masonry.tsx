@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from "styled-components";
-import {LIST_GAP, MIN_CARD_WIDTH} from "../../constants";
+import {LIST_GAP, CARD_WIDTH } from "../../constants";
 
 const ListsMasonry = ({ children, width }: any) => {
-  const columns = Math.ceil((width - LIST_GAP) / (MIN_CARD_WIDTH + LIST_GAP));
+  const columns = Math.ceil((width - LIST_GAP) / (CARD_WIDTH + LIST_GAP));
   const colsNumber = columns > 1 ? columns - 1 : 1;
   const gap = LIST_GAP;
 

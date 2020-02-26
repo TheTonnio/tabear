@@ -12,5 +12,9 @@ export const LAYOUT_TYPES_CODES: { [key: string]: LayoutType } = {
   List: 'list'
 };
 
-export const MIN_CARD_WIDTH = 230;
 export const LIST_GAP = 20;
+export const CONTAINER_MARGIN = 30;
+export const WRAPPER_MARGIN = 21;
+export const CARD_WIDTH = 230;
+export const CARD_GAP = 20;
+

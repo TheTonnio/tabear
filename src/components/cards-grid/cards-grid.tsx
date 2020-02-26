@@ -1,5 +1,5 @@
 import React from 'react';
-import {LIST_GAP, MIN_CARD_WIDTH} from "../../constants";
+import {CARD_WIDTH, CONTAINER_MARGIN, LIST_GAP, WRAPPER_MARGIN} from "../../constants";
 
 const CardsGrid = (props: any) => {
   const {
@@ -7,7 +7,8 @@ const CardsGrid = (props: any) => {
     width,
   } = props;
 
-  const itemsPerRow = Math.ceil((width - LIST_GAP) / (MIN_CARD_WIDTH + LIST_GAP));
+  const itemsPerRow = Math.ceil((width + LIST_GAP - (WRAPPER_MARGIN * 2) - (CONTAINER_MARGIN * 2)) / (CARD_WIDTH + LIST_GAP)) - 1;
+
   return (
     <div>
       {
