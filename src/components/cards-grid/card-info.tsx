@@ -2,20 +2,20 @@ import React from 'react';
 import CardImage from "./card-image";
 import styled from "styled-components";
 
-const CardInfo = ({
-  name,
-  description,
-  url,
-  iconUrl,
-  layoutType,
-  isDragging,
-  draggableItemId,
-}: PropTypes) => {
+const CardInfo = (props: PropTypes) => {
+  const {
+    name,
+    description,
+    url,
+    iconUrl,
+    isDragging,
+    draggableItemId,
+  } = props;
+
   return (
     <Wrapper
-  // @ts-ignore
-      isOutlined={!!draggableItemId}
       isDragging={isDragging}
+      isOutlined={!!draggableItemId}
     >
       <Header>
         <CardImage url={url} iconUrl={iconUrl}/>
@@ -29,27 +29,31 @@ const CardInfo = ({
 interface PropTypes {
   name: string
   description: string
-  layoutType: string
   url?: string
   iconUrl?: string
   isDragging: boolean
   draggableItemId?: string | null
 }
 
+interface WrapperPropTypes {
+  isDragging: boolean
+  isOutlined: boolean
+}
+
 const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 100%;
-  border: 3px solid #e8f2fc;
-  border-radius: 5px;
-  transition: border-color .25s;
-  opacity: ${(props: { isDragging: boolean }) => !props.isDragging ? 1 : .4};
-  overflow: hidden;
-  
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    border: 3px solid #e8f2fc;
+    border-radius: 5px;
+    transition: border-color .25s;
+    opacity: ${({ isDragging }: WrapperPropTypes) => !isDragging ? 1 : .4};
+    overflow: hidden;
   }
+  
   &:hover {
-    border-color: ${(props: any) => props.isOutlined ? "#e8f2fc" : "#0F93FE"}
+    border-color: ${({ isOutlined }: WrapperPropTypes) => isOutlined ? "#e8f2fc" : "#0F93FE"}
   }
 `;
 

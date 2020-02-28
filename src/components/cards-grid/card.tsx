@@ -7,37 +7,27 @@ import { Bookmark } from "../models/bookmark";
 import CardInfo from "./card-info";
 import { LayoutTypeContext } from '../../store/layout-type-context'
 import DnDDragDropProvider from "../dnd/drag-drop-wrapper";
+import { DnDSource } from "../../models/dnd-source";
 
-const Card = ({
-  bookmark: {
-    url,
-    iconUrl,
-    name,
-    description,
-    id
-  },
-  index,
-  draggableItemId,
-  moveCard,
-  setDraggingItemId,
-  collectionId
-}: PropTypes) => {
-
-  const isDragging = draggableItemId === id;
-  const dragSource = {
-      type: DraggableItemTypes.BOOKMARK,
-      id: collectionId,
-      index,
-      draggableId: id,
-    };
-
-  const dropDestination = {
-    type: DraggableItemTypes.BOOKMARK,
-    id: collectionId,
-    index
-  };
+const Card = (props : PropTypes) => {
+  const { bookmark, index, draggableItemId, moveCard, setDraggingItemId, collectionId } = props;
+  const { url, iconUrl, name, description, id } = bookmark;
 
   const layoutType = useContext(LayoutTypeContext);
+
+  const isDragging = draggableItemId === id;
+  const dragSource: DnDSource = {
+    type: DraggableItemTypes.BOOKMARK,
+    id: collectionId,
+    index,
+    draggableId: id,
+  };
+  const dropDestination: DndDestination = {
+    type: DraggableItemTypes.BOOKMARK,
+    id: collectionId,
+    index,
+  };
+
   return (
     <DnDDragDropProvider
       dragSource={dragSource}

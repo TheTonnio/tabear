@@ -1,13 +1,9 @@
 import React, { useState } from 'react';
-import BookmarkCollection from './cards-grid/cards-collection';
-import { Bookmark } from '../models/bookmark';
-import { Collection } from '../models/collection';
-import {Bookmarks} from "../models/bookmarks";
-import {Collections} from "../models/collections";
-import {LayoutType} from "../models/layout-type";
-import styled from "styled-components";
+import { Bookmarks } from "../models/bookmarks";
+import { Collections } from "../models/collections";
+import { LayoutType } from "../models/layout-type";
 import LayoutResolver from "./layout-resolver";
-import {LAYOUT_TYPES_CODES} from "../constants";
+import { LAYOUT_TYPES_CODES } from "../constants";
 
 const BookmarksContainer = (props: PropTypes) => {
   const {
@@ -15,12 +11,10 @@ const BookmarksContainer = (props: PropTypes) => {
     collections,
     collectionsOrder,
     onAddBookmarkButtonClick,
-    onBookmarksUpdate,
     onCollectionsUpdate,
     layoutType,
   } = props;
 
-  const layoutComponentName = getLayoutComponentName(layoutType);
   const [ draggingItemId, setDraggingItemId] = useState<string | null>(null);
   const setCards = (updatedCollections: Collections) => onCollectionsUpdate(updatedCollections);
   const moveCard = (source: any, destination: any, draggableId: string) => {
@@ -94,15 +88,6 @@ const BookmarksContainer = (props: PropTypes) => {
 };
 
 export default BookmarksContainer;
-
-function getLayoutComponentName(layoutName: string) {
-  switch (layoutName) {
-    case LAYOUT_TYPES_CODES.List:
-      return "cards-grid/cards-grid";
-    case LAYOUT_TYPES_CODES.Grid:
-      return "cards-grid/cards-grid";
-  }
-};
 
 type PropTypes = {
   bookmarks: Bookmarks

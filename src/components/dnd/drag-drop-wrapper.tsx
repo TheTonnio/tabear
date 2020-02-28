@@ -1,15 +1,14 @@
 import React, { useRef } from 'react';
 import { useDrag, useDrop } from "react-dnd";
 import { DraggableItemTypes } from "../../constants";
+import {DnDSource} from "../../models/dnd-source";
+import {DnDDestination} from "../../models/dnd-destination";
 
-const DragDropProvider = ({
-  dragSource,
-  setDraggingItemId,
-  dropDestination,
-  moveCard,
-  children
-}: any) => {
+const DragDropProvider = (props: PropTypes) => {
+  const { dragSource, setDraggingItemId, dropDestination, moveCard, children } = props;
+
   const ref = useRef<HTMLDivElement>(null);
+
   const [, drag] = useDrag({
     item: {
       type: dragSource.type,
@@ -35,6 +34,7 @@ const DragDropProvider = ({
   });
 
   drag(drop(ref));
+
   return (
     <div ref={ref}>
       {children}
@@ -43,3 +43,11 @@ const DragDropProvider = ({
 };
 
 export default DragDropProvider;
+
+interface PropTypes {
+  children: JSX.Element[]
+  dragSource: DnDSource
+  dropDestination: DnDDestination
+  setDraggingItemId: (id: string | null) => void
+  moveCard: (source: any, destination: any, draggableId: string) => void
+}

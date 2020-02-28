@@ -3,6 +3,12 @@ import { Bookmark } from '../../models/bookmark';
 import { Collection } from '../../models/collection';
 import styled from "styled-components";
 import Card from "./card";
+import CardsCollectionHeader from "./cards-collection-header";
+import { LayoutType } from "../../models/layout-type";
+import DropWrapper from "../dnd/drop-wrapper";
+import CardsPlaceholder from "./cards-placeholder";
+import { LayoutConfigContext } from "../../store/layout-config-context";
+import { DnDDestination } from "../../models/dnd-destination";
 import {
   CARD_GAP,
   CARD_HEIGHT,
@@ -10,32 +16,21 @@ import {
   COLLECTION_TOP_MARGIN,
   DraggableItemTypes
 } from "../../constants";
-import CardsCollectionHeader from "./cards-collection-header";
-import { LayoutType } from "../../models/layout-type";
-import DropWrapper from "../dnd/drop-wrapper";
-import CardsPlaceholder from "./cards-placeholder";
-import {LayoutTypeContext} from "../../store/layout-type-context";
-import {LayoutConfigContext} from "../../store/layout-config-context";
+import { getMaxGridCollectionHeight } from "../../utils/get-max-grid-collection-height";
 
-const CardsCollection = ({
-  bookmarks,
-  collection,
-  onAddBookmarkButtonClick,
-  moveCard,
-  setDraggingItemId,
-  draggableItemId,
-  layoutType,
-}: PropTypes) => {
-  const {
-    id, name, description,
-  } = collection;
+const CardsCollection = (props: PropTypes) => {
+  const { bookmarks, collection, moveCard, setDraggingItemId, draggableItemId } = props;
+  const { id, name, description } = collection;
 
   const { maxItemsPerRow } = useContext(LayoutConfigContext);
-  const rows = Math.ceil(bookmarks.length / maxItemsPerRow);
   const [ isCollectionCollapsed, toggleCollection ] = useState<boolean>(false);
-  const maxCollectionHeight = isCollectionCollapsed ? 0 : ((CARD_HEIGHT + CARD_GAP + COLLECTION_TOP_MARGIN + COLLECTION_BOTTOM_MARGIN) * rows - CARD_GAP);
+
   const hasBookmarks = !!bookmarks.length;
-  const destination = {
+
+  const rows = Math.ceil(bookmarks.length / maxItemsPerRow);
+  const maxCollectionHeight = getMaxGridCollectionHeight(isCollectionCollapsed, rows);
+
+  const destination: DnDDestination = {
     type: DraggableItemTypes.BOOKMARK,
     id,
     index: 0
@@ -57,7 +52,6 @@ const CardsCollection = ({
               toggleCollection={() => toggleCollection(!isCollectionCollapsed)}
             />
           <InnerWrapper
-            // @ts-ignore
             maxCollectionHeight={maxCollectionHeight}
           >
             {
@@ -116,9 +110,9 @@ const Wrapper = styled.div`
 `;
 
 const InnerWrapper = styled.div`
-  overflow: hidden;
-  max-height: ${(props: any) => props.maxCollectionHeight}px;
+  max-height: ${({ maxCollectionHeight }: { maxCollectionHeight: number }) => maxCollectionHeight}px;
   transition: max-height .3s;
+  overflow: hidden;
 `;
 
 const Grid = styled.div`

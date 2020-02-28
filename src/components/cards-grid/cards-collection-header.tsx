@@ -1,15 +1,11 @@
-import React, { Dispatch } from 'react';
+import React from 'react';
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
 
-const CardsCollectionHeader = ({
-  name,
-  description,
-  isCollectionCollapsed,
-  toggleCollection,
-  disabled,
-}: PropTypes) => {
+const CardsCollectionHeader = (props: PropTypes) => {
+  const { name, description, isCollectionCollapsed, toggleCollection, disabled } = props;
+
   return (
     <Header>
       <Title>{name}</Title>
