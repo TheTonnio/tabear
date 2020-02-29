@@ -21,3 +21,4 @@ export const CARD_GAP = 20;
 export const COLLECTION_TOP_MARGIN = 25;
 export const COLLECTION_BOTTOM_MARGIN = 15;
 
+export const REGEXP_INTERNAL_CHROME_PATH = /(chrome:)|(chrome-extension:)/;

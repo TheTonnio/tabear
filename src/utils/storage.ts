@@ -1,5 +1,3 @@
-/* eslint no-undef: 0 */
-
 export default class Storage {
   storageDataKey: string = 'tobear.bmdata';
 

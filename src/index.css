@@ -5,6 +5,8 @@
 
 html {
   background: #F4F7FB;
+  overflow: hidden;
+  height: 100%;
 }
 
 body {
@@ -14,6 +16,8 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  height: 100%;
+  overflow: auto;
 }
 
 code {

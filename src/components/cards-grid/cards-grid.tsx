@@ -1,6 +1,7 @@
 import React from 'react';
 import { CARD_WIDTH, CONTAINER_MARGIN, LIST_GAP, WRAPPER_MARGIN } from "../../constants";
 import { LayoutConfigContext } from '../../store/layout-config-context';
+import styled from "styled-components";
 
 const CardsGrid = (props: PropTypes) => {
   const {
@@ -12,15 +13,22 @@ const CardsGrid = (props: PropTypes) => {
   const layoutConfig = { maxItemsPerRow };
 
   return (
-    <LayoutConfigContext.Provider value={layoutConfig}>
-      {
-        children
-      }
-    </LayoutConfigContext.Provider>
+    <Grid>
+      <LayoutConfigContext.Provider value={layoutConfig}>
+        {
+          children
+        }
+      </LayoutConfigContext.Provider>
+    </Grid>
   );
 };
 
 export default CardsGrid;
+
+const Grid = styled.div`
+  width: 100%;
+  padding-right: 300px;
+`;
 
 type PropTypes = {
   children: JSX.Element[]
