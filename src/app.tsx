@@ -73,14 +73,14 @@ class App extends React.Component<undefined, StateTypes> {
       collectionsOrder: collectionsOrder || [],
     });
 
-    // this.storage.saveData('bookmarks', initialState.bookmarks);
-    // this.storage.saveData('collections', initialState.collections);
-    // this.storage.saveData('collectionsOrder', initialState.collectionsOrder);
+    this.storage.saveData('bookmarks', initialState.bookmarks);
+    this.storage.saveData('collections', initialState.collections);
+    this.storage.saveData('collectionsOrder', initialState.collectionsOrder);
   }
 
   onAddBookmark(newBookmark: Bookmark): void {
     const { bookmarks } = this.state;
-    const updateBookmarks = { ...bookmarks, newBookmark };
+    const updateBookmarks = { ...bookmarks, [newBookmark.id]: newBookmark };
 
     this.storage.saveData('bookmarks', updateBookmarks);
 
@@ -177,6 +177,7 @@ class App extends React.Component<undefined, StateTypes> {
                 collections={collections}
                 collectionsOrder={collectionsOrder}
                 onAddBookmarkButtonClick={this.onAddBookmarkButtonClick}
+                onAddBookmark={this.onAddBookmark}
                 onBookmarksUpdate={this.setBookmarks}
                 onCollectionsUpdate={this.setCollections}
                 layoutType={layoutType}

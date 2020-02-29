@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from "styled-components";
 import DragWrapper from "../dnd/drag-wrapper";
+import { DraggableItemTypes } from "../../constants";
+import v4 from "uuid/v4";
 type Tab = chrome.tabs.Tab;
 
 
@@ -11,7 +13,7 @@ const TabsList = (props: PropTypes) => {
     <List>
       {
         tabs.map((tabItem: Tab, index) =>
-          <DragWrapper key={index} dragSource={{ overload: tabItem, type: "Tab" }}>
+          <DragWrapper key={index} dragSource={{ overload: tabItem, type: DraggableItemTypes.TAB, index: 0, draggableId: v4(), id: undefined }}>
             <ListItem>{tabItem.title}</ListItem>
           </DragWrapper>)
       }

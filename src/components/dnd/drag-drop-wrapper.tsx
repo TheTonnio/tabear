@@ -21,7 +21,7 @@ const DragDropProvider = (props: PropTypes) => {
   });
 
   const [, drop] = useDrop({
-    accept: DraggableItemTypes.BOOKMARK,
+    accept: [DraggableItemTypes.BOOKMARK, DraggableItemTypes.TAB],
     hover(source: any) {
       if (!ref.current) {
         return

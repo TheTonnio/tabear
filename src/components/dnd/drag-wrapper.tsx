@@ -30,5 +30,4 @@ export default DragWrapper;
 interface PropTypes {
   children: JSX.Element | JSX.Element[]
   dragSource: DnDSource
-  // moveCard: (source: any, destination: any, draggableId: string) => void
 }

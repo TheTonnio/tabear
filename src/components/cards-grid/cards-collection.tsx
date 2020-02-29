@@ -9,18 +9,13 @@ import DropWrapper from "../dnd/drop-wrapper";
 import CardsPlaceholder from "./cards-placeholder";
 import { LayoutConfigContext } from "../../store/layout-config-context";
 import { DnDDestination } from "../../models/dnd-destination";
-import {
-  CARD_GAP,
-  CARD_HEIGHT,
-  COLLECTION_BOTTOM_MARGIN,
-  COLLECTION_TOP_MARGIN,
-  DraggableItemTypes
-} from "../../constants";
+import { DraggableItemTypes } from "../../constants";
 import { getMaxGridCollectionHeight } from "../../utils/get-max-grid-collection-height";
 
 const CardsCollection = (props: PropTypes) => {
   const { bookmarks, collection, moveCard, setDraggingItemId, draggingItemId } = props;
   const { id, name, description } = collection;
+  const { BOOKMARK, TAB } = DraggableItemTypes;
 
   const { maxItemsPerRow } = useContext(LayoutConfigContext);
   const [ isCollectionCollapsed, toggleCollection ] = useState<boolean>(false);
@@ -38,7 +33,7 @@ const CardsCollection = (props: PropTypes) => {
 
   return (
     <DropWrapper
-      acceptType={DraggableItemTypes.BOOKMARK}
+      acceptType={[ BOOKMARK, TAB ]}
       destination={destination}
       moveCard={moveCard}
     >
@@ -58,6 +53,7 @@ const CardsCollection = (props: PropTypes) => {
               hasBookmarks ? (
                 <Grid>
                   {
+                    // @ts-ignore
                     bookmarks.map((bookmark: Bookmark, index: number) => (
                       <Card
                         key={bookmark.id}

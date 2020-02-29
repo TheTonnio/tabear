@@ -3,7 +3,9 @@ import { Bookmarks } from "../models/bookmarks";
 import { Collections } from "../models/collections";
 import { LayoutType } from "../models/layout-type";
 import LayoutResolver from "./layout-resolver";
-import { LAYOUT_TYPES_CODES } from "../constants";
+import v4 from "uuid/v4";
+import {Bookmark} from "../models/bookmark";
+type Tab = chrome.tabs.Tab;
 
 const BookmarksContainer = (props: PropTypes) => {
   const {
@@ -11,11 +13,19 @@ const BookmarksContainer = (props: PropTypes) => {
     collections,
     collectionsOrder,
     onAddBookmarkButtonClick,
+    onAddBookmark,
     onCollectionsUpdate,
     layoutType,
   } = props;
 
   const [ draggingItemId, setDraggingItemId] = useState<string | null | undefined>(null);
+  const createBookmarkFromTab = (tab: Tab, id: string) => ({
+    id: id,
+    name: tab.title,
+    description: tab.title,
+    url: tab.url,
+    iconUrl: null
+  });
   const setCards = (updatedCollections: Collections) => onCollectionsUpdate(updatedCollections);
   const moveCard = (source: any, destination: any, draggableId: string) => {
     if (!destination) {
@@ -46,6 +56,26 @@ const BookmarksContainer = (props: PropTypes) => {
       setCards({
         ...collections,
         [newCollection.id]: newCollection
+      });
+
+      return;
+    }
+
+    // If new tab dropped in a collection
+    if (!start) {
+      const finishBookmarkIds = Array.from(finish.bookmarksIds);
+      const newBookmark = createBookmarkFromTab(source.overload, draggableId);
+      onAddBookmark(newBookmark as any);
+      finishBookmarkIds.splice(destination.index, 0, draggableId);
+
+      const newFinish = {
+        ...finish,
+        bookmarksIds: finishBookmarkIds
+      };
+
+      setCards({
+        ...collections,
+        [newFinish.id]: newFinish
       });
 
       return;
@@ -94,6 +124,7 @@ type PropTypes = {
   collections: Collections
   collectionsOrder: string[]
   onAddBookmarkButtonClick: (id: string) => void
+  onAddBookmark: (bookmark: Bookmark) => void
   onBookmarksUpdate: (items: Bookmarks) => void
   onCollectionsUpdate: (items: Collections) => void
   layoutType: LayoutType

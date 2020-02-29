@@ -1,7 +1,7 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import TabsData from '../../mock/tabs-data';
 import { TabsApi } from "../../utils/tabsApi";
-import {ENV_DEVELOPMENT, REGEXP_INTERNAL_CHROME_PATH} from "../../constants";
+import { ENV_DEVELOPMENT, REGEXP_INTERNAL_CHROME_PATH } from "../../constants";
 import styled from "styled-components";
 import TabsList from "./tabs-list";
 type Tab = chrome.tabs.Tab;
@@ -18,7 +18,8 @@ const TabsPanel = (props: PropTypes) => {
     fetchTabs();
   }, []);
 
-  const filteredTabs = tabs.filter(tab => !!tab.url && !REGEXP_INTERNAL_CHROME_PATH.test(tab.url));
+  const filteredTabs = useMemo(() =>
+    tabs.filter(tab => !!tab.url && !REGEXP_INTERNAL_CHROME_PATH.test(tab.url)), [tabs]);
 
   return (
     <Panel>
