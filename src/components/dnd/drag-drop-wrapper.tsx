@@ -48,6 +48,6 @@ interface PropTypes {
   children: JSX.Element[]
   dragSource: DnDSource
   dropDestination: DnDDestination
-  setDraggingItemId: (id: string | null) => void
+  setDraggingItemId: (id?: string | null) => void
   moveCard: (source: any, destination: any, draggableId: string) => void
 }

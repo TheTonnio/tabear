@@ -1,12 +1,9 @@
 import React, { useRef } from 'react';
-import { useDrag, useDrop } from "react-dnd";
-import { DraggableItemTypes } from "../../constants";
+import { useDrag } from "react-dnd";
 import { DnDSource } from "../../models/dnd-source";
-import { DnDDestination } from "../../models/dnd-destination";
 
-const DragDropProvider = (props: PropTypes) => {
-  const { dragSource, setDraggingItemId, dropDestination, moveCard, children } = props;
-
+const DragWrapper = (props: PropTypes) => {
+  const { dragSource, children } = props;
   const ref = useRef<HTMLDivElement>(null);
 
   const [, drag] = useDrag({
@@ -15,25 +12,11 @@ const DragDropProvider = (props: PropTypes) => {
       id: dragSource.id,
       index: dragSource.index,
       draggableId: dragSource.draggableId,
-    },
-    begin: () => setDraggingItemId(dragSource.draggableId),
-    end: () => setDraggingItemId(null)
+      overload: dragSource.overload,
+    }
   });
 
-  const [, drop] = useDrop({
-    accept: DraggableItemTypes.BOOKMARK,
-    hover(source: any) {
-      if (!ref.current) {
-        return
-      }
-
-      moveCard(source, dropDestination, source.draggableId);
-      source.index = dropDestination.index;
-      source.id = dropDestination.id;
-    },
-  });
-
-  drag(drop(ref));
+  drag(ref);
 
   return (
     <div ref={ref}>
@@ -42,12 +25,10 @@ const DragDropProvider = (props: PropTypes) => {
   );
 };
 
-export default DragDropProvider;
+export default DragWrapper;
 
 interface PropTypes {
-  children: JSX.Element[]
+  children: JSX.Element | JSX.Element[]
   dragSource: DnDSource
-  dropDestination: DnDDestination
-  setDraggingItemId: (id: string | null) => void
-  moveCard: (source: any, destination: any, draggableId: string) => void
+  // moveCard: (source: any, destination: any, draggableId: string) => void
 }

@@ -75,7 +75,7 @@ class LayoutResolver extends React.Component<PropTypes, StateTypes> {
                 collection={collection}
                 collectionIndex={index}
                 setDraggingItemId={setDraggingItemId}
-                draggableItemId={draggingItemId}
+                draggingItemId={draggingItemId}
                 layoutType={layoutType}
               />
             );
@@ -91,8 +91,8 @@ type PropTypes = {
   collectionsOrder: string[]
   onAddBookmarkButtonClick: (id: string) => void
   moveCard: (source: any, destination: any, draggableId: string) => void
-  setDraggingItemId: (id: string | null) => void
-  draggingItemId: string | null
+  setDraggingItemId: (id?: string | null) => void
+  draggingItemId?: string | null
   bookmarks: Bookmarks
   collections: Collections
 }

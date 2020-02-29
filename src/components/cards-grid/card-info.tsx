@@ -9,13 +9,13 @@ const CardInfo = (props: PropTypes) => {
     url,
     iconUrl,
     isDragging,
-    draggableItemId,
+    draggingItemId,
   } = props;
 
   return (
     <Wrapper
       isDragging={isDragging}
-      isOutlined={!!draggableItemId}
+      isOutlined={!!draggingItemId}
     >
       <Header>
         <CardImage url={url} iconUrl={iconUrl}/>
@@ -32,7 +32,7 @@ interface PropTypes {
   url?: string
   iconUrl?: string
   isDragging: boolean
-  draggableItemId?: string | null
+  draggingItemId?: string | null
 }
 
 interface WrapperPropTypes {

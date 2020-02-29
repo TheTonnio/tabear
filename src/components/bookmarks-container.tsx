@@ -15,7 +15,7 @@ const BookmarksContainer = (props: PropTypes) => {
     layoutType,
   } = props;
 
-  const [ draggingItemId, setDraggingItemId] = useState<string | null>(null);
+  const [ draggingItemId, setDraggingItemId] = useState<string | null | undefined>(null);
   const setCards = (updatedCollections: Collections) => onCollectionsUpdate(updatedCollections);
   const moveCard = (source: any, destination: any, draggableId: string) => {
     if (!destination) {

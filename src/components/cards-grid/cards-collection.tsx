@@ -19,7 +19,7 @@ import {
 import { getMaxGridCollectionHeight } from "../../utils/get-max-grid-collection-height";
 
 const CardsCollection = (props: PropTypes) => {
-  const { bookmarks, collection, moveCard, setDraggingItemId, draggableItemId } = props;
+  const { bookmarks, collection, moveCard, setDraggingItemId, draggingItemId } = props;
   const { id, name, description } = collection;
 
   const { maxItemsPerRow } = useContext(LayoutConfigContext);
@@ -64,7 +64,7 @@ const CardsCollection = (props: PropTypes) => {
                         index={index}
                         collectionId={id}
                         bookmark={bookmark}
-                        draggableItemId={draggableItemId}
+                        draggingItemId={draggingItemId}
                         moveCard={moveCard}
                         setDraggingItemId={setDraggingItemId}
                       />
@@ -88,9 +88,9 @@ type PropTypes = {
   bookmarks: Bookmark[]
   collection: Collection
   collectionIndex: number
-  draggableItemId: string | null
+  draggingItemId?: string | null
   onAddBookmarkButtonClick: (id: string) => void
-  setDraggingItemId: Dispatch<string | null>
+  setDraggingItemId: Dispatch<string | null | undefined>
   layoutType: LayoutType
   moveCard: (source: any, destination: any, draggableId: string) => void
 }
