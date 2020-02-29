@@ -7,10 +7,12 @@ import { faList } from "@fortawesome/free-solid-svg-icons";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import {LayoutType} from "../../models/layout-type";
 import {LAYOUT_TYPES_CODES} from "../../constants";
+import Search from "./search";
 
 const TopBar = ({ onSetLayoutType, onCreateCollectionButtonClick }: PropTypes) => {
   return (
     <Bar>
+      <Search></Search>
       <TopBarButton action={() => onCreateCollectionButtonClick()} icon={<FontAwesomeIcon icon={faPlus}/>}/>
       <TopBarButton action={() => onSetLayoutType(LAYOUT_TYPES_CODES.Grid)} icon={<FontAwesomeIcon icon={faThLarge}/>}/>
       <TopBarButton action={() => onSetLayoutType(LAYOUT_TYPES_CODES.List)} icon={<FontAwesomeIcon icon={faList}/>}/>
@@ -21,7 +23,7 @@ const TopBar = ({ onSetLayoutType, onCreateCollectionButtonClick }: PropTypes) =
 const Bar = styled.div`
   width: 100%;
   height: 50px;
-  padding: 0 20px;
+  padding: 0 330px 0 20px;
   display: flex;
   justify-content: flex-end;
   align-items: center;

@@ -73,9 +73,9 @@ class App extends React.Component<undefined, StateTypes> {
       collectionsOrder: collectionsOrder || [],
     });
 
-    this.storage.saveData('bookmarks', initialState.bookmarks);
-    this.storage.saveData('collections', initialState.collections);
-    this.storage.saveData('collectionsOrder', initialState.collectionsOrder);
+    // this.storage.saveData('bookmarks', initialState.bookmarks);
+    // this.storage.saveData('collections', initialState.collections);
+    // this.storage.saveData('collectionsOrder', initialState.collectionsOrder);
   }
 
   onAddBookmark(newBookmark: Bookmark): void {

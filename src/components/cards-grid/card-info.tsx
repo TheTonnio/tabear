@@ -1,6 +1,7 @@
 import React from 'react';
 import CardImage from "./card-image";
 import styled from "styled-components";
+import CardButtons from "./card-buttons";
 
 const CardInfo = (props: PropTypes) => {
   const {
@@ -15,12 +16,13 @@ const CardInfo = (props: PropTypes) => {
   return (
     <Wrapper
       isDragging={isDragging}
-      isOutlined={!!draggingItemId}
+      isActive={!!draggingItemId}
     >
+      <CardButtons/>
       <Header>
         <CardImage url={url} iconUrl={iconUrl}/>
-        <Title>{name}</Title>
       </Header>
+      <Title>{name}</Title>
       <Description>{description}</Description>
     </Wrapper>
   );
@@ -37,51 +39,58 @@ interface PropTypes {
 
 interface WrapperPropTypes {
   isDragging: boolean
-  isOutlined: boolean
+  isActive: boolean
 }
 
 const Wrapper = styled.div`
+    position: relative;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: flex-end;
     height: 100%;
-    border: 3px solid #e8f2fc;
-    border-radius: 5px;
-    transition: border-color .25s;
-    opacity: ${({ isDragging }: WrapperPropTypes) => !isDragging ? 1 : .4};
+    border-radius: 10px;
+    transition: opacity .3s;
+    // opacity: ${({ isDragging }: WrapperPropTypes) => !isDragging ? 1 : .4};
     overflow: hidden;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
   }
   
-  &:hover {
-    border-color: ${({ isOutlined }: WrapperPropTypes) => isOutlined ? "#e8f2fc" : "#0F93FE"}
+  &:hover .card-buttons > button {
+    transform: scale(1);
+    
+    &:hover {
+      transform: scale(1.15);
+      opacity: .7;
+    }
   }
 `;
 
 const Header = styled.div`
   display: flex;
-  height: 100%;
   padding: 0 12px;
 `;
 
-const Description = styled.div`
-  display: flex;
-  align-items: center;
-  height: 2.2em;
-  font-size: 14px;
-  line-height: 1.1em;
-  padding: 13px 0 13px 10px;
+const Title = styled.div`
+  width: 100%;
+  padding: 0 10px 0;
+  margin: auto 0 0;
+  color: #1A1C1F;
+  font-size: 17px;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   overflow: hidden;
-  box-sizing: content-box;
-  color: #3c78bf;
 `;
 
-const Title = styled.p`
-  display: flex;
-  width: 100%;
-  padding: 12px 0 0 15px;
-  margin: 0;
-  color: #000;
-  font-weight: 600;
+const Description = styled.div`
+  font-size: 15px;
+  line-height: 1.1em;
+  padding: 5px 10px 13px;
+  overflow: hidden;
+  box-sizing: content-box;
+  color: #8B959E;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 
 export default CardInfo;

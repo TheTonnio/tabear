@@ -23,7 +23,7 @@ interface PropTypes {
 const Button = styled(PrimaryCardAnimated)`
   background-color: #F3F2F8;
   font-size: 30px;
-  color: #3c78bf;
+  color: #0075EB;
   border: 0;
   opacity: .75;
 `;

@@ -13,7 +13,7 @@ const TabsList = (props: PropTypes) => {
     <List>
       {
         tabs.map((tabItem: Tab, index) =>
-          <DragWrapper key={index} dragSource={{ overload: tabItem, type: DraggableItemTypes.TAB, index: 0, draggableId: v4(), id: undefined }}>
+          <DragWrapper key={index} dragSource={{ overload: tabItem, type: DraggableItemTypes.TAB, index: undefined, draggableId: v4(), id: undefined }}>
             <ListItem>{tabItem.title}</ListItem>
           </DragWrapper>)
       }
@@ -34,13 +34,13 @@ const List = styled.div`
 const ListItem = styled.div`
   margin-top: 10px;
   padding: 10px;
-  text-overflow: ellipsis;
   width: 100%;
+  text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
-  border: 3px solid #e8f2fc;
-  border-radius: 5px;
-  cursor: pointer;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+  border-radius: 10px;
+  cursor: grab;
   transition: border-color .25s;
   
   &:hover {

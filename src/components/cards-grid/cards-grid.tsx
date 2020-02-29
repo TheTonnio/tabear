@@ -9,7 +9,7 @@ const CardsGrid = (props: PropTypes) => {
     width,
   } = props;
 
-  const maxItemsPerRow = Math.ceil((width + LIST_GAP - (WRAPPER_MARGIN * 2) - (CONTAINER_MARGIN * 2)) / (CARD_WIDTH + LIST_GAP)) - 1;
+  const maxItemsPerRow = Math.ceil((width - 300 + LIST_GAP - (WRAPPER_MARGIN * 2) - (CONTAINER_MARGIN * 2)) / (CARD_WIDTH + LIST_GAP)) - 1;
   const layoutConfig = { maxItemsPerRow };
 
   return (
@@ -32,6 +32,5 @@ const Grid = styled.div`
 
 type PropTypes = {
   children: JSX.Element[]
-
   width: number
 }

@@ -67,4 +67,5 @@ type PropTypes = {
 const CardWrapper = styled(PrimaryCard)`
   overflow: hidden;
   text-decoration: none;
+  cursor: grab;
 `;

@@ -59,9 +59,7 @@ class LayoutResolver extends React.Component<PropTypes, StateTypes> {
 
 
     return (
-      <Layout
-        width={width}
-      >
+      <Layout width={width}>
         {
           collectionsOrder.map((collectionId: string, index: number) => {
             const collection: Collection = collections[collectionId];

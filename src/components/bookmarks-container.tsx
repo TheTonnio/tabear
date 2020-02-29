@@ -66,6 +66,7 @@ const BookmarksContainer = (props: PropTypes) => {
       const finishBookmarkIds = Array.from(finish.bookmarksIds);
       const newBookmark = createBookmarkFromTab(source.overload, draggableId);
       onAddBookmark(newBookmark as any);
+      console.log(destination.index);
       finishBookmarkIds.splice(destination.index, 0, draggableId);
 
       const newFinish = {

@@ -38,7 +38,7 @@ const Panel = styled.div`
   right: 0;
   height: 100vh;
   width: 300px;
-  box-shadow: 2px 2px 40px -12px #999;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
   border: 1px solid #f4f4f4;
   background: #fff;
 `;

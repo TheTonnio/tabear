@@ -9,7 +9,7 @@ import DropWrapper from "../dnd/drop-wrapper";
 import CardsPlaceholder from "./cards-placeholder";
 import { LayoutConfigContext } from "../../store/layout-config-context";
 import { DnDDestination } from "../../models/dnd-destination";
-import { DraggableItemTypes } from "../../constants";
+import {CARD_HEIGHT, DraggableItemTypes, WRAPPER_MARGIN} from "../../constants";
 import { getMaxGridCollectionHeight } from "../../utils/get-max-grid-collection-height";
 
 const CardsCollection = (props: PropTypes) => {
@@ -28,7 +28,7 @@ const CardsCollection = (props: PropTypes) => {
   const destination: DnDDestination = {
     type: DraggableItemTypes.BOOKMARK,
     id,
-    index: 0
+    index: bookmarks.length
   };
 
   return (
@@ -97,26 +97,26 @@ const OuterWrapper = styled.div`
 
 const Wrapper = styled.div`
   margin: 0 0 40px;
-  padding: 10px 20px;
   width: 100%;
   background: #fff;
-  border-radius: 5px;
-  box-shadow: 2px 2px 40px -12px #999;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.15);
   border: 1px solid #f4f4f4;
 `;
 
 const InnerWrapper = styled.div`
-  max-height: ${({ maxCollectionHeight }: { maxCollectionHeight: number }) => maxCollectionHeight}px;
-  transition: max-height .3s;
+  padding: 0 ${WRAPPER_MARGIN}px 10px;
+  height: ${({ maxCollectionHeight }: { maxCollectionHeight: number }) => maxCollectionHeight}px;
+  transition: height .3s;
   overflow: hidden;
 `;
 
 const Grid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(230px, 230px));
-  grid-auto-rows: 130px;
+  grid-auto-rows: ${CARD_HEIGHT}px;
   grid-column-gap: 20px;
   grid-row-gap: 20px;
-  margin: 25px 0 15px;
+  margin: 20px 0 10px;
 `;
 
