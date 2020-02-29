@@ -1,15 +1,14 @@
 import React, { useRef } from 'react';
 import { useDrag, useDrop } from "react-dnd";
 import { DraggableItemTypes } from "../../constants";
+import { DnDSource } from "../../models/dnd-source";
+import { DnDDestination } from "../../models/dnd-destination";
 
-const DragDropProvider = ({
-  dragSource,
-  setDraggableItem,
-  dropDestination,
-  moveCard,
-  children
-}: any) => {
+const DragDropProvider = (props: PropTypes) => {
+  const { dragSource, setDraggingItemId, dropDestination, moveCard, children } = props;
+
   const ref = useRef<HTMLDivElement>(null);
+
   const [, drag] = useDrag({
     item: {
       type: dragSource.type,
@@ -17,12 +16,12 @@ const DragDropProvider = ({
       index: dragSource.index,
       draggableId: dragSource.draggableId,
     },
-    begin: () => setDraggableItem(dragSource.id),
-    end: () => setDraggableItem(null)
+    begin: () => setDraggingItemId(dragSource.draggableId),
+    end: () => setDraggingItemId(null)
   });
 
   const [, drop] = useDrop({
-    accept: DraggableItemTypes.BOOKMARK,
+    accept: [DraggableItemTypes.BOOKMARK, DraggableItemTypes.TAB],
     hover(source: any) {
       if (!ref.current) {
         return
@@ -35,6 +34,7 @@ const DragDropProvider = ({
   });
 
   drag(drop(ref));
+
   return (
     <div ref={ref}>
       {children}
@@ -43,3 +43,11 @@ const DragDropProvider = ({
 };
 
 export default DragDropProvider;
+
+interface PropTypes {
+  children: JSX.Element[]
+  dragSource: DnDSource
+  dropDestination: DnDDestination
+  setDraggingItemId: (id?: string | null) => void
+  moveCard: (source: any, destination: any, draggableId: string) => void
+}

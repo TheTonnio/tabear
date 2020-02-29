@@ -2,7 +2,9 @@ import React from 'react';
 import styled from "styled-components";
 
 
-const CardImage = ({ url, iconUrl}: PropTypes) => {
+const CardImage = (props: PropTypes) => {
+  const { url, iconUrl } = props;
+
   return (
     <ImageWrapper>
       <Image iconUrl={iconUrl || `${url}/favicon.ico`}/>

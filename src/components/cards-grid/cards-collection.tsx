@@ -1,38 +1,39 @@
-import React, { Dispatch, useState } from 'react';
+import React, {Dispatch, useContext, useState} from 'react';
 import { Bookmark } from '../../models/bookmark';
 import { Collection } from '../../models/collection';
 import styled from "styled-components";
-import BookmarkCard from "./card";
-import { DraggableItemTypes } from "../../constants";
+import Card from "./card";
 import CardsCollectionHeader from "./cards-collection-header";
 import { LayoutType } from "../../models/layout-type";
 import DropWrapper from "../dnd/drop-wrapper";
 import CardsPlaceholder from "./cards-placeholder";
+import { LayoutConfigContext } from "../../store/layout-config-context";
+import { DnDDestination } from "../../models/dnd-destination";
+import {CARD_HEIGHT, DraggableItemTypes, WRAPPER_MARGIN} from "../../constants";
+import { getMaxGridCollectionHeight } from "../../utils/get-max-grid-collection-height";
 
-const CardsCollection = ({
-  bookmarks,
-  collection,
-  onAddBookmarkButtonClick,
-  moveCard,
-  setDraggableItem,
-  draggableItemId,
-  layoutType,
-}: PropTypes) => {
-  const {
-    id, name, description,
-  } = collection;
+const CardsCollection = (props: PropTypes) => {
+  const { bookmarks, collection, moveCard, setDraggingItemId, draggingItemId } = props;
+  const { id, name, description } = collection;
+  const { BOOKMARK, TAB } = DraggableItemTypes;
 
-  const [ isCollapsed, toggleCollection ] = useState<boolean>(false);
+  const { maxItemsPerRow } = useContext(LayoutConfigContext);
+  const [ isCollectionCollapsed, toggleCollection ] = useState<boolean>(false);
+
   const hasBookmarks = !!bookmarks.length;
-  const destination = {
+
+  const rows = Math.ceil(bookmarks.length / maxItemsPerRow);
+  const maxCollectionHeight = getMaxGridCollectionHeight(isCollectionCollapsed, rows);
+
+  const destination: DnDDestination = {
     type: DraggableItemTypes.BOOKMARK,
     id,
-    index: 0
+    index: bookmarks.length
   };
 
   return (
     <DropWrapper
-      acceptType={DraggableItemTypes.BOOKMARK}
+      acceptType={[ BOOKMARK, TAB ]}
       destination={destination}
       moveCard={moveCard}
     >
@@ -41,24 +42,27 @@ const CardsCollection = ({
             <CardsCollectionHeader
               name={name}
               description={description}
-              isCollapsed={isCollapsed}
+              isCollectionCollapsed={isCollectionCollapsed}
               disabled={!hasBookmarks}
-              toggleCollection={() => toggleCollection(!isCollapsed)}
+              toggleCollection={() => toggleCollection(!isCollectionCollapsed)}
             />
-          <InnerWrapper isCollapsed={isCollapsed}>
+          <InnerWrapper
+            maxCollectionHeight={maxCollectionHeight}
+          >
             {
               hasBookmarks ? (
                 <Grid>
                   {
+                    // @ts-ignore
                     bookmarks.map((bookmark: Bookmark, index: number) => (
-                      <BookmarkCard
+                      <Card
                         key={bookmark.id}
                         index={index}
                         collectionId={id}
                         bookmark={bookmark}
-                        isDragging={bookmark.id === draggableItemId}
+                        draggingItemId={draggingItemId}
                         moveCard={moveCard}
-                        setDraggableItem={setDraggableItem}
+                        setDraggingItemId={setDraggingItemId}
                       />
                     ))
                   }
@@ -80,9 +84,9 @@ type PropTypes = {
   bookmarks: Bookmark[]
   collection: Collection
   collectionIndex: number
-  draggableItemId: string | null
+  draggingItemId?: string | null
   onAddBookmarkButtonClick: (id: string) => void
-  setDraggableItem: Dispatch<string | null>
+  setDraggingItemId: Dispatch<string | null | undefined>
   layoutType: LayoutType
   moveCard: (source: any, destination: any, draggableId: string) => void
 }
@@ -93,28 +97,26 @@ const OuterWrapper = styled.div`
 
 const Wrapper = styled.div`
   margin: 0 0 40px;
-  padding: 10px 20px;
   width: 100%;
   background: #fff;
-  border-radius: 5px;
-  box-shadow: 2px 2px 40px -12px #999;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.15);
   border: 1px solid #f4f4f4;
 `;
 
 const InnerWrapper = styled.div`
-  // max-height: ${({ isCollapsed }: { isCollapsed: boolean }) => isCollapsed ? 0 : '9999px' };
-  // transition: max-height .8s cubic-bezier(0, 1, 0, 1) -.1s, margin-top .3s;
-  // ${({ isCollapsed }: { isCollapsed: boolean }) => !isCollapsed ? 'transition-timing-function: cubic-bezier(0.5, 0, 1, 0);' : null };
-
+  padding: 0 ${WRAPPER_MARGIN}px 10px;
+  height: ${({ maxCollectionHeight }: { maxCollectionHeight: number }) => maxCollectionHeight}px;
+  transition: height .3s;
   overflow: hidden;
 `;
 
 const Grid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(230px, 230px));
-  grid-auto-rows: 130px;
+  grid-auto-rows: ${CARD_HEIGHT}px;
   grid-column-gap: 20px;
   grid-row-gap: 20px;
-  margin: 25px 0 15px;
+  margin: 20px 0 10px;
 `;
 

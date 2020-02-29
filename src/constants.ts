@@ -5,6 +5,7 @@ export const ENV_PRODUCTION = 'production';
 
 export const DraggableItemTypes = {
   BOOKMARK: 'BOOKMARK',
+  TAB: 'TAB',
 };
 
 export const LAYOUT_TYPES_CODES: { [key: string]: LayoutType } = {
@@ -12,5 +13,13 @@ export const LAYOUT_TYPES_CODES: { [key: string]: LayoutType } = {
   List: 'list'
 };
 
-export const MIN_CARD_WIDTH = 270;
-export const LIST_GAP = 40;
+export const LIST_GAP = 20;
+export const CONTAINER_MARGIN = 30;
+export const WRAPPER_MARGIN = 20;
+export const CARD_WIDTH = 230;
+export const CARD_HEIGHT = 120;
+export const CARD_GAP = 20;
+export const COLLECTION_TOP_MARGIN = 25;
+export const COLLECTION_BOTTOM_MARGIN = 15;
+
+export const REGEXP_INTERNAL_CHROME_PATH = /(chrome:)|(chrome-extension:)/;

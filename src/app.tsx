@@ -12,16 +12,21 @@ import {ENV_DEVELOPMENT, LAYOUT_TYPES_CODES} from './constants';
 import styled from 'styled-components'
 import { DndProvider } from 'react-dnd'
 import Backend from 'react-dnd-html5-backend'
-import initialState from './initial-data';
+import initialState from './mock/initial-data';
 import { Bookmarks } from "./models/bookmarks";
 import { Collections } from "./models/collections";
 import TopBar from "./components/top-bar/top-bar";
 import {LayoutType} from "./models/layout-type";
 import { LayoutTypeContext } from './store/layout-type-context'
+import OpenTabsPanel from "./components/tabs-panel/tabs-panel";
 
 const AppWrapper = styled.div`
   height: 100vh;
   width: 100%;
+`;
+
+const DashboardWrapper = styled.div`
+  display: flex;
 `;
 
 
@@ -75,7 +80,7 @@ class App extends React.Component<undefined, StateTypes> {
 
   onAddBookmark(newBookmark: Bookmark): void {
     const { bookmarks } = this.state;
-    const updateBookmarks = { ...bookmarks, newBookmark };
+    const updateBookmarks = { ...bookmarks, [newBookmark.id]: newBookmark };
 
     this.storage.saveData('bookmarks', updateBookmarks);
 
@@ -165,17 +170,21 @@ class App extends React.Component<undefined, StateTypes> {
                 </div>
               )
             }
+            <DashboardWrapper>
+              <BookmarksContainer
+                // @ts-ignore
+                bookmarks={bookmarks}
+                collections={collections}
+                collectionsOrder={collectionsOrder}
+                onAddBookmarkButtonClick={this.onAddBookmarkButtonClick}
+                onAddBookmark={this.onAddBookmark}
+                onBookmarksUpdate={this.setBookmarks}
+                onCollectionsUpdate={this.setCollections}
+                layoutType={layoutType}
+              />
 
-            <BookmarksContainer
-              // @ts-ignore
-              bookmarks={bookmarks}
-              collections={collections}
-              collectionsOrder={collectionsOrder}
-              onAddBookmarkButtonClick={this.onAddBookmarkButtonClick}
-              onBookmarksUpdate={this.setBookmarks}
-              onCollectionsUpdate={this.setCollections}
-              layoutType={layoutType}
-            />
+              <OpenTabsPanel/>
+            </DashboardWrapper>
           </AppWrapper>
         </DndProvider>
       </LayoutTypeContext.Provider>

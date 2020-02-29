@@ -17,14 +17,17 @@ interface PropTypes {
 const Button = styled.button`
   width: 30px;
   height: 30px;
+  font-size: 16px;
   margin-left: 12px;
-  background: #fff;
+  background: transparent;
   border: 0;
-  border-radius: 5px;
   cursor: pointer;
-  box-shadow: 0 0 3px rgba(0,0,0,.2);
-  transition: transform .3s,opacity .3s;
-  color: #3c78bf;
+  transition: opacity .3s;
+  color: #0075EB;
+  
+  &:hover {
+    opacity: .7;
+  }
 `;
 
 

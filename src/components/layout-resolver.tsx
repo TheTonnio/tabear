@@ -6,8 +6,10 @@ import { Collection } from "../models/collection";
 import { Bookmark } from "../models/bookmark";
 import BookmarkCollection from "./cards-grid/cards-collection";
 import CardsGrid from "./cards-grid/cards-grid";
+import {Bookmarks} from "../models/bookmarks";
+import {Collections} from "../models/collections";
 
-class LayoutResolver extends React.Component<any, StateTypes> {
+class LayoutResolver extends React.Component<PropTypes, StateTypes> {
 
   private layoutComponents = {
     masonry: MasonryLayout,
@@ -57,9 +59,7 @@ class LayoutResolver extends React.Component<any, StateTypes> {
 
 
     return (
-      <Layout
-        width={width}
-      >
+      <Layout width={width}>
         {
           collectionsOrder.map((collectionId: string, index: number) => {
             const collection: Collection = collections[collectionId];
@@ -72,8 +72,8 @@ class LayoutResolver extends React.Component<any, StateTypes> {
                 moveCard={moveCard}
                 collection={collection}
                 collectionIndex={index}
-                setDraggableItem={setDraggingItemId}
-                draggableItemId={draggingItemId}
+                setDraggingItemId={setDraggingItemId}
+                draggingItemId={draggingItemId}
                 layoutType={layoutType}
               />
             );
@@ -86,7 +86,13 @@ class LayoutResolver extends React.Component<any, StateTypes> {
 
 type PropTypes = {
   layoutType: LayoutType
-  children: any
+  collectionsOrder: string[]
+  onAddBookmarkButtonClick: (id: string) => void
+  moveCard: (source: any, destination: any, draggableId: string) => void
+  setDraggingItemId: (id?: string | null) => void
+  draggingItemId?: string | null
+  bookmarks: Bookmarks
+  collections: Collections
 }
 
 type StateTypes = {
