@@ -11,6 +11,7 @@ const TabsList = (props: PropTypes) => {
 
   return (
     <List>
+      <ListHeader>Opened Tabs</ListHeader>
       {
         tabs.map((tabItem: Tab, index) =>
           <DragWrapper key={index} dragSource={{ overload: tabItem, type: DraggableItemTypes.TAB, index: undefined, draggableId: v4(), id: undefined }}>
@@ -25,9 +26,17 @@ interface PropTypes {
   tabs: Tab[]
 }
 
+const ListHeader = styled.div`
+  width: 100%;
+  padding: 14px 0;
+  text-align: center;
+  font-weight: 700;
+  color: #0075EB;
+`;
+
 const List = styled.div`
   list-style: none;
-  padding: 40px 20px 25px;
+  padding: 0px 20px 25px;
   margin: 0;
 `;
 
@@ -42,6 +51,7 @@ const ListItem = styled.div`
   border-radius: 10px;
   cursor: grab;
   transition: border-color .25s;
+  font-size: 16px;
   
   &:hover {
     border-color: #0F93FE

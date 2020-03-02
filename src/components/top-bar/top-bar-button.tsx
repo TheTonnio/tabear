@@ -15,8 +15,8 @@ interface PropTypes {
 }
 
 const Button = styled.button`
-  width: 30px;
-  height: 30px;
+  width: 35px;
+  height: 35px;
   font-size: 16px;
   margin-left: 12px;
   background: transparent;

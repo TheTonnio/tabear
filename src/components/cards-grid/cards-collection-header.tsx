@@ -5,7 +5,7 @@ import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
 import {WRAPPER_MARGIN} from "../../constants";
 
 const CardsCollectionHeader = (props: PropTypes) => {
-  const { name, description, isCollectionCollapsed, toggleCollection, disabled } = props;
+  const { name, description, isCollectionCollapsed, toggleCollection } = props;
 
   return (
     <Header>
@@ -13,7 +13,6 @@ const CardsCollectionHeader = (props: PropTypes) => {
       <Description>{description}</Description>
       <CollapseButton
         onClick={toggleCollection}
-        disabled={disabled}
         isCollectionCollapsed={isCollectionCollapsed}
       >
         <FontAwesomeIcon
@@ -29,7 +28,6 @@ interface PropTypes {
   description: string
   isCollectionCollapsed: boolean
   toggleCollection: () => void
-  disabled: boolean
 }
 
 const Header = styled.div`
@@ -64,6 +62,7 @@ const Description = styled.span`
   padding-left: 7px;
   color: #1A1C1F;
   font-weight: 500;
+  font-size: 16px;
 `;
 
 const CollapseButton = styled.button`
@@ -78,11 +77,6 @@ const CollapseButton = styled.button`
   
   &:hover {
     opacity: .7;
-  }
-  
-  &:disabled {
-    cursor: default;
-    opacity: .5;
   }
 `;
 

@@ -4,13 +4,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
 
-const CardButtons = () => {
+const CardButtons = (props: any) => {
+  const { onEdit, onRemove } = props;
+
   return (
     <ButtonsWrapper className={"card-buttons"}>
-      <Button>
+      <Button onClick={onEdit}>
         <EditIcon icon={faPen}/>
       </Button>
-      <Button>
+      <Button onClick={onRemove}>
         <RemoveIcon icon={faTimes}/>
       </Button>
     </ButtonsWrapper>
@@ -18,6 +20,10 @@ const CardButtons = () => {
 };
 
 export default CardButtons;
+
+interface PropTypes {
+  // onEdit:
+}
 
 const ButtonsWrapper = styled.div`
   position: absolute;
@@ -51,8 +57,8 @@ const Button = styled.button`
   border: 0;
   margin-left: 5px;
   border-radius: 18px;
-  height: 20px;
-  width: 20px;
+  height: 24px;
+  width: 24px;
   color: #fff;
   font-size: 10px;
   cursor: pointer;

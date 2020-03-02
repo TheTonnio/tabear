@@ -3,8 +3,6 @@ import { Bookmarks } from "../models/bookmarks";
 import { Collections } from "../models/collections";
 import { LayoutType } from "../models/layout-type";
 import LayoutResolver from "./layout-resolver";
-import v4 from "uuid/v4";
-import {Bookmark} from "../models/bookmark";
 type Tab = chrome.tabs.Tab;
 
 const BookmarksContainer = (props: PropTypes) => {
@@ -12,8 +10,6 @@ const BookmarksContainer = (props: PropTypes) => {
     bookmarks,
     collections,
     collectionsOrder,
-    onAddBookmarkButtonClick,
-    onAddBookmark,
     onCollectionsUpdate,
     layoutType,
   } = props;
@@ -65,8 +61,7 @@ const BookmarksContainer = (props: PropTypes) => {
     if (!start) {
       const finishBookmarkIds = Array.from(finish.bookmarksIds);
       const newBookmark = createBookmarkFromTab(source.overload, draggableId);
-      onAddBookmark(newBookmark as any);
-      console.log(destination.index);
+      // onAddBookmark(newBookmark as any); // TODO: implement properly
       finishBookmarkIds.splice(destination.index, 0, draggableId);
 
       const newFinish = {
@@ -108,7 +103,6 @@ const BookmarksContainer = (props: PropTypes) => {
     <LayoutResolver
       layoutType={layoutType}
       collectionsOrder={collectionsOrder}
-      onAddBookmarkButtonClick={onAddBookmarkButtonClick}
       moveCard={moveCard}
       setDraggingItemId={setDraggingItemId}
       draggingItemId={draggingItemId}
@@ -124,8 +118,6 @@ type PropTypes = {
   bookmarks: Bookmarks
   collections: Collections
   collectionsOrder: string[]
-  onAddBookmarkButtonClick: (id: string) => void
-  onAddBookmark: (bookmark: Bookmark) => void
   onBookmarksUpdate: (items: Bookmarks) => void
   onCollectionsUpdate: (items: Collections) => void
   layoutType: LayoutType

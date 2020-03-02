@@ -49,13 +49,8 @@ class App extends React.Component<undefined, StateTypes> {
       layoutType: LAYOUT_TYPES_CODES.Grid
     };
 
-    this.onAddBookmark = this.onAddBookmark.bind(this);
-    this.onAddBookmarkButtonClick = this.onAddBookmarkButtonClick.bind(this);
-    this.onCreateCollection = this.onCreateCollection.bind(this);
-    this.onCreateCollectionButtonClick = this.onCreateCollectionButtonClick.bind(this);
     this.setBookmarks = this.setBookmarks.bind(this);
     this.setCollections = this.setCollections.bind(this);
-    this.onSetLayoutType = this.onSetLayoutType.bind(this);
   }
 
   async componentDidMount(): Promise<void> {
@@ -78,56 +73,22 @@ class App extends React.Component<undefined, StateTypes> {
     // this.storage.saveData('collectionsOrder', initialState.collectionsOrder);
   }
 
-  onAddBookmark(newBookmark: Bookmark): void {
-    const { bookmarks } = this.state;
-    const updateBookmarks = { ...bookmarks, [newBookmark.id]: newBookmark };
-
-    this.storage.saveData('bookmarks', updateBookmarks);
-
-    this.setState({
-      bookmarks: { ...updateBookmarks },
-      selectedCollectionId: null,
-    });
-  }
-
   setBookmarks(bookmarks: Bookmarks): void {
     this.storage.saveData('bookmarks', bookmarks);
-
-    this.setState({
-      bookmarks: bookmarks,
-    });
+    this.setState({ bookmarks });
   }
 
   setCollections(collections: Collections): void {
     this.storage.saveData('collections', collections);
-
-    this.setState({
-      collections: collections,
-    });
+    this.setState({ collections });
   }
 
-  onCreateCollection(newCollection: Collection): void {
-    const { collections } = this.state;
-
-    const updateCollections = { ...collections, [newCollection.id]: newCollection };
-
-    this.storage.saveData('collections', updateCollections);
-
-    this.setState({
-      collections: { ...updateCollections },
-      isAddCollectionFormShown: false,
-    });
+  setCollectionsOrder(collectionsOrder: string[]): void {
+    this.storage.saveData('collectionsOrder', collectionsOrder);
+    this.setState({ collectionsOrder });
   }
 
-  onAddBookmarkButtonClick(selectedCollectionId: string): void {
-    this.setState({ selectedCollectionId });
-  }
-
-  onCreateCollectionButtonClick(): void {
-    this.setState({ isAddCollectionFormShown: true });
-  }
-
-  onSetLayoutType(layoutType: LayoutType) {
+  setLayoutType(layoutType: LayoutType) {
     this.setState({ layoutType });
   }
 
@@ -136,8 +97,6 @@ class App extends React.Component<undefined, StateTypes> {
       bookmarks,
       collections,
       collectionsOrder,
-      selectedCollectionId,
-      isAddCollectionFormShown,
       layoutType,
     } = this.state;
 
@@ -146,38 +105,15 @@ class App extends React.Component<undefined, StateTypes> {
         <DndProvider backend={Backend}>
           <AppWrapper>
             <TopBar
-              onSetLayoutType={this.onSetLayoutType}
-              onCreateCollectionButtonClick={this.onCreateCollectionButtonClick}
+              onSetLayoutType={this.setLayoutType}
             />
 
-            {
-              isAddCollectionFormShown && (
-                <div>
-                  <h3>Create Collection</h3>
-                  <CreateCollectionForm onCreateCollection={this.onCreateCollection} />
-                </div>
-              )
-            }
-
-            {
-              selectedCollectionId && (
-                <div>
-                  <h3>Add Bookmark</h3>
-                  <AddBookmarkForm
-                    collectionId={selectedCollectionId}
-                    onAddBookmark={this.onAddBookmark}
-                  />
-                </div>
-              )
-            }
             <DashboardWrapper>
               <BookmarksContainer
                 // @ts-ignore
                 bookmarks={bookmarks}
                 collections={collections}
                 collectionsOrder={collectionsOrder}
-                onAddBookmarkButtonClick={this.onAddBookmarkButtonClick}
-                onAddBookmark={this.onAddBookmark}
                 onBookmarksUpdate={this.setBookmarks}
                 onCollectionsUpdate={this.setCollections}
                 layoutType={layoutType}

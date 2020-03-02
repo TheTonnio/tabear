@@ -9,7 +9,14 @@ import DropWrapper from "../dnd/drop-wrapper";
 import CardsPlaceholder from "./cards-placeholder";
 import { LayoutConfigContext } from "../../store/layout-config-context";
 import { DnDDestination } from "../../models/dnd-destination";
-import {CARD_HEIGHT, DraggableItemTypes, WRAPPER_MARGIN} from "../../constants";
+import {
+  CARD_HEIGHT,
+  CARD_ROW_GAP,
+  COLLECTION_BOTTOM_MARGIN,
+  COLLECTION_TOP_MARGIN, CONTAINER_MARGIN,
+  DraggableItemTypes,
+  WRAPPER_MARGIN
+} from "../../constants";
 import { getMaxGridCollectionHeight } from "../../utils/get-max-grid-collection-height";
 
 const CardsCollection = (props: PropTypes) => {
@@ -43,11 +50,11 @@ const CardsCollection = (props: PropTypes) => {
               name={name}
               description={description}
               isCollectionCollapsed={isCollectionCollapsed}
-              disabled={!hasBookmarks}
               toggleCollection={() => toggleCollection(!isCollectionCollapsed)}
             />
           <InnerWrapper
             maxCollectionHeight={maxCollectionHeight}
+            hasBookmarks={isCollectionCollapsed || hasBookmarks}
           >
             {
               hasBookmarks ? (
@@ -85,14 +92,13 @@ type PropTypes = {
   collection: Collection
   collectionIndex: number
   draggingItemId?: string | null
-  onAddBookmarkButtonClick: (id: string) => void
   setDraggingItemId: Dispatch<string | null | undefined>
   layoutType: LayoutType
   moveCard: (source: any, destination: any, draggableId: string) => void
 }
 
 const OuterWrapper = styled.div`
-  padding: 0 30px;
+  padding: 0 ${CONTAINER_MARGIN}px;
 `;
 
 const Wrapper = styled.div`
@@ -106,7 +112,7 @@ const Wrapper = styled.div`
 
 const InnerWrapper = styled.div`
   padding: 0 ${WRAPPER_MARGIN}px 10px;
-  height: ${({ maxCollectionHeight }: { maxCollectionHeight: number }) => maxCollectionHeight}px;
+  height: ${({ hasBookmarks, maxCollectionHeight }: { hasBookmarks: boolean, maxCollectionHeight: number }) => hasBookmarks ? `${maxCollectionHeight}px` : 'auto'};
   transition: height .3s;
   overflow: hidden;
 `;
@@ -116,7 +122,7 @@ const Grid = styled.div`
   grid-template-columns: repeat(auto-fit, minmax(230px, 230px));
   grid-auto-rows: ${CARD_HEIGHT}px;
   grid-column-gap: 20px;
-  grid-row-gap: 20px;
-  margin: 20px 0 10px;
+  grid-row-gap: ${CARD_ROW_GAP}px;
+  margin: ${COLLECTION_TOP_MARGIN}px 0 ${COLLECTION_BOTTOM_MARGIN}px;
 `;
 
