@@ -60,7 +60,7 @@ type PropTypes = {
   index: number
   collectionId: string
   draggingItemId?: string | null
-  setDraggingItemId: Dispatch<string | null | undefined>
+  setDraggingItemId: Dispatch<string | undefined>
   moveCard: (source: any, destination: any, draggableId: string) => void
 }
 

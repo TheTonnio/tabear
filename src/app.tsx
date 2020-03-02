@@ -1,22 +1,15 @@
-/* eslint react/no-unused-state: 0 */
-
 import React from 'react';
 import BookmarksContainer from './components/bookmarks-container';
-import AddBookmarkForm from './components/add-bookmark-form';
-import CreateCollectionForm from './components/create-collection-form';
-import { Bookmark } from './models/bookmark';
-import { Collection } from './models/collection';
 import Storage from './utils/storage';
 import LocalStorage from './utils/localStorage';
-import {ENV_DEVELOPMENT, LAYOUT_TYPES_CODES} from './constants';
+import { ENV_DEVELOPMENT, LAYOUT_TYPES_CODES } from './constants';
 import styled from 'styled-components'
 import { DndProvider } from 'react-dnd'
 import Backend from 'react-dnd-html5-backend'
-import initialState from './mock/initial-data';
 import { Bookmarks } from "./models/bookmarks";
 import { Collections } from "./models/collections";
 import TopBar from "./components/top-bar/top-bar";
-import {LayoutType} from "./models/layout-type";
+import { LayoutType } from "./models/layout-type";
 import { LayoutTypeContext } from './store/layout-type-context'
 import OpenTabsPanel from "./components/tabs-panel/tabs-panel";
 
@@ -28,7 +21,6 @@ const AppWrapper = styled.div`
 const DashboardWrapper = styled.div`
   display: flex;
 `;
-
 
 class App extends React.Component<undefined, StateTypes> {
   storage: Storage;
@@ -44,13 +36,12 @@ class App extends React.Component<undefined, StateTypes> {
       bookmarks: {},
       collections: {},
       collectionsOrder: [],
-      selectedCollectionId: null,
-      isAddCollectionFormShown: false,
-      layoutType: LAYOUT_TYPES_CODES.Grid
+      layoutType: LAYOUT_TYPES_CODES.Grid,
     };
 
     this.setBookmarks = this.setBookmarks.bind(this);
     this.setCollections = this.setCollections.bind(this);
+    this.setCollectionsOrder = this.setCollectionsOrder.bind(this);
   }
 
   async componentDidMount(): Promise<void> {
@@ -67,10 +58,6 @@ class App extends React.Component<undefined, StateTypes> {
       collections: collections || {},
       collectionsOrder: collectionsOrder || [],
     });
-
-    // this.storage.saveData('bookmarks', initialState.bookmarks);
-    // this.storage.saveData('collections', initialState.collections);
-    // this.storage.saveData('collectionsOrder', initialState.collectionsOrder);
   }
 
   setBookmarks(bookmarks: Bookmarks): void {
@@ -104,19 +91,17 @@ class App extends React.Component<undefined, StateTypes> {
       <LayoutTypeContext.Provider value={layoutType}>
         <DndProvider backend={Backend}>
           <AppWrapper>
-            <TopBar
-              onSetLayoutType={this.setLayoutType}
-            />
+            <TopBar onSetLayoutType={this.setLayoutType} />
 
             <DashboardWrapper>
               <BookmarksContainer
-                // @ts-ignore
                 bookmarks={bookmarks}
                 collections={collections}
                 collectionsOrder={collectionsOrder}
+                layoutType={layoutType}
                 onBookmarksUpdate={this.setBookmarks}
                 onCollectionsUpdate={this.setCollections}
-                layoutType={layoutType}
+                onCollectionsOrder={this.setCollectionsOrder}
               />
 
               <OpenTabsPanel/>
@@ -134,7 +119,5 @@ type StateTypes = {
   bookmarks: Bookmarks
   collections: Collections
   collectionsOrder: string[]
-  selectedCollectionId: string | null
-  isAddCollectionFormShown: boolean
   layoutType: LayoutType
 }

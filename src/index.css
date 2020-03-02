@@ -18,6 +18,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   height: 100%;
   overflow: auto;
+  font-size: 16px;
 }
 
 code {

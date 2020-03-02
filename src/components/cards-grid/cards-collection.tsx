@@ -60,7 +60,6 @@ const CardsCollection = (props: PropTypes) => {
               hasBookmarks ? (
                 <Grid>
                   {
-                    // @ts-ignore
                     bookmarks.map((bookmark: Bookmark, index: number) => (
                       <Card
                         key={bookmark.id}
@@ -92,7 +91,7 @@ type PropTypes = {
   collection: Collection
   collectionIndex: number
   draggingItemId?: string | null
-  setDraggingItemId: Dispatch<string | null | undefined>
+  setDraggingItemId: Dispatch<string | undefined>
   layoutType: LayoutType
   moveCard: (source: any, destination: any, draggableId: string) => void
 }

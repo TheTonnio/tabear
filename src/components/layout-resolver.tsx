@@ -85,7 +85,7 @@ type PropTypes = {
   layoutType: LayoutType
   collectionsOrder: string[]
   moveCard: (source: any, destination: any, draggableId: string) => void
-  setDraggingItemId: (id?: string | null) => void
+  setDraggingItemId: (id?: string) => void
   draggingItemId?: string | null
   bookmarks: Bookmarks
   collections: Collections

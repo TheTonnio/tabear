@@ -14,7 +14,7 @@ const BookmarksContainer = (props: PropTypes) => {
     layoutType,
   } = props;
 
-  const [ draggingItemId, setDraggingItemId] = useState<string | null | undefined>(null);
+  const [ draggingItemId, setDraggingItemId] = useState<string | undefined>();
   const createBookmarkFromTab = (tab: Tab, id: string) => ({
     id: id,
     name: tab.title,
@@ -118,7 +118,8 @@ type PropTypes = {
   bookmarks: Bookmarks
   collections: Collections
   collectionsOrder: string[]
-  onBookmarksUpdate: (items: Bookmarks) => void
-  onCollectionsUpdate: (items: Collections) => void
+  onBookmarksUpdate: (data: Bookmarks) => void
+  onCollectionsUpdate: (data: Collections) => void
+  onCollectionsOrder: (data: string[]) => void
   layoutType: LayoutType
 }
