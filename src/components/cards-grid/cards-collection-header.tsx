@@ -1,16 +1,38 @@
-import React from 'react';
+import React, {useState} from 'react';
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
-import {WRAPPER_MARGIN} from "../../constants";
+import { faAngleDown, faEllipsisV, faPen, faTrash } from "@fortawesome/free-solid-svg-icons";
+import {defaultRed, WRAPPER_MARGIN} from "../../constants";
+import CardsCollectionButtons from "./cards-collection-buttons";
+import ActionMenu from "../shared/action-menu";
+import {ActionMenuConfig} from "../../models/action-menu-config";
 
 const CardsCollectionHeader = (props: PropTypes) => {
   const { name, description, isCollectionCollapsed, toggleCollection } = props;
+  const [ isEditing, setEditingMode ] = useState(false);
+  const [ isActionMenuShown, setActionMenuVisibility ] = useState(false);
+  const actionMenuConfig: ActionMenuConfig = [
+    {
+      action: () => setEditingMode(true),
+      text: "Rename",
+      icon: <FontAwesomeIcon icon={faPen}/>
+    }, {
+      action: () => console.log("Remove"),
+      text: "Remove",
+      icon: <FontAwesomeIcon icon={faTrash}/>,
+      iconColor: defaultRed
+    },
+  ];
 
   return (
     <Header>
       <Title>{name}</Title>
       <Description>{description}</Description>
+      <CardsCollectionButtons
+        isEditing={isEditing}
+        onSave={ () => {} }
+        onCancel={ () => {} }
+      />
       <CollapseButton
         onClick={toggleCollection}
         isCollectionCollapsed={isCollectionCollapsed}
@@ -19,6 +41,16 @@ const CardsCollectionHeader = (props: PropTypes) => {
           icon={faAngleDown}
         />
       </CollapseButton>
+      <ActionMenuButton
+        onClick={() => setActionMenuVisibility(!isActionMenuShown)}
+      >
+        <FontAwesomeIcon icon={faEllipsisV}/>
+      </ActionMenuButton>
+
+      <ActionMenu
+        config={actionMenuConfig}
+        isActionMenuShown={isActionMenuShown}
+      />
     </Header>
   );
 };
@@ -31,6 +63,7 @@ interface PropTypes {
 }
 
 const Header = styled.div`
+  position: relative;
   display: flex;
   align-items: center;
   width: 100%;
@@ -65,16 +98,24 @@ const Description = styled.span`
   font-size: 16px;
 `;
 
-const CollapseButton = styled.button`
-  margin-left: auto;
+const HeaderButton = styled.button`
   border: 0;
   border-radius: 5px;
   cursor: pointer;
   transition: transform .3s, opacity .3s;
-  color: #1A1C1F;
+  color: #0075EB;
+  background: transparent;
+`;
+
+const ActionMenuButton = styled(HeaderButton)`
+  font-size: 17px;
+`;
+
+const CollapseButton = styled(HeaderButton)`
+  margin-left: auto;
   font-size: 25px;
   transform: ${({ isCollectionCollapsed }: { isCollectionCollapsed: boolean }) => `rotate(${isCollectionCollapsed ? 180 : 0}deg)`};
-  
+
   &:hover {
     opacity: .7;
   }

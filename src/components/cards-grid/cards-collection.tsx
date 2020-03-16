@@ -126,6 +126,15 @@ const Wrapper = styled.div`
   border-radius: 10px;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.15);
   border: 1px solid #f4f4f4;
+  
+  &:hover .collection-header-buttons > button {
+    transform: scale(1);
+    
+    &:hover {
+      transform: scale(1.15);
+      opacity: .7;
+    }
+  }
 `;
 
 const InnerWrapper = styled.div`

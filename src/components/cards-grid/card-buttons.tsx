@@ -5,6 +5,8 @@ import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import IconButton from "../shared/icon-button";
+import {defaultRed} from "../../constants";
 
 const CardButtons = (props: PropTypes) => {
   const { isEditing, onEdit, onRemove, onSave, onCancel } = props;
@@ -14,31 +16,31 @@ const CardButtons = (props: PropTypes) => {
         { isEditing
           ? (
             <ButtonsWrapper className={"card-buttons"}>
-              <Button
+              <IconButton
+                className={"editing"}
+                action={onSave}
+                icon={<CardButtonIcon icon={faCheck}/>}
+                isEditing={isEditing}
+              />
+              <IconButton
                 className={"card-button-editing"}
-                onClick={onSave}
-              >
-                <CardButtonIcon icon={faCheck}/>
-              </Button>
-              <Button
-                className={"card-button-editing"}
-                onClick={onCancel}
-                color={"#FF491F"}
-              >
-                <RemoveIcon icon={faTimes}/>
-              </Button>
+                action={onCancel}
+                color={defaultRed}
+                icon={<LargeIcon icon={faTimes}/>}
+                isEditing={isEditing}
+              />
             </ButtonsWrapper>
           ) : (
             <ButtonsWrapper className={"card-buttons"}>
-              <Button onClick={onEdit}>
-                <CardButtonIcon icon={faPen}/>
-              </Button>
-              <Button
-                onClick={onRemove}
-                color={"#FF491F"}
-              >
-                <RemoveIcon icon={faTrash}/>
-              </Button>
+              <IconButton
+                action={onEdit}
+                icon={<CardButtonIcon icon={faPen}/>}
+              />
+              <IconButton
+                action={onRemove}
+                color={defaultRed}
+                icon={<LargeIcon icon={faTrash}/>}
+              />
             </ButtonsWrapper>
           )
         }
@@ -72,30 +74,7 @@ const CardButtonIcon = styled(FontAwesomeIcon)`
   font-size: 10px;
 `;
 
-const RemoveIcon = styled(CardButtonIcon)`
+const LargeIcon = styled(CardButtonIcon)`
   top: -1px;
   font-size: 12px;
-`;
-
-const Button = styled.button`
-  position: relative;
-  background: ${(props: { color?: string }) => props.color || "#0075EB"};
-  border: 0;
-  margin-left: 5px;
-  border-radius: 18px;
-  height: 24px;
-  width: 24px;
-  color: #fff;
-  font-size: 10px;
-  cursor: pointer;
-  transition: transform .3s;
-  transform: scale(0);
-  
-  &.card-button-editing {
-    transform: scale(1);
-  }
-  
-  &:hover {
-    transform: scale(1.5);
-  }
 `;

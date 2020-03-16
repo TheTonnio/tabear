@@ -23,3 +23,10 @@ export const COLLECTION_TOP_MARGIN = 20;
 export const COLLECTION_BOTTOM_MARGIN = 20;
 
 export const REGEXP_INTERNAL_CHROME_PATH = /(chrome:)|(chrome-extension:)/;
+
+/* Colors */
+export const azureRadiance = "#0075EB";
+export const redOrange = "#FF491F";
+
+export const defaultAccent = azureRadiance;
+export const defaultRed = redOrange;

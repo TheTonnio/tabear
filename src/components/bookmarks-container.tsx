@@ -18,7 +18,7 @@ const BookmarksContainer = (props: PropTypes) => {
   } = props;
 
   const [ draggingItemId, setDraggingItemId] = useState<string | undefined>();
-  const createBookmarkFromTab = (tab: Tab, id: string) => ({
+  const getBookmarkFromTab = (tab: Tab, id: string) => ({
     id: id,
     name: tab.title,
     description: tab.title,
@@ -62,8 +62,8 @@ const BookmarksContainer = (props: PropTypes) => {
     // If new tab dropped in a collection
     if (!start) {
       const finishBookmarkIds = Array.from(finish.bookmarksIds);
-      const newBookmark = createBookmarkFromTab(source.overload, draggableId);
-      // onAddBookmark(newBookmark as any); // TODO: implement properly
+      const newBookmark = getBookmarkFromTab(source.overload, draggableId);
+      onBookmarkCreate(newBookmark as any);
       finishBookmarkIds.splice(destination.index, 0, draggableId);
 
       const newFinish = {
@@ -101,14 +101,6 @@ const BookmarksContainer = (props: PropTypes) => {
     });
   };
 
-  const onBookmarkUpdate = (bookmark: Bookmark) => {
-    const newBookmarksObj = {
-      ...bookmarks,
-      [bookmark.id]: bookmark
-    };
-
-    onBookmarksUpdate(newBookmarksObj);
-  };
 
   const onCollectionUpdate = (collection: Collection) => {
     const newCollectionsObj = {
@@ -118,6 +110,15 @@ const BookmarksContainer = (props: PropTypes) => {
 
     onCollectionsUpdate(newCollectionsObj);
   };
+
+  const onBookmarkUpdate = (bookmark: Bookmark) => {
+    onBookmarksUpdate({
+      ...bookmarks,
+      [bookmark.id]: bookmark
+    });
+  };
+
+  const onBookmarkCreate = onBookmarkUpdate;
 
   const onBookmarkRemove = (id: string, collectionId: string) => {
     const newBookmarksObj = { ...bookmarks };

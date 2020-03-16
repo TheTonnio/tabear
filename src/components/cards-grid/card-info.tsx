@@ -2,6 +2,7 @@ import React, {useRef, useState} from 'react';
 import CardImage from "./card-image";
 import styled from "styled-components";
 import CardButtons from "./card-buttons";
+import {defaultAccent} from "../../constants";
 
 const CardInfo = (props: PropTypes) => {
   const {
@@ -144,6 +145,8 @@ const Title = styled.input`
   border: 0;
   cursor: inherit;
   background: transparent;
+  user-select: none;
+  
   &:not(:read-only) {
     cursor: auto;
     opacity: .7;
@@ -164,6 +167,7 @@ const Description = styled.input`
   cursor: inherit;
   background: transparent;
   border: 0;
+  user-select: none;
   
   &:not(:read-only) {
     cursor: auto;

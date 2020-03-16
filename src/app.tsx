@@ -44,9 +44,9 @@ class App extends React.Component<undefined, StateTypes> {
     this.setCollections = this.setCollections.bind(this);
     this.setCollectionsOrder = this.setCollectionsOrder.bind(this);
 
-    // this.storage.saveData('bookmarks', initialState.bookmarks);
-    // this.storage.saveData('collections', initialState.collections);
-    // this.storage.saveData('collectionsOrder', initialState.collectionsOrder);
+    this.storage.saveData('bookmarks', initialState.bookmarks);
+    this.storage.saveData('collections', initialState.collections);
+    this.storage.saveData('collectionsOrder', initialState.collectionsOrder);
   }
 
   async componentDidMount(): Promise<void> {
