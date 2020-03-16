@@ -52,6 +52,7 @@ class LayoutResolver extends React.Component<PropTypes, StateTypes> {
       onBookmarkUpdate,
       onBookmarkRemove,
       onCollectionUpdate,
+      onCollectionRemove,
     } = this.props;
 
     const componentName = layoutType === LAYOUT_TYPES_CODES.Grid ? 'grid' : 'masonry';
@@ -78,6 +79,7 @@ class LayoutResolver extends React.Component<PropTypes, StateTypes> {
                 onBookmarkUpdate={onBookmarkUpdate}
                 onBookmarkRemove={onBookmarkRemove}
                 onCollectionUpdate={onCollectionUpdate}
+                onCollectionRemove={onCollectionRemove}
               />
             );
           })
@@ -98,6 +100,7 @@ type PropTypes = {
   onBookmarkUpdate: (data: Bookmark) => void
   onBookmarkRemove: (id: string, collectionId: string) => void
   onCollectionUpdate: (data: Collection) => void
+  onCollectionRemove: (id: string) => void
 }
 
 type StateTypes = {

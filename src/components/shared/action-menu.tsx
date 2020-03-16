@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { ActionMenuConfig } from "../../models/action-menu-config";
 import styled from "styled-components";
 import {defaultAccent} from "../../constants";
@@ -7,12 +7,10 @@ const ActionMenu = (props: PropTypes) => {
   const { config, isActionMenuShown } = props;
 
   return (
-    <List hidden={!isActionMenuShown}>
+    <List className={!isActionMenuShown ? "hidden" : ""}>
       {config.map(({ action, icon, text, iconColor }, index) => (
         <ListItem onClick={action} key={index}>
-          <IconWrapper
-            color={iconColor || defaultAccent}
-          >
+          <IconWrapper color={iconColor || defaultAccent}>
             {icon}
           </IconWrapper>
           {text}
@@ -27,17 +25,14 @@ interface PropTypes {
   isActionMenuShown: boolean
 }
 
-export default ActionMenu;
-
 const List = styled.ul`
   position: absolute;
   padding: 0;
   right: 22px;
   top: 45px;
   margin: 0;
-  opacity: ${({ hidden }: { hidden: boolean}) => hidden ? 0 : 1};
-  visibility: ${({ hidden }: { hidden: boolean}) => hidden ? "hidden" : "visible"};
   transition: opacity .3s;
+  opacity: 1;
   list-style: none;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
   border-radius: 5px;
@@ -45,6 +40,10 @@ const List = styled.ul`
   overflow: hidden;
   background: #fff;
   z-index: 100;
+  
+  &.hidden {
+    opacity: 0;
+  }
 `;
 
 const ListItem = styled.li`
@@ -79,3 +78,5 @@ const IconWrapper = styled.div`
   color: ${({ color }: { color: string }) => color};
   opacity: .85;
 `;
+
+export default ActionMenu;

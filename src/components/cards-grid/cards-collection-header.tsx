@@ -1,23 +1,56 @@
-import React, {useState} from 'react';
+import React, {useRef, useState} from 'react';
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleDown, faEllipsisV, faPen, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faPen, faTrash, faPlus } from "@fortawesome/free-solid-svg-icons";
 import {defaultRed, WRAPPER_MARGIN} from "../../constants";
 import CardsCollectionButtons from "./cards-collection-buttons";
 import ActionMenu from "../shared/action-menu";
-import {ActionMenuConfig} from "../../models/action-menu-config";
+import { ActionMenuConfig } from "../../models/action-menu-config";
+import { CollectionEditableFields } from "../../models/collection-editable-fields";
 
 const CardsCollectionHeader = (props: PropTypes) => {
-  const { name, description, isCollectionCollapsed, toggleCollection } = props;
+  const { name, description, isCollectionCollapsed, toggleCollection, onSave, onRemove } = props;
   const [ isEditing, setEditingMode ] = useState(false);
-  const [ isActionMenuShown, setActionMenuVisibility ] = useState(false);
+  const [ isActionMenuShown, setActionMenuVisibility ] = useState(false);;
+
+  const titleInputRef = useRef<HTMLDivElement>(null);
+  const descriptionInputRef = useRef<HTMLDivElement>(null);
+
+  const [ collectionName, setName ] = useState<string>(name);
+  const [ collectionDescription, setCardDescription ] = useState<string>(description);
+
+  const showActionMenu = () => {
+    setActionMenuVisibility(true);
+    document.addEventListener("click", () => setActionMenuVisibility(false), { once: true });
+  };
+
+  const onFinishEdit = () => setEditingMode(false);
+
+  const handleNameChange = (e: any) => setName(e.currentTarget.value);
+  const handleDescriptionChange = (e: any) => setCardDescription(e.currentTarget.value);
+
+  const onCancel = () => {
+    setName(name);
+    setCardDescription(description);
+    onFinishEdit();
+  };
+
+  const handleSave = () => {
+    onSave({ name: collectionName, description: collectionDescription });
+    onFinishEdit();
+  };
+
   const actionMenuConfig: ActionMenuConfig = [
     {
+      action: () => console.log("Add"),
+      text: "Add",
+      icon: <FontAwesomeIcon icon={faPlus}/>
+    }, {
       action: () => setEditingMode(true),
       text: "Rename",
       icon: <FontAwesomeIcon icon={faPen}/>
     }, {
-      action: () => console.log("Remove"),
+      action: () => onRemove(),
       text: "Remove",
       icon: <FontAwesomeIcon icon={faTrash}/>,
       iconColor: defaultRed
@@ -26,26 +59,41 @@ const CardsCollectionHeader = (props: PropTypes) => {
 
   return (
     <Header>
-      <Title>{name}</Title>
-      <Description>{description}</Description>
+      {
+        isEditing ? (
+          <>
+            <TitleInput
+              type={"text"}
+              value={collectionName}
+              onChange={handleNameChange}
+              // @ts-ignore
+              ref={titleInputRef}
+            />
+            <Separator/>
+            <DescriptionInput
+              type={"text"}
+              value={collectionDescription}
+              onChange={handleDescriptionChange}
+              // @ts-ignore
+              ref={descriptionInputRef}
+            />
+          </>
+        ) : (
+          <>
+            <Title>{name}</Title>
+            <Description>{description}</Description>
+          </>
+        )
+      }
+
       <CardsCollectionButtons
         isEditing={isEditing}
-        onSave={ () => {} }
-        onCancel={ () => {} }
-      />
-      <CollapseButton
-        onClick={toggleCollection}
         isCollectionCollapsed={isCollectionCollapsed}
-      >
-        <FontAwesomeIcon
-          icon={faAngleDown}
-        />
-      </CollapseButton>
-      <ActionMenuButton
-        onClick={() => setActionMenuVisibility(!isActionMenuShown)}
-      >
-        <FontAwesomeIcon icon={faEllipsisV}/>
-      </ActionMenuButton>
+        onSave={ () => handleSave() }
+        onCancel={ () => onCancel() }
+        onActionMenuButtonClick={() => showActionMenu()}
+        onCollapseButtonClick={() => toggleCollection()}
+      />
 
       <ActionMenu
         config={actionMenuConfig}
@@ -60,6 +108,8 @@ interface PropTypes {
   description: string
   isCollectionCollapsed: boolean
   toggleCollection: () => void
+  onSave: (data: CollectionEditableFields) => void
+  onRemove: () => void
 }
 
 const Header = styled.div`
@@ -69,6 +119,21 @@ const Header = styled.div`
   width: 100%;
   padding: 10px ${WRAPPER_MARGIN}px 0;
   margin: 0 auto 0;
+`;
+
+
+
+const TitleInput = styled.input`
+  position: relative;
+  width: 25%;
+  padding-right: 10px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #0075EB;
+  border: 1px solid #0075EB;
+  background: #F4F7FB;
+  border-radius: 3px;
+  padding-left: 10px;
 `;
 
 const Title = styled.span`
@@ -90,35 +155,35 @@ const Title = styled.span`
   }
 `;
 
+const Separator = styled.div`
+  position: relative;
+  background: #0075EB;
+  width: 2px;
+  margin-left: 10px;
+  border-radius: 2px;
+  height: 21px;
+  display: inline-block;
+`;
+
+const DescriptionInput = styled.input`
+  width: 45%;
+  margin-top: 1px;
+  color: #1A1C1F;
+  font-weight: 500;
+  font-size: 16px;
+  border: 1px solid #0075EB;
+  background: #F4F7FB;
+  border-radius: 3px;
+  padding: 2.5px 0 2.5px 10px;
+  margin-left: 10px;
+`;
+
 const Description = styled.span`
   margin-top: 1px;
   padding-left: 7px;
   color: #1A1C1F;
   font-weight: 500;
   font-size: 16px;
-`;
-
-const HeaderButton = styled.button`
-  border: 0;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: transform .3s, opacity .3s;
-  color: #0075EB;
-  background: transparent;
-`;
-
-const ActionMenuButton = styled(HeaderButton)`
-  font-size: 17px;
-`;
-
-const CollapseButton = styled(HeaderButton)`
-  margin-left: auto;
-  font-size: 25px;
-  transform: ${({ isCollectionCollapsed }: { isCollectionCollapsed: boolean }) => `rotate(${isCollectionCollapsed ? 180 : 0}deg)`};
-
-  &:hover {
-    opacity: .7;
-  }
 `;
 
 export default CardsCollectionHeader;

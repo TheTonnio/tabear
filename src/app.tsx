@@ -105,7 +105,7 @@ class App extends React.Component<undefined, StateTypes> {
                 layoutType={layoutType}
                 onBookmarksUpdate={this.setBookmarks}
                 onCollectionsUpdate={this.setCollections}
-                onCollectionsOrder={this.setCollectionsOrder}
+                onCollectionsOrderUpdate={this.setCollectionsOrder}
               />
               <OpenTabsPanel/>
             </DashboardWrapper>

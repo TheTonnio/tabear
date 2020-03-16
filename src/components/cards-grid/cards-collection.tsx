@@ -18,6 +18,7 @@ import {
   WRAPPER_MARGIN
 } from "../../constants";
 import { getMaxGridCollectionHeight } from "../../utils/get-max-grid-collection-height";
+import { CollectionEditableFields } from "../../models/collection-editable-fields";
 
 const CardsCollection = (props: PropTypes) => {
   const {
@@ -29,6 +30,7 @@ const CardsCollection = (props: PropTypes) => {
     onBookmarkUpdate,
     onBookmarkRemove,
     onCollectionUpdate,
+    onCollectionRemove,
   } = props;
   const { id, name, description, isCollapsed } = collection;
   const { BOOKMARK, TAB } = DraggableItemTypes;
@@ -51,6 +53,14 @@ const CardsCollection = (props: PropTypes) => {
     isCollapsed: !isCollapsed
   });
 
+  const handleCollectionSave = ({ name, description }: CollectionEditableFields) => {
+    onCollectionUpdate({
+      ...collection,
+      name,
+      description,
+    });
+  };
+
   return (
     <DropWrapper
       acceptType={[ BOOKMARK, TAB ]}
@@ -64,6 +74,8 @@ const CardsCollection = (props: PropTypes) => {
               description={description}
               isCollectionCollapsed={isCollapsed}
               toggleCollection={() => toggleCollection()}
+              onSave={handleCollectionSave}
+              onRemove={() => onCollectionRemove(collection.id)}
             />
           <InnerWrapper
             maxCollectionHeight={maxCollectionHeight}
@@ -113,6 +125,7 @@ type PropTypes = {
   onBookmarkUpdate: (data: Bookmark) => void
   onBookmarkRemove: (id: string, collectionId: string) => void
   onCollectionUpdate: (data: Collection) => void
+  onCollectionRemove: (id: string) => void
 }
 
 const OuterWrapper = styled.div`

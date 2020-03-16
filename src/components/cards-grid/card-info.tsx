@@ -156,7 +156,7 @@ const Title = styled.input`
 const Description = styled.input`
   width: 100%;
   font-size: 15px;
-  line-height: 1.1em;
+  line-height: 1.2em;
   padding: 5px 0 0;
   overflow: hidden;
   box-sizing: content-box;

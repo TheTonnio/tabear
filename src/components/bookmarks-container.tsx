@@ -9,12 +9,13 @@ type Tab = chrome.tabs.Tab;
 
 const BookmarksContainer = (props: PropTypes) => {
   const {
+    layoutType,
     bookmarks,
     collections,
     collectionsOrder,
     onCollectionsUpdate,
     onBookmarksUpdate,
-    layoutType,
+    onCollectionsOrderUpdate,
   } = props;
 
   const [ draggingItemId, setDraggingItemId] = useState<string | undefined>();
@@ -111,6 +112,28 @@ const BookmarksContainer = (props: PropTypes) => {
     onCollectionsUpdate(newCollectionsObj);
   };
 
+  const onCollectionRemove = (id: string) => {
+    const newCollectionsOrder = [ ...collectionsOrder ];
+    const newCollectionsObj = { ...collections };
+    const newBookmarksObj = { ...bookmarks };
+
+    const relatedIdOrderIndex = newCollectionsOrder.indexOf(id);
+    const relatedCollection = newCollectionsObj[id];
+    const relatedBookmarksIds = relatedCollection
+      && relatedCollection.bookmarksIds
+      && relatedCollection.bookmarksIds.length
+      ? newCollectionsObj[id].bookmarksIds
+      : [];
+
+    relatedBookmarksIds.forEach(bookmarkId => delete newBookmarksObj[bookmarkId]);
+    delete newCollectionsObj[id];
+    newCollectionsOrder.splice(relatedIdOrderIndex, 1);
+
+    onCollectionsOrderUpdate(newCollectionsOrder);
+    onCollectionsUpdate(newCollectionsObj);
+    onBookmarksUpdate(newBookmarksObj);
+  };
+
   const onBookmarkUpdate = (bookmark: Bookmark) => {
     onBookmarksUpdate({
       ...bookmarks,
@@ -144,6 +167,7 @@ const BookmarksContainer = (props: PropTypes) => {
       onBookmarkUpdate={onBookmarkUpdate}
       onBookmarkRemove={onBookmarkRemove}
       onCollectionUpdate={onCollectionUpdate}
+      onCollectionRemove={onCollectionRemove}
     />
   )
 };
@@ -156,6 +180,6 @@ type PropTypes = {
   collectionsOrder: string[]
   onBookmarksUpdate: (data: Bookmarks) => void
   onCollectionsUpdate: (data: Collections) => void
-  onCollectionsOrder: (data: string[]) => void
+  onCollectionsOrderUpdate: (data: string[]) => void
   layoutType: LayoutType
 }
