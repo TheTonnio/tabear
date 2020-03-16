@@ -12,6 +12,7 @@ import TopBar from "./components/top-bar/top-bar";
 import { LayoutType } from "./models/layout-type";
 import { LayoutTypeContext } from './store/layout-type-context'
 import OpenTabsPanel from "./components/tabs-panel/tabs-panel";
+import initialState from './mock/initial-data';
 
 const AppWrapper = styled.div`
   height: 100vh;
@@ -42,6 +43,10 @@ class App extends React.Component<undefined, StateTypes> {
     this.setBookmarks = this.setBookmarks.bind(this);
     this.setCollections = this.setCollections.bind(this);
     this.setCollectionsOrder = this.setCollectionsOrder.bind(this);
+
+    // this.storage.saveData('bookmarks', initialState.bookmarks);
+    // this.storage.saveData('collections', initialState.collections);
+    // this.storage.saveData('collectionsOrder', initialState.collectionsOrder);
   }
 
   async componentDidMount(): Promise<void> {
@@ -92,7 +97,6 @@ class App extends React.Component<undefined, StateTypes> {
         <DndProvider backend={Backend}>
           <AppWrapper>
             <TopBar onSetLayoutType={this.setLayoutType} />
-
             <DashboardWrapper>
               <BookmarksContainer
                 bookmarks={bookmarks}
@@ -103,7 +107,6 @@ class App extends React.Component<undefined, StateTypes> {
                 onCollectionsUpdate={this.setCollections}
                 onCollectionsOrder={this.setCollectionsOrder}
               />
-
               <OpenTabsPanel/>
             </DashboardWrapper>
           </AppWrapper>

@@ -29,7 +29,8 @@ class CreateCollectionForm extends React.Component<PropTypes, StateTypes> {
       id: v4(),
       name,
       description,
-      bookmarksIds: []
+      bookmarksIds: [],
+      isCollapsed: false,
     });
 
     this.resetFrom();

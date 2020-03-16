@@ -20,23 +20,36 @@ import {
 import { getMaxGridCollectionHeight } from "../../utils/get-max-grid-collection-height";
 
 const CardsCollection = (props: PropTypes) => {
-  const { bookmarks, collection, moveCard, setDraggingItemId, draggingItemId } = props;
-  const { id, name, description } = collection;
+  const {
+    bookmarks,
+    collection,
+    moveCard,
+    setDraggingItemId,
+    draggingItemId,
+    onBookmarkUpdate,
+    onBookmarkRemove,
+    onCollectionUpdate,
+  } = props;
+  const { id, name, description, isCollapsed } = collection;
   const { BOOKMARK, TAB } = DraggableItemTypes;
 
   const { maxItemsPerRow } = useContext(LayoutConfigContext);
-  const [ isCollectionCollapsed, toggleCollection ] = useState<boolean>(false);
 
   const hasBookmarks = !!bookmarks.length;
 
   const rows = Math.ceil(bookmarks.length / maxItemsPerRow);
-  const maxCollectionHeight = getMaxGridCollectionHeight(isCollectionCollapsed, rows);
+  const maxCollectionHeight = getMaxGridCollectionHeight(isCollapsed, rows);
 
   const destination: DnDDestination = {
     type: DraggableItemTypes.BOOKMARK,
     id,
     index: bookmarks.length
   };
+
+  const toggleCollection = () => onCollectionUpdate({
+    ...collection,
+    isCollapsed: !isCollapsed
+  });
 
   return (
     <DropWrapper
@@ -49,33 +62,36 @@ const CardsCollection = (props: PropTypes) => {
             <CardsCollectionHeader
               name={name}
               description={description}
-              isCollectionCollapsed={isCollectionCollapsed}
-              toggleCollection={() => toggleCollection(!isCollectionCollapsed)}
+              isCollectionCollapsed={isCollapsed}
+              toggleCollection={() => toggleCollection()}
             />
           <InnerWrapper
             maxCollectionHeight={maxCollectionHeight}
-            hasBookmarks={isCollectionCollapsed || hasBookmarks}
+            hasBookmarks={isCollapsed || hasBookmarks}
           >
             {
-              hasBookmarks ? (
-                <Grid>
-                  {
-                    bookmarks.map((bookmark: Bookmark, index: number) => (
-                      <Card
-                        key={bookmark.id}
-                        index={index}
-                        collectionId={id}
-                        bookmark={bookmark}
-                        draggingItemId={draggingItemId}
-                        moveCard={moveCard}
-                        setDraggingItemId={setDraggingItemId}
-                      />
-                    ))
-                  }
-                </Grid>
-              ) : (
-                <CardsPlaceholder/>
-              )
+              hasBookmarks ?
+                (
+                  <Grid>
+                    {
+                      bookmarks.map((bookmark: Bookmark, index: number) => (
+                        <Card
+                          key={bookmark.id}
+                          index={index}
+                          collectionId={id}
+                          bookmark={bookmark}
+                          draggingItemId={draggingItemId}
+                          moveCard={moveCard}
+                          setDraggingItemId={setDraggingItemId}
+                          onBookmarkUpdate={onBookmarkUpdate}
+                          onBookmarkRemove={onBookmarkRemove}
+                        />
+                      ))
+                    }
+                  </Grid>
+                ) : (
+                  <CardsPlaceholder/>
+                )
             }
           </InnerWrapper>
         </Wrapper>
@@ -94,6 +110,9 @@ type PropTypes = {
   setDraggingItemId: Dispatch<string | undefined>
   layoutType: LayoutType
   moveCard: (source: any, destination: any, draggableId: string) => void
+  onBookmarkUpdate: (data: Bookmark) => void
+  onBookmarkRemove: (id: string, collectionId: string) => void
+  onCollectionUpdate: (data: Collection) => void
 }
 
 const OuterWrapper = styled.div`

@@ -3,6 +3,8 @@ import { Bookmarks } from "../models/bookmarks";
 import { Collections } from "../models/collections";
 import { LayoutType } from "../models/layout-type";
 import LayoutResolver from "./layout-resolver";
+import {Bookmark} from "../models/bookmark";
+import {Collection} from "../models/collection";
 type Tab = chrome.tabs.Tab;
 
 const BookmarksContainer = (props: PropTypes) => {
@@ -11,6 +13,7 @@ const BookmarksContainer = (props: PropTypes) => {
     collections,
     collectionsOrder,
     onCollectionsUpdate,
+    onBookmarksUpdate,
     layoutType,
   } = props;
 
@@ -37,7 +40,6 @@ const BookmarksContainer = (props: PropTypes) => {
 
     const start = collections[source.id];
     const finish = collections[destination.id];
-
 
     if (start === finish) {
       const newBookmarkIds = Array.from(start.bookmarksIds);
@@ -99,6 +101,36 @@ const BookmarksContainer = (props: PropTypes) => {
     });
   };
 
+  const onBookmarkUpdate = (bookmark: Bookmark) => {
+    const newBookmarksObj = {
+      ...bookmarks,
+      [bookmark.id]: bookmark
+    };
+
+    onBookmarksUpdate(newBookmarksObj);
+  };
+
+  const onCollectionUpdate = (collection: Collection) => {
+    const newCollectionsObj = {
+      ...collections,
+      [collection.id]: collection
+    };
+
+    onCollectionsUpdate(newCollectionsObj);
+  };
+
+  const onBookmarkRemove = (id: string, collectionId: string) => {
+    const newBookmarksObj = { ...bookmarks };
+    const newCollectionObj = { ...collections[collectionId] };
+    const relatedIdIndex = newCollectionObj.bookmarksIds.indexOf(id);
+
+    newCollectionObj.bookmarksIds.splice(relatedIdIndex, 1);
+    delete newBookmarksObj[id];
+
+    onBookmarksUpdate(newBookmarksObj);
+    onCollectionUpdate(newCollectionObj);
+  };
+
   return (
     <LayoutResolver
       layoutType={layoutType}
@@ -108,6 +140,9 @@ const BookmarksContainer = (props: PropTypes) => {
       draggingItemId={draggingItemId}
       bookmarks={bookmarks}
       collections={collections}
+      onBookmarkUpdate={onBookmarkUpdate}
+      onBookmarkRemove={onBookmarkRemove}
+      onCollectionUpdate={onCollectionUpdate}
     />
   )
 };

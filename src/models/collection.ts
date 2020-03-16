@@ -3,4 +3,5 @@ export interface Collection {
   name: string
   description: string
   bookmarksIds: string[]
+  isCollapsed: boolean
 }

@@ -6,8 +6,8 @@ import { Collection } from "../models/collection";
 import { Bookmark } from "../models/bookmark";
 import CardsCollection from "./cards-grid/cards-collection";
 import CardsGrid from "./cards-grid/cards-grid";
-import {Bookmarks} from "../models/bookmarks";
-import {Collections} from "../models/collections";
+import { Bookmarks } from "../models/bookmarks";
+import { Collections } from "../models/collections";
 
 class LayoutResolver extends React.Component<PropTypes, StateTypes> {
   private layoutComponents = {
@@ -48,7 +48,10 @@ class LayoutResolver extends React.Component<PropTypes, StateTypes> {
       setDraggingItemId,
       draggingItemId,
       bookmarks,
-      collections
+      collections,
+      onBookmarkUpdate,
+      onBookmarkRemove,
+      onCollectionUpdate,
     } = this.props;
 
     const componentName = layoutType === LAYOUT_TYPES_CODES.Grid ? 'grid' : 'masonry';
@@ -72,6 +75,9 @@ class LayoutResolver extends React.Component<PropTypes, StateTypes> {
                 setDraggingItemId={setDraggingItemId}
                 draggingItemId={draggingItemId}
                 layoutType={layoutType}
+                onBookmarkUpdate={onBookmarkUpdate}
+                onBookmarkRemove={onBookmarkRemove}
+                onCollectionUpdate={onCollectionUpdate}
               />
             );
           })
@@ -89,6 +95,9 @@ type PropTypes = {
   draggingItemId?: string | null
   bookmarks: Bookmarks
   collections: Collections
+  onBookmarkUpdate: (data: Bookmark) => void
+  onBookmarkRemove: (id: string, collectionId: string) => void
+  onCollectionUpdate: (data: Collection) => void
 }
 
 type StateTypes = {

@@ -21,6 +21,7 @@ const ImageWrapper = styled.div`
   display: flex;
   width: 30px;
   padding-top: 12px;
+  margin-left: 8px;
 `;
 
 const Image = styled.div`
