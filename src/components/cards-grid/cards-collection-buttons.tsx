@@ -41,6 +41,7 @@ const CardsCollectionButtons = (props: PropTypes) => {
       <CollapseButton
         onClick={onCollapseButtonClick}
         isCollectionCollapsed={isCollectionCollapsed}
+        disabled={isEditing}
       >
         <FontAwesomeIcon
           icon={faAngleDown}
@@ -48,6 +49,7 @@ const CardsCollectionButtons = (props: PropTypes) => {
       </CollapseButton>
       <ActionMenuButton
         onClick={onActionMenuButtonClick}
+        disabled={isEditing}
       >
         <FontAwesomeIcon icon={faEllipsisV}/>
       </ActionMenuButton>
@@ -100,6 +102,11 @@ const HeaderButton = styled.button`
   transition: transform .3s, opacity .3s;
   color: #0075EB;
   background: transparent;
+  
+  &:disabled {
+    color: #CED5DC;
+    cursor: auto;
+  }
 `;
 
 const ActionMenuButton = styled(HeaderButton)`

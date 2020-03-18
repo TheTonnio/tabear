@@ -2,7 +2,6 @@ import React, {useRef, useState} from 'react';
 import CardImage from "./card-image";
 import styled from "styled-components";
 import CardButtons from "./card-buttons";
-import {defaultAccent} from "../../constants";
 
 const CardInfo = (props: PropTypes) => {
   const {
@@ -44,13 +43,18 @@ const CardInfo = (props: PropTypes) => {
       isDragging={isDragging}
       isActive={!!draggingItemId}
     >
-      <CardButtons
-        isEditing={isEditing}
-        onEdit={onEdit}
-        onRemove={onRemove}
-        onCancel={onCancel}
-        onSave={handleCardSave}
-      />
+      {!draggingItemId
+        ? (
+          <CardButtons
+            isEditing={isEditing}
+            onEdit={onEdit}
+            onRemove={onRemove}
+            onCancel={onCancel}
+            onSave={handleCardSave}
+          />
+        )
+        : null
+      }
       <Header>
         <CardImage url={url} iconUrl={iconUrl}/>
       </Header>

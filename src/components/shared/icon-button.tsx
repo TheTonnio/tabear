@@ -33,14 +33,14 @@ const Button = styled.button`
   background: ${(props: { color: string, isEditing: boolean }) => props.color};
   border: 0;
   margin-left: 5px;
-  border-radius: 18px;
-  height: 24px;
-  width: 24px;
+  border-radius: 25px;
+  height: 25px;
+  width: 25px;
   color: #fff;
   font-size: 10px;
   cursor: pointer;
   transition: transform .3s;
-  transform: scale(${(props: { isEditing: boolean }) => props.isEditing ? 1 : 0 });
+  transform: scale(0);
   
   &:hover {
     transform: scale(1.5);

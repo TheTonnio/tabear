@@ -1,6 +1,5 @@
 import React from 'react';
 import { useDrop } from "react-dnd";
-import { DnDSource } from "../../models/dnd-source";
 
 const DropWrapper = (props: PropTypes) => {
   const { acceptType, moveCard, destination, children } = props;
@@ -29,5 +28,4 @@ interface PropTypes {
   acceptType: string | string[]
   destination: any
   moveCard: any
-  // moveCard: (source: any, destination: any, draggableId: string) => void
 }

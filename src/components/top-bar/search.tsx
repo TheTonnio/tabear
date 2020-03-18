@@ -23,7 +23,7 @@ const SearchField = styled.input`
   border-bottom: 2px solid #0075EB;
   font-size: 16px;
   background: transparent;
-  transition: width .3s;
+  transition: width .4s;
   padding: 0;
   width: ${({ isActive }: { isActive: boolean }) => isActive ? 200 : 0}px;
 `;

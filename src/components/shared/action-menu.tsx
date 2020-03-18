@@ -1,7 +1,7 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import { ActionMenuConfig } from "../../models/action-menu-config";
 import styled from "styled-components";
-import {defaultAccent} from "../../constants";
+import { defaultAccent } from "../../constants";
 
 const ActionMenu = (props: PropTypes) => {
   const { config, isActionMenuShown } = props;
@@ -31,7 +31,7 @@ const List = styled.ul`
   right: 22px;
   top: 45px;
   margin: 0;
-  transition: opacity .3s;
+  transition: opacity .3s, visibility .3s;
   opacity: 1;
   list-style: none;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
@@ -43,6 +43,7 @@ const List = styled.ul`
   
   &.hidden {
     opacity: 0;
+    visibility: hidden;
   }
 `;
 

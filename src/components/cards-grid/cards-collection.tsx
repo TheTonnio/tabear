@@ -32,7 +32,7 @@ const CardsCollection = (props: PropTypes) => {
     onCollectionUpdate,
     onCollectionRemove,
   } = props;
-  const { id, name, description, isCollapsed } = collection;
+  const { id, name, isCollapsed } = collection;
   const { BOOKMARK, TAB } = DraggableItemTypes;
 
   const { maxItemsPerRow } = useContext(LayoutConfigContext);
@@ -53,11 +53,10 @@ const CardsCollection = (props: PropTypes) => {
     isCollapsed: !isCollapsed
   });
 
-  const handleCollectionSave = ({ name, description }: CollectionEditableFields) => {
+  const handleCollectionSave = ({ name }: CollectionEditableFields) => {
     onCollectionUpdate({
       ...collection,
       name,
-      description,
     });
   };
 
@@ -71,7 +70,6 @@ const CardsCollection = (props: PropTypes) => {
         <Wrapper>
             <CardsCollectionHeader
               name={name}
-              description={description}
               isCollectionCollapsed={isCollapsed}
               toggleCollection={() => toggleCollection()}
               onSave={handleCollectionSave}
@@ -139,15 +137,6 @@ const Wrapper = styled.div`
   border-radius: 10px;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.15);
   border: 1px solid #f4f4f4;
-  
-  &:hover .collection-header-buttons > button {
-    transform: scale(1);
-    
-    &:hover {
-      transform: scale(1.15);
-      opacity: .7;
-    }
-  }
 `;
 
 const InnerWrapper = styled.div`

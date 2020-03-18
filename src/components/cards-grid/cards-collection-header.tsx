@@ -1,42 +1,41 @@
 import React, {useRef, useState} from 'react';
-import styled from "styled-components";
+import styled, {keyframes} from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPen, faTrash, faPlus } from "@fortawesome/free-solid-svg-icons";
-import {defaultRed, WRAPPER_MARGIN} from "../../constants";
+import {defaultAccent, defaultRed, WRAPPER_MARGIN} from "../../constants";
 import CardsCollectionButtons from "./cards-collection-buttons";
 import ActionMenu from "../shared/action-menu";
 import { ActionMenuConfig } from "../../models/action-menu-config";
 import { CollectionEditableFields } from "../../models/collection-editable-fields";
 
 const CardsCollectionHeader = (props: PropTypes) => {
-  const { name, description, isCollectionCollapsed, toggleCollection, onSave, onRemove } = props;
+  const { name, isCollectionCollapsed, toggleCollection, onSave, onRemove } = props;
   const [ isEditing, setEditingMode ] = useState(false);
   const [ isActionMenuShown, setActionMenuVisibility ] = useState(false);;
 
   const titleInputRef = useRef<HTMLDivElement>(null);
-  const descriptionInputRef = useRef<HTMLDivElement>(null);
 
   const [ collectionName, setName ] = useState<string>(name);
-  const [ collectionDescription, setCardDescription ] = useState<string>(description);
 
   const showActionMenu = () => {
-    setActionMenuVisibility(true);
-    document.addEventListener("click", () => setActionMenuVisibility(false), { once: true });
+    if (!isActionMenuShown) {
+      setActionMenuVisibility(true);
+      document.addEventListener("click", () => setActionMenuVisibility(false), { once: true });
+    }
   };
 
   const onFinishEdit = () => setEditingMode(false);
+  const onEditButtonClick = () => !isEditing && setEditingMode(true);
 
   const handleNameChange = (e: any) => setName(e.currentTarget.value);
-  const handleDescriptionChange = (e: any) => setCardDescription(e.currentTarget.value);
 
   const onCancel = () => {
     setName(name);
-    setCardDescription(description);
     onFinishEdit();
   };
 
   const handleSave = () => {
-    onSave({ name: collectionName, description: collectionDescription });
+    onSave({ name: collectionName });
     onFinishEdit();
   };
 
@@ -46,7 +45,7 @@ const CardsCollectionHeader = (props: PropTypes) => {
       text: "Add",
       icon: <FontAwesomeIcon icon={faPlus}/>
     }, {
-      action: () => setEditingMode(true),
+      action: () => onEditButtonClick(),
       text: "Rename",
       icon: <FontAwesomeIcon icon={faPen}/>
     }, {
@@ -61,7 +60,7 @@ const CardsCollectionHeader = (props: PropTypes) => {
     <Header>
       {
         isEditing ? (
-          <>
+          <InputWrapper>
             <TitleInput
               type={"text"}
               value={collectionName}
@@ -69,20 +68,9 @@ const CardsCollectionHeader = (props: PropTypes) => {
               // @ts-ignore
               ref={titleInputRef}
             />
-            <Separator/>
-            <DescriptionInput
-              type={"text"}
-              value={collectionDescription}
-              onChange={handleDescriptionChange}
-              // @ts-ignore
-              ref={descriptionInputRef}
-            />
-          </>
+          </InputWrapper>
         ) : (
-          <>
-            <Title>{name}</Title>
-            <Description>{description}</Description>
-          </>
+          <Title>{name}</Title>
         )
       }
 
@@ -105,12 +93,23 @@ const CardsCollectionHeader = (props: PropTypes) => {
 
 interface PropTypes {
   name: string
-  description: string
   isCollectionCollapsed: boolean
   toggleCollection: () => void
   onSave: (data: CollectionEditableFields) => void
   onRemove: () => void
 }
+
+
+const zoomIn = keyframes`
+  from {
+    transform: scale(0);
+  }
+
+  to {
+    transform: scale(1);
+  }
+`;
+
 
 const Header = styled.div`
   position: relative;
@@ -120,21 +119,58 @@ const Header = styled.div`
   padding: 10px ${WRAPPER_MARGIN}px 0;
   margin: 0 auto 0;
   white-space: nowrap;
+
+  .collection-header-buttons > .editing {
+    transform: scale(1);
+    animation-name: ${zoomIn};
+    animation-duration: .3s;
+    
+    &:hover {
+      transform: scale(1.15);
+    }
+  }
+`;
+
+const increaseWidth = keyframes`
+  from {
+    width: 0;
+  }
+
+  to {
+    width: 100%;
+  }
 `;
 
 
 
-const TitleInput = styled.input`
+const InputWrapper = styled.div`
   position: relative;
-  width: 25%;
+  max-width: 230px;
+  width: 40%;
+  
+  &:after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: #0075EB;
+    animation-name: ${increaseWidth};
+    animation-duration: .4s;
+    animation-fill-mode: forwards;
+  }
+`;
+
+const TitleInput = styled.input`
+  width: 100%;
   padding-right: 10px;
+  padding-left: 0;
   font-size: 18px;
   font-weight: bold;
   color: #0075EB;
-  border: 1px solid #0075EB;
-  background: #F4F7FB;
-  border-radius: 3px;
-  padding-left: 10px;
+  border: 0;
+  font-family: 'Ubuntu', sans-serif;
 `;
 
 const Title = styled.span`
@@ -143,48 +179,6 @@ const Title = styled.span`
   font-size: 18px;
   font-weight: bold;
   color: #0075EB;
-  
-  &::after {
-  content: '';
-    position: absolute;
-    top: 0;
-    right: 0;
-    background: #0075EB;
-    width: 2px;
-    border-radius: 2px;
-    height: 100%;
-  }
-`;
-
-const Separator = styled.div`
-  position: relative;
-  background: #0075EB;
-  width: 2px;
-  margin-left: 10px;
-  border-radius: 2px;
-  height: 21px;
-  display: inline-block;
-`;
-
-const DescriptionInput = styled.input`
-  width: 45%;
-  margin-top: 1px;
-  color: #1A1C1F;
-  font-weight: 500;
-  font-size: 16px;
-  border: 1px solid #0075EB;
-  background: #F4F7FB;
-  border-radius: 3px;
-  padding: 2.5px 0 2.5px 10px;
-  margin-left: 10px;
-`;
-
-const Description = styled.span`
-  margin-top: 1px;
-  padding-left: 7px;
-  color: #1A1C1F;
-  font-weight: 500;
-  font-size: 16px;
 `;
 
 export default CardsCollectionHeader;
