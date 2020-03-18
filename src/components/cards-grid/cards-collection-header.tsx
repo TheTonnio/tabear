@@ -121,6 +121,7 @@ const Header = styled.div`
   white-space: nowrap;
 
   .collection-header-buttons > .editing {
+    margin-left: 7px;
     transform: scale(1);
     animation-name: ${zoomIn};
     animation-duration: .3s;

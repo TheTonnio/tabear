@@ -161,7 +161,7 @@ const Description = styled.input`
   width: 100%;
   font-size: 15px;
   line-height: 1.2em;
-  padding: 5px 0 0;
+  padding:  0;
   overflow: hidden;
   box-sizing: content-box;
   color: #8B959E;
@@ -180,7 +180,7 @@ const Description = styled.input`
 `;
 
 const ContentWrapper = styled.div`
-  padding: 7px 10px;
+  padding: 5px 10px 7px;
   margin-top: auto;
   border-radius: 5px;
   margin-bottom: 5px;

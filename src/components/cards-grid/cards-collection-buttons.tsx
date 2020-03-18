@@ -77,7 +77,7 @@ const ButtonsGroup = styled.div`
 
 const ButtonsWrapper = styled.div`
   position: relative;
-  margin-right: 5px;
+  margin-right: 3px;
 `;
 
 const CardButtonIcon = styled(FontAwesomeIcon)`
