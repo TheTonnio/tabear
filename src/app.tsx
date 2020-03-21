@@ -43,6 +43,7 @@ class App extends React.Component<undefined, StateTypes> {
     this.setBookmarks = this.setBookmarks.bind(this);
     this.setCollections = this.setCollections.bind(this);
     this.setCollectionsOrder = this.setCollectionsOrder.bind(this);
+    this.setLayoutType = this.setLayoutType.bind(this);
 
     this.storage.saveData('bookmarks', initialState.bookmarks);
     this.storage.saveData('collections', initialState.collections);
@@ -96,7 +97,10 @@ class App extends React.Component<undefined, StateTypes> {
       <LayoutTypeContext.Provider value={layoutType}>
         <DndProvider backend={Backend}>
           <AppWrapper>
-            <TopBar onSetLayoutType={this.setLayoutType} />
+            <TopBar
+              onSetLayoutType={this.setLayoutType}
+              layoutType={layoutType}
+            />
             <DashboardWrapper>
               <BookmarksContainer
                 bookmarks={bookmarks}

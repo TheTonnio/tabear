@@ -20,7 +20,7 @@ import {
 import { getMaxGridCollectionHeight } from "../../utils/get-max-grid-collection-height";
 import { CollectionEditableFields } from "../../models/collection-editable-fields";
 
-const CardsCollection = (props: PropTypes) => {
+const CardsCollection = React.memo((props: PropTypes) => {
   const {
     bookmarks,
     collection,
@@ -108,7 +108,7 @@ const CardsCollection = (props: PropTypes) => {
       </OuterWrapper>
     </DropWrapper>
   );
-};
+});
 
 export default CardsCollection;
 

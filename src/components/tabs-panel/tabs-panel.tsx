@@ -41,6 +41,7 @@ const Panel = styled.div`
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
   border: 1px solid #f4f4f4;
   background: #fff;
+  overflow: auto;
 `;
 
 export default TabsPanel;

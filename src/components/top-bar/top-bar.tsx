@@ -79,7 +79,7 @@ class TopBar extends React.Component<PropTypes, any> {
   }
 
   render() {
-    let { onSetLayoutType } = this.props;
+    const { onSetLayoutType, layoutType } = this.props;
 
     return (
       <Bar>
@@ -88,11 +88,28 @@ class TopBar extends React.Component<PropTypes, any> {
           isActive={this.state.isSearchActive}
           ref={this.searchInputRef}
         />
-        <TopBarButton action={() => this.toggleSearchFieldActivity()} icon={<FontAwesomeIcon icon={faSearch}/>}/>
-        <TopBarButton action={() => {}} icon={<FontAwesomeIcon icon={faPlus}/>}/>
-        <TopBarButton action={() => onSetLayoutType(LAYOUT_TYPES_CODES.Grid)} icon={
-          <FontAwesomeIcon icon={faThLarge}/>}/>
-        <TopBarButton action={() => onSetLayoutType(LAYOUT_TYPES_CODES.List)} icon={<FontAwesomeIcon icon={faList}/>}/>
+        <TopBarButton
+          action={() => this.toggleSearchFieldActivity()}
+          icon={<FontAwesomeIcon icon={faSearch}/>}
+        />
+        <TopBarButton
+          action={() => {}}
+          icon={<FontAwesomeIcon icon={faPlus}/>}
+        />
+        <LayoutButtonsGroup>
+          <TopBarButton
+            action={() => onSetLayoutType(LAYOUT_TYPES_CODES.Grid)}
+            icon={<FontAwesomeIcon icon={faThLarge}/>}
+            isGrouped={true}
+            isActive={layoutType === LAYOUT_TYPES_CODES.Grid}
+          />
+          <TopBarButton
+            action={() => onSetLayoutType(LAYOUT_TYPES_CODES.List)}
+            icon={<FontAwesomeIcon icon={faList}/>}
+            isGrouped={true}
+            isActive={layoutType === LAYOUT_TYPES_CODES.List}
+          />
+        </LayoutButtonsGroup>
       </Bar>
     );
   }
@@ -107,8 +124,15 @@ const Bar = styled.div`
   align-items: center;
 `;
 
+const LayoutButtonsGroup = styled.div`
+  margin-left: 10px;
+  box-shadow: inset 0 0 7px rgba(0, 0, 0, 0.45);
+  border-radius: 5px;
+`;
+
 interface PropTypes {
   onSetLayoutType: (type: LayoutType) => void
+  layoutType: LayoutType
 }
 
 
