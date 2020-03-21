@@ -60,8 +60,8 @@ const Card = (props : PropTypes) => {
   };
 
   const onCardClick = (e) => {
-      e.preventDefault();
     if (isEditing) {
+      e.preventDefault();
     }
   };
 

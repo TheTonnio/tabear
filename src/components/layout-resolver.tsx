@@ -53,6 +53,7 @@ class LayoutResolver extends React.Component<PropTypes, StateTypes> {
       onBookmarkRemove,
       onCollectionUpdate,
       onCollectionRemove,
+      isSearchMode,
     } = this.props;
 
     const componentName = layoutType === LAYOUT_TYPES_CODES.Grid ? 'grid' : 'masonry';
@@ -63,10 +64,11 @@ class LayoutResolver extends React.Component<PropTypes, StateTypes> {
     return (
       <Layout width={width}>
         {
-          collectionsOrder.map((collectionId: string, index: number) => {
+          (collectionsOrder.map((collectionId: string, index: number) => {
             const collection: Collection = collections[collectionId];
-            const bookmarksList: Bookmark[] = collection.bookmarksIds.map((id: string) => bookmarks[id]);
-            return (
+            const bookmarksList: Bookmark[] = collection.bookmarksIds.map((id: string) => bookmarks[id]).filter(Boolean);
+
+            return bookmarksList.length || !isSearchMode ? (
               <LayoutCollection
                 key={collectionId}
                 bookmarks={bookmarksList}
@@ -81,8 +83,8 @@ class LayoutResolver extends React.Component<PropTypes, StateTypes> {
                 onCollectionUpdate={onCollectionUpdate}
                 onCollectionRemove={onCollectionRemove}
               />
-            );
-          })
+            ) : undefined;
+          })).filter(Boolean)
         }
       </Layout>
     )
@@ -101,6 +103,7 @@ type PropTypes = {
   onBookmarkRemove: (id: string, collectionId: string) => void
   onCollectionUpdate: (data: Collection) => void
   onCollectionRemove: (id: string) => void
+  isSearchMode: boolean
 }
 
 type StateTypes = {

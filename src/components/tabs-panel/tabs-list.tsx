@@ -15,7 +15,10 @@ const TabsList = (props: PropTypes) => {
       {
         tabs.map((tabItem: Tab, index) =>
           <DragWrapper key={index} dragSource={{ overload: tabItem, type: DraggableItemTypes.TAB, index: undefined, draggableId: v4(), id: undefined }}>
-            <ListItem>{tabItem.title}</ListItem>
+            <ListItem>
+              <Thumb url={tabItem.favIconUrl}/>
+              <Title>{tabItem.title}</Title>
+            </ListItem>
           </DragWrapper>)
       }
     </List>
@@ -34,6 +37,15 @@ const ListHeader = styled.div`
   color: #0075EB;
 `;
 
+const Thumb = styled.div`
+  display: inline-block;
+  min-width: 20px;
+  height: 20px;
+  background-image: url(${((props: { url?: string }) => props.url)});
+  background-size: 18px 18px;
+  background-position: center;
+`;
+
 const List = styled.div`
   width: 300px;
   margin: 0;
@@ -41,12 +53,19 @@ const List = styled.div`
   list-style: none;
 `;
 
-const ListItem = styled.div`
-  margin-top: 10px;
-  padding: 10px;
+const Title = styled.span`
+  padding-left: 10px;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
+
+`;
+
+const ListItem = styled.div`
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+  padding: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
   border-radius: 10px;
   cursor: grab;

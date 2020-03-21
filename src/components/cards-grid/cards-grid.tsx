@@ -2,6 +2,7 @@ import React, {useContext} from 'react';
 import { CARD_WIDTH, CONTAINER_MARGIN, LIST_GAP, WRAPPER_MARGIN } from "../../constants";
 import {ConfigContext} from '../../store/config-context';
 import styled from "styled-components";
+import {NoDataFound} from "../no-data-found";
 
 const CardsGrid = (props: PropTypes) => {
   const {
@@ -20,7 +21,9 @@ const CardsGrid = (props: PropTypes) => {
   return (
     <Grid className={isPanelCollapsed ? "" : "grid-narrow"}>
       {
-        children
+        children && children.length
+          ? children
+          : <NoDataFound/>
       }
     </Grid>
   );
@@ -39,6 +42,6 @@ const Grid = styled.div`
 `;
 
 type PropTypes = {
-  children: JSX.Element[]
+  children?: any[]
   width: number
 }

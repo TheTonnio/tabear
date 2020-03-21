@@ -28,7 +28,7 @@ class TopBar extends React.Component<PropTypes, any> {
     this.activateSearchField = this.activateSearchField.bind(this);
     this.deactivateSearchField = this.deactivateSearchField.bind(this);
     this.toggleSearchFieldActivity = this.toggleSearchFieldActivity.bind(this);
-    this.onSearch = this.onSearch.bind(this);
+    this.handleSearch = this.handleSearch.bind(this);
   }
 
   componentDidMount(): void {
@@ -62,11 +62,12 @@ class TopBar extends React.Component<PropTypes, any> {
   deactivateSearchField() {
     const ref = this.searchInputRef.current;
 
-    if (ref) {
+    if (ref && (ref.value === '' || ref.value === undefined)) {
       ref.value = '';
-    }
 
-    this.setState({ isSearchActive: false })
+      this.setState({ isSearchActive: false, searchValue: '' });
+      this.props.onSearch(undefined);
+    }
   };
 
   toggleSearchFieldActivity() {
@@ -75,9 +76,10 @@ class TopBar extends React.Component<PropTypes, any> {
       : this.activateSearchField()
   }
 
-  onSearch(event: any) {
+  handleSearch(event: any) {
     const value = event.target && event.target.value;
     this.setState({ searchValue: value });
+    this.props.onSearch(value);
   }
 
   render() {
@@ -86,7 +88,7 @@ class TopBar extends React.Component<PropTypes, any> {
     return (
       <Bar className={this.context.isPanelCollapsed ? "" : "top-bar-narrow"}>
         <Search
-          onSearch={this.onSearch}
+          onSearch={this.handleSearch}
           isActive={this.state.isSearchActive}
           ref={this.searchInputRef}
         />
@@ -139,6 +141,7 @@ const LayoutButtonsGroup = styled.div`
 
 interface PropTypes {
   onSetLayoutType: (type: LayoutType) => void
+  onSearch: (query?: string) => void
   layoutType: LayoutType
 }
 

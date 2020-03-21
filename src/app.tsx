@@ -36,9 +36,11 @@ class App extends React.Component<undefined, StateTypes> {
 
     this.state = {
       bookmarks: {},
+      filteredBookmarks: {},
       collections: {},
       collectionsOrder: [],
       config: defaultConfig,
+      isSearchMode: false,
     };
 
     this.setBookmarks = this.setBookmarks.bind(this);
@@ -46,6 +48,7 @@ class App extends React.Component<undefined, StateTypes> {
     this.setCollectionsOrder = this.setCollectionsOrder.bind(this);
     this.setConfigValue = this.setConfigValue.bind(this);
     this.setLayoutType = this.setLayoutType.bind(this);
+    this.searchBookmarks = this.searchBookmarks.bind(this);
 
     // Seed with mock data
     this.storage.saveData('bookmarks', initialState.bookmarks);
@@ -99,12 +102,36 @@ class App extends React.Component<undefined, StateTypes> {
     this.setConfigValue("layoutType", value);
   }
 
+  searchBookmarks(query?: string) {
+    const { bookmarks } = this.state;
+
+    if (query && query.length) {
+      const formattedQuery = query.toLowerCase();
+      const filteredBookmarks = { ...bookmarks };
+      const bookmarksObjKeys = Object.keys(bookmarks);
+
+      bookmarksObjKeys.filter(key => {
+        const { name, description } = bookmarks[key];
+
+        if (`${name}${description}`.toLocaleLowerCase().indexOf(formattedQuery) === -1) {
+          delete filteredBookmarks[key];
+        }
+      });
+
+      this.setState({ filteredBookmarks, isSearchMode: true });
+    } else {
+      this.setState({ bookmarks, isSearchMode: false });
+    }
+  }
+
   render() {
     const {
       bookmarks,
       collections,
       collectionsOrder,
+      filteredBookmarks,
       config,
+      isSearchMode,
     } = this.state;
 
     return (
@@ -113,17 +140,19 @@ class App extends React.Component<undefined, StateTypes> {
           <AppWrapper>
             <TopBar
               onSetLayoutType={this.setLayoutType}
+              onSearch={this.searchBookmarks}
               layoutType={config.layoutType}
             />
             <DashboardWrapper>
               <BookmarksContainer
-                bookmarks={bookmarks}
+                bookmarks={isSearchMode ? filteredBookmarks : bookmarks}
                 collections={collections}
                 collectionsOrder={collectionsOrder}
                 layoutType={config.layoutType}
                 onBookmarksUpdate={this.setBookmarks}
                 onCollectionsUpdate={this.setCollections}
                 onCollectionsOrderUpdate={this.setCollectionsOrder}
+                isSearchMode={isSearchMode}
               />
               <OpenTabsPanel/>
             </DashboardWrapper>
@@ -138,7 +167,9 @@ export default App;
 
 type StateTypes = {
   bookmarks: Bookmarks
+  filteredBookmarks: Bookmarks
   collections: Collections
   collectionsOrder: string[]
   config: Config
+  isSearchMode: boolean
 }

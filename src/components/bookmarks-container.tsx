@@ -16,6 +16,7 @@ const BookmarksContainer = (props: PropTypes) => {
     onCollectionsUpdate,
     onBookmarksUpdate,
     onCollectionsOrderUpdate,
+    isSearchMode,
   } = props;
 
   const [ draggingItemId, setDraggingItemId] = useState<string | undefined>();
@@ -24,7 +25,7 @@ const BookmarksContainer = (props: PropTypes) => {
     name: tab.title,
     description: tab.title,
     url: tab.url,
-    iconUrl: null
+    iconUrl: tab.favIconUrl
   });
   const setCards = (updatedCollections: Collections) => onCollectionsUpdate(updatedCollections);
   const moveCard = (source: any, destination: any, draggableId: string) => {
@@ -164,6 +165,7 @@ const BookmarksContainer = (props: PropTypes) => {
       draggingItemId={draggingItemId}
       bookmarks={bookmarks}
       collections={collections}
+      isSearchMode={isSearchMode}
       onBookmarkUpdate={onBookmarkUpdate}
       onBookmarkRemove={onBookmarkRemove}
       onCollectionUpdate={onCollectionUpdate}
@@ -182,4 +184,5 @@ type PropTypes = {
   onCollectionsUpdate: (data: Collections) => void
   onCollectionsOrderUpdate: (data: string[]) => void
   layoutType: LayoutType
+  isSearchMode: boolean
 }
