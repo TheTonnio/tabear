@@ -90,8 +90,6 @@ class App extends React.Component<undefined, StateTypes> {
   }
 
   setConfigValue(fieldName: string, value: any) {
-    console.log(fieldName);
-    console.log(value);
     const config = { ...this.state.config, [fieldName]: value };
     this.storage.saveData('config', config);
     this.setState({ config });

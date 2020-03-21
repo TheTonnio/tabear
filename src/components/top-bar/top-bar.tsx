@@ -1,4 +1,4 @@
-import React, { RefObject } from 'react';
+import React, {RefObject, useContext} from 'react';
 import styled from "styled-components";
 import TopBarButton from "./top-bar-button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -8,9 +8,11 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { LayoutType } from "../../models/layout-type";
 import { LAYOUT_TYPES_CODES } from "../../constants";
 import Search from "./search";
+import { ConfigContext } from "../../store/config-context";
 
 class TopBar extends React.Component<PropTypes, any> {
   searchInputRef: RefObject<HTMLInputElement>;
+  static contextType = ConfigContext;
 
   constructor(props: PropTypes) {
     super(props);
@@ -82,7 +84,7 @@ class TopBar extends React.Component<PropTypes, any> {
     const { onSetLayoutType, layoutType } = this.props;
 
     return (
-      <Bar>
+      <Bar className={this.context.isPanelCollapsed ? "" : "top-bar-narrow"}>
         <Search
           onSearch={this.onSearch}
           isActive={this.state.isSearchActive}
@@ -118,10 +120,15 @@ class TopBar extends React.Component<PropTypes, any> {
 const Bar = styled.div`
   width: 100%;
   height: 50px;
-  padding: 0 330px 0 20px;
+  padding: 0 60px 0 20px;
   display: flex;
   justify-content: flex-end;
   align-items: center;
+  transition: .3s padding-right;
+  
+  &.top-bar-narrow {
+    padding: 0 330px 0 20px;
+  }
 `;
 
 const LayoutButtonsGroup = styled.div`
