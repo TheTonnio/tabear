@@ -1,4 +1,4 @@
-import { LayoutType } from "./models/layout-type";
+import { LayoutType } from "../models/layout-type";
 
 export const ENV_DEVELOPMENT = 'development';
 export const ENV_PRODUCTION = 'production';

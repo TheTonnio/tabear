@@ -116,7 +116,7 @@ const ActionMenuButton = styled(HeaderButton)`
 const CollapseButton = styled(HeaderButton)`
   margin-right: 3px;
   font-size: 25px;
-  transform: ${({ isCollectionCollapsed }: { isCollectionCollapsed: boolean }) => `rotate(${isCollectionCollapsed ? 180 : 0}deg)`};
+  transform: ${({ isCollectionCollapsed }: { isCollectionCollapsed: boolean }) => `rotate(${isCollectionCollapsed ? 0 : 180 }deg)`};
 
   &:hover {
     opacity: .7;

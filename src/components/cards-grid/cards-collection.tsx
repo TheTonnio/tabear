@@ -1,4 +1,4 @@
-import React, {Dispatch, useContext, useState} from 'react';
+import React, {Dispatch, useContext} from 'react';
 import { Bookmark } from '../../models/bookmark';
 import { Collection } from '../../models/collection';
 import styled from "styled-components";
@@ -7,7 +7,7 @@ import CardsCollectionHeader from "./cards-collection-header";
 import { LayoutType } from "../../models/layout-type";
 import DropWrapper from "../dnd/drop-wrapper";
 import CardsPlaceholder from "./cards-placeholder";
-import { LayoutConfigContext } from "../../store/layout-config-context";
+import { ConfigContext } from "../../store/config-context";
 import { DnDDestination } from "../../models/dnd-destination";
 import {
   CARD_HEIGHT,
@@ -35,7 +35,7 @@ const CardsCollection = React.memo((props: PropTypes) => {
   const { id, name, isCollapsed } = collection;
   const { BOOKMARK, TAB } = DraggableItemTypes;
 
-  const { maxItemsPerRow } = useContext(LayoutConfigContext);
+  const { maxItemsPerRow } = useContext(ConfigContext);
 
   const hasBookmarks = !!bookmarks.length;
 

@@ -2,7 +2,7 @@ import React, {useRef, useState} from 'react';
 import styled, {keyframes} from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPen, faTrash, faPlus } from "@fortawesome/free-solid-svg-icons";
-import {defaultAccent, defaultRed, WRAPPER_MARGIN} from "../../constants";
+import { defaultRed, WRAPPER_MARGIN } from "../../constants";
 import CardsCollectionButtons from "./cards-collection-buttons";
 import ActionMenu from "../shared/action-menu";
 import { ActionMenuConfig } from "../../models/action-menu-config";

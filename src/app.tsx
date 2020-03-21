@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import BookmarksContainer from './components/bookmarks-container';
 import Storage from './utils/storage';
 import LocalStorage from './utils/localStorage';
@@ -10,9 +10,10 @@ import { Bookmarks } from "./models/bookmarks";
 import { Collections } from "./models/collections";
 import TopBar from "./components/top-bar/top-bar";
 import { LayoutType } from "./models/layout-type";
-import { LayoutTypeContext } from './store/layout-type-context'
 import OpenTabsPanel from "./components/tabs-panel/tabs-panel";
 import initialState from './mock/initial-data';
+import { ConfigContext } from "./store/config-context";
+import {Config, defaultConfig} from "./constants/config";
 
 const AppWrapper = styled.div`
   height: 100vh;
@@ -37,32 +38,39 @@ class App extends React.Component<undefined, StateTypes> {
       bookmarks: {},
       collections: {},
       collectionsOrder: [],
-      layoutType: LAYOUT_TYPES_CODES.Grid,
+      config: defaultConfig,
     };
 
     this.setBookmarks = this.setBookmarks.bind(this);
     this.setCollections = this.setCollections.bind(this);
     this.setCollectionsOrder = this.setCollectionsOrder.bind(this);
+    this.setConfigValue = this.setConfigValue.bind(this);
     this.setLayoutType = this.setLayoutType.bind(this);
 
+    // Seed with mock data
     this.storage.saveData('bookmarks', initialState.bookmarks);
     this.storage.saveData('collections', initialState.collections);
     this.storage.saveData('collectionsOrder', initialState.collectionsOrder);
+    this.storage.saveData('config', initialState.config);
   }
 
   async componentDidMount(): Promise<void> {
     const {
-      collections, bookmarks, collectionsOrder
+      collections, bookmarks, collectionsOrder, config,
     } = await this.storage.getDataObject([
       'bookmarks',
       'collections',
       'collectionsOrder',
+      'config',
     ]);
+
+    const appConfig = config || defaultConfig;
 
     this.setState({
       bookmarks: bookmarks || {},
       collections: collections || {},
       collectionsOrder: collectionsOrder || [],
+      config: { ...appConfig, setConfigValue: this.setConfigValue },
     });
   }
 
@@ -81,8 +89,16 @@ class App extends React.Component<undefined, StateTypes> {
     this.setState({ collectionsOrder });
   }
 
-  setLayoutType(layoutType: LayoutType) {
-    this.setState({ layoutType });
+  setConfigValue(fieldName: string, value: any) {
+    console.log(fieldName);
+    console.log(value);
+    const config = { ...this.state.config, [fieldName]: value };
+    this.storage.saveData('config', config);
+    this.setState({ config });
+  }
+
+  setLayoutType(value: LayoutType) {
+    this.setConfigValue("layoutType", value);
   }
 
   render() {
@@ -90,23 +106,23 @@ class App extends React.Component<undefined, StateTypes> {
       bookmarks,
       collections,
       collectionsOrder,
-      layoutType,
+      config,
     } = this.state;
 
     return (
-      <LayoutTypeContext.Provider value={layoutType}>
+      <ConfigContext.Provider value={config}>
         <DndProvider backend={Backend}>
           <AppWrapper>
             <TopBar
               onSetLayoutType={this.setLayoutType}
-              layoutType={layoutType}
+              layoutType={config.layoutType}
             />
             <DashboardWrapper>
               <BookmarksContainer
                 bookmarks={bookmarks}
                 collections={collections}
                 collectionsOrder={collectionsOrder}
-                layoutType={layoutType}
+                layoutType={config.layoutType}
                 onBookmarksUpdate={this.setBookmarks}
                 onCollectionsUpdate={this.setCollections}
                 onCollectionsOrderUpdate={this.setCollectionsOrder}
@@ -115,7 +131,7 @@ class App extends React.Component<undefined, StateTypes> {
             </DashboardWrapper>
           </AppWrapper>
         </DndProvider>
-      </LayoutTypeContext.Provider>
+      </ConfigContext.Provider>
     );
   }
 }
@@ -126,5 +142,5 @@ type StateTypes = {
   bookmarks: Bookmarks
   collections: Collections
   collectionsOrder: string[]
-  layoutType: LayoutType
+  config: Config
 }

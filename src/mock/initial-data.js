@@ -137,5 +137,10 @@ export default {
     "1f937618-f994-44ad-aaf8-fed3207d1b7e",
     "a3b56e9a-39f7-468e-9385-665479d19ea0",
     "f090cb39-0b68-4472-827a-d46530c62d19"
-  ]
+  ],
+  config: {
+    maxItemsPerRow: 0,
+    isPanelCollapsed: false,
+    layoutType: "grid"
+  }
 };

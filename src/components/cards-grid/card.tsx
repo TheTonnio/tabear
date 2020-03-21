@@ -5,9 +5,9 @@ import { PrimaryCard } from "../../shared/styles/primary-card";
 import { DraggableItemTypes } from "../../constants";
 import { Bookmark } from "../models/bookmark";
 import CardInfo from "./card-info";
-import { LayoutTypeContext } from '../../store/layout-type-context'
 import DragDropWrapper from "../dnd/drag-drop-wrapper";
 import { DnDSource } from "../../models/dnd-source";
+import {ConfigContext} from "../../store/config-context";
 
 const Card = (props : PropTypes) => {
   const {
@@ -23,7 +23,7 @@ const Card = (props : PropTypes) => {
   const { url, iconUrl, name, description, id } = bookmark;
   const [ isEditing, setEditingMode ] = useState(false);
 
-  const layoutType = useContext(LayoutTypeContext);
+  const { layoutType } = useContext(ConfigContext);
   const isDragging = draggingItemId === id;
   const dragSource: DnDSource = {
     type: DraggableItemTypes.BOOKMARK,

@@ -35,15 +35,15 @@ const ListHeader = styled.div`
 `;
 
 const List = styled.div`
-  list-style: none;
-  padding: 0px 20px 25px;
+  width: 300px;
   margin: 0;
+  padding: 0 20px 25px;
+  list-style: none;
 `;
 
 const ListItem = styled.div`
   margin-top: 10px;
   padding: 10px;
-  width: 100%;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
