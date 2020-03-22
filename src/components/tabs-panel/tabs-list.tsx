@@ -58,22 +58,36 @@ const Title = styled.span`
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
-
 `;
 
 const ListItem = styled.div`
+  position: relative;
   display: flex;
   align-items: center;
-  margin-top: 10px;
+  margin-top: 17px;
   padding: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
   border-radius: 10px;
   cursor: grab;
-  transition: border-color .25s;
+  transition: opacity .3s, transform .3s;
   font-size: 16px;
+  overflow: hidden;
+  transform: scale(1);
+  
+  &::after {
+    position: absolute;
+    top: 0;
+    left: 0;  
+    height: 100%;
+    width: 100%;
+    content: "";
+    background: linear-gradient(90deg, rgba(255,255,255,0) 70%, rgba(255,255,255,1) 100%);
+    pointer-events: none;
+  }
   
   &:hover {
-    border-color: #0F93FE
+    opacity: .7;
+    transform: scale(1.025);
   }
 `;
 

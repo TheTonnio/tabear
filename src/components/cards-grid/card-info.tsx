@@ -180,11 +180,24 @@ const Description = styled.input`
 `;
 
 const ContentWrapper = styled.div`
+  position: relative;
   padding: 5px 10px 7px;
   margin-top: auto;
   border-radius: 5px;
   margin-bottom: 5px;
   background: ${(props: any) => props.isEditing ? "#F4F7FB" : "transparent"};
+  
+  &::after {
+    position: absolute;
+    top: 0;
+    left: 0;  
+    height: 100%;
+    width: 100%;
+    content: "";
+    visibility: ${(props: any) => props.isEditing ? "hidden" : "visible"};
+    background: linear-gradient(90deg, rgba(255,255,255,0) 70%, rgba(255,255,255,1) 100%);
+    pointer-events: none;
+  }
 `;
 
 export default CardInfo;

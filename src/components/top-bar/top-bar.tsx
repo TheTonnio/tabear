@@ -6,7 +6,7 @@ import { faSearch, faThLarge } from "@fortawesome/free-solid-svg-icons";
 import { faList } from "@fortawesome/free-solid-svg-icons";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { LayoutType } from "../../models/layout-type";
-import { LAYOUT_TYPES_CODES } from "../../constants";
+import {defaultAccent, LAYOUT_TYPES_CODES} from "../../constants";
 import Search from "./search";
 import { ConfigContext } from "../../store/config-context";
 
@@ -120,6 +120,7 @@ class TopBar extends React.Component<PropTypes, any> {
 }
 
 const Bar = styled.div`
+  margin-top: 10px;
   width: 100%;
   height: 50px;
   padding: 0 60px 0 20px;
@@ -135,7 +136,8 @@ const Bar = styled.div`
 
 const LayoutButtonsGroup = styled.div`
   margin-left: 10px;
-  box-shadow: inset 0 0 7px rgba(0, 0, 0, 0.45);
+  border: 2px solid ${defaultAccent};
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.15);
   border-radius: 5px;
 `;
 

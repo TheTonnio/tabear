@@ -21,6 +21,7 @@ const AppWrapper = styled.div`
 `;
 
 const DashboardWrapper = styled.div`
+  margin-top: 10px;
   display: flex;
 `;
 
