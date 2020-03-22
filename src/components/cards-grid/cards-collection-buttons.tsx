@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {faAngleDown, faCheck, faEllipsisV} from "@fortawesome/free-solid-svg-icons";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import IconButton from "../shared/icon-button";
-import {defaultRed} from "../../constants";
+import {defaultAccent, defaultRed} from "../../constants";
 
 const CardsCollectionButtons = (props: PropTypes) => {
   const {
@@ -100,7 +100,7 @@ const HeaderButton = styled.button`
   border-radius: 5px;
   cursor: pointer;
   transition: transform .3s, opacity .3s;
-  color: #0075EB;
+  color: ${defaultAccent};
   background: transparent;
   
   &:disabled {

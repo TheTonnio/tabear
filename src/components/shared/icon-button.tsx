@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 const IconButton = (props: PropTypes) => {
   const { action, color, icon, className, isEditing } = props;
-  const defaultButtonColor = "#0075EB";
+  const defaultButtonColor = "${defaultAccent}";
   const ButtonIcon = () => icon;
 
   return (

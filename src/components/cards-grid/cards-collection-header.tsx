@@ -2,7 +2,7 @@ import React, {useRef, useState} from 'react';
 import styled, {keyframes} from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPen, faTrash, faPlus } from "@fortawesome/free-solid-svg-icons";
-import { defaultRed, WRAPPER_MARGIN } from "../../constants";
+import {defaultAccent, defaultRed, WRAPPER_MARGIN} from "../../constants";
 import CardsCollectionButtons from "./cards-collection-buttons";
 import ActionMenu from "../shared/action-menu";
 import { ActionMenuConfig } from "../../models/action-menu-config";
@@ -156,7 +156,7 @@ const InputWrapper = styled.div`
     left: 0;
     width: 0;
     height: 2px;
-    background: #0075EB;
+    background: ${defaultAccent};
     animation-name: ${increaseWidth};
     animation-duration: .4s;
     animation-fill-mode: forwards;
@@ -169,7 +169,7 @@ const TitleInput = styled.input`
   padding-left: 0;
   font-size: 18px;
   font-weight: bold;
-  color: #0075EB;
+  color: ${defaultAccent};
   border: 0;
   font-family: 'Ubuntu', sans-serif;
 `;
@@ -179,7 +179,7 @@ const Title = styled.span`
   padding-right: 10px;
   font-size: 18px;
   font-weight: bold;
-  color: #0075EB;
+  color: ${defaultAccent};
 `;
 
 export default CardsCollectionHeader;

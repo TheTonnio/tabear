@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from "styled-components";
 import DragWrapper from "../dnd/drag-wrapper";
-import { DraggableItemTypes } from "../../constants";
+import {defaultAccent, DraggableItemTypes} from "../../constants";
 import v4 from "uuid/v4";
 type Tab = chrome.tabs.Tab;
 
@@ -34,7 +34,7 @@ const ListHeader = styled.div`
   padding: 14px 0;
   text-align: center;
   font-weight: 700;
-  color: #0075EB;
+  color: ${defaultAccent};
 `;
 
 const Thumb = styled.div`

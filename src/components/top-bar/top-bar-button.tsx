@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from "styled-components";
+import {defaultAccent} from "../../constants";
 
 const TopBarButton = ({ icon, action, isGrouped, isActive }: PropTypes) => {
   return (
@@ -37,14 +38,14 @@ const Button = styled.button`
   border: 0;
   cursor: pointer;
   transition: opacity .3s;
-  color: #0075EB;
+  color: ${defaultAccent};
   
   &:hover {
     opacity: .7;
   }
   
   &.active {
-    color: #0075EB;
+    color: ${defaultAccent};
   }
 `;
 
