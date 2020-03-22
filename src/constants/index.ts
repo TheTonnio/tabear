@@ -13,6 +13,8 @@ export const LAYOUT_TYPES_CODES: { [key: string]: LayoutType } = {
   List: 'list'
 };
 
+export const DEFAULT_BUTTON_STYLE = "primary";
+
 export const LIST_GAP = 20;
 export const CONTAINER_MARGIN = 30;
 export const WRAPPER_MARGIN = 20;
@@ -23,7 +25,6 @@ export const COLLECTION_TOP_MARGIN = 20;
 export const COLLECTION_BOTTOM_MARGIN = 20;
 
 export const REGEXP_INTERNAL_CHROME_PATH = /(chrome:)|(chrome-extension:)/;
-
 /* Colors */
 export const azureRadiance = "#0075EB";
 export const redOrange = "#FF491F";

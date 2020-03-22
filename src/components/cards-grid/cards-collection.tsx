@@ -1,4 +1,4 @@
-import React, {Dispatch, useContext} from 'react';
+import React, {Dispatch, useContext, useState} from 'react';
 import { Bookmark } from '../../models/bookmark';
 import { Collection } from '../../models/collection';
 import styled from "styled-components";
@@ -19,6 +19,7 @@ import {
 } from "../../constants";
 import { getMaxGridCollectionHeight } from "../../utils/get-max-grid-collection-height";
 import { CollectionEditableFields } from "../../models/collection-editable-fields";
+import ConfirmationCover from "../confiramtion-cover";
 
 const CardsCollection = React.memo((props: PropTypes) => {
   const {
@@ -36,9 +37,8 @@ const CardsCollection = React.memo((props: PropTypes) => {
   const { BOOKMARK, TAB } = DraggableItemTypes;
 
   const { maxItemsPerRow } = useContext(ConfigContext);
-
+  const [isConfirmationModalShown, setConfirmationModalShownState] = useState<boolean>(false);
   const hasBookmarks = !!bookmarks.length;
-
   const rows = Math.ceil(bookmarks.length / maxItemsPerRow);
   const maxCollectionHeight = getMaxGridCollectionHeight(isCollapsed, rows);
 
@@ -73,7 +73,7 @@ const CardsCollection = React.memo((props: PropTypes) => {
               isCollectionCollapsed={isCollapsed}
               toggleCollection={() => toggleCollection()}
               onSave={handleCollectionSave}
-              onRemove={() => onCollectionRemove(collection.id)}
+              onRemove={() => setConfirmationModalShownState(true)}
             />
           <InnerWrapper
             maxCollectionHeight={maxCollectionHeight}
@@ -104,6 +104,15 @@ const CardsCollection = React.memo((props: PropTypes) => {
                 )
             }
           </InnerWrapper>
+
+          <ConfirmationCover
+            isHidden={!isConfirmationModalShown}
+            text={"Are you sure to delete this collection?"}
+            onConfirm={() => onCollectionRemove(collection.id)}
+            onCancel={() => setConfirmationModalShownState(false)}
+            confirmButtonText={"Confirm"}
+            cancelButtonText={"Cancel"}
+          />
         </Wrapper>
       </OuterWrapper>
     </DropWrapper>
@@ -131,12 +140,13 @@ const OuterWrapper = styled.div`
 `;
 
 const Wrapper = styled.div`
+  position: relative;
   margin: 0 0 40px;
   width: 100%;
   background: #fff;
   border-radius: 10px;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.15);
-  border: 1px solid #f4f4f4;
+  overflow: hidden;
 `;
 
 const InnerWrapper = styled.div`

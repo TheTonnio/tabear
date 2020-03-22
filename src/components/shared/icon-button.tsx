@@ -1,16 +1,16 @@
 import React from 'react';
 import styled from "styled-components";
+import {defaultAccent} from "../../constants";
 
 const IconButton = (props: PropTypes) => {
   const { action, color, icon, className, isEditing } = props;
-  const defaultButtonColor = "${defaultAccent}";
   const ButtonIcon = () => icon;
 
   return (
       <Button
         className={className}
         onClick={action}
-        color={color || defaultButtonColor}
+        color={color || defaultAccent}
         isEditing={!!isEditing}
       >
         <ButtonIcon/>
