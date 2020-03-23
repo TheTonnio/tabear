@@ -22,7 +22,7 @@ import { CollectionEditableFields } from "../../models/collection-editable-field
 import ConfirmationCover from "../confiramtion-cover";
 import DragDropWrapper from "../dnd/drag-drop-wrapper";
 import {DnDSource} from "../../models/dnd-source";
-import {useDrag, useDrop} from "react-dnd";
+import {DropTargetMonitor, useDrag, useDrop, XYCoord} from "react-dnd";
 
 const CardsCollection = React.memo((props: PropTypes) => {
   const {
@@ -65,6 +65,7 @@ const CardsCollection = React.memo((props: PropTypes) => {
   const dragSource: DnDSource = {
     type: DraggableItemTypes.COLLECTION,
     index: collectionIndex,
+    id,
     draggableId: id,
   };
 
@@ -73,18 +74,36 @@ const CardsCollection = React.memo((props: PropTypes) => {
 
   const [, drag, preview] = useDrag({
     item: {
+      id: dragSource.id,
       type: dragSource.type,
       index: dragSource.index,
       draggableId: dragSource.draggableId,
     },
-    begin: () => setDraggingItemCollectionId(dragSource.draggableId),
-    end: () => setDraggingItemCollectionId(undefined)
+    // begin: () => setDraggingItemCollectionId(dragSource.draggableId),
+    // end: () => setDraggingItemCollectionId(undefined)
   });
 
   const [, drop] = useDrop({
     accept: [ DraggableItemTypes.BOOKMARK, DraggableItemTypes.TAB, DraggableItemTypes.COLLECTION ],
-    hover(source: any) {
+    hover(source: any, monitor: DropTargetMonitor) {
       if (!dropRef.current) {
+        return
+      }
+
+      const hoverBoundingRect = dropRef.current!.getBoundingClientRect();
+
+      const hoverMiddleY =
+        (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
+
+      const clientOffset = monitor.getClientOffset();
+
+      const hoverClientY = (clientOffset as XYCoord).y - hoverBoundingRect.top;
+
+      if (source.index < dropDestination.index && hoverClientY < hoverMiddleY) {
+        return
+      }
+
+      if (source.index > dropDestination.index && hoverClientY > hoverMiddleY) {
         return
       }
 
@@ -92,12 +111,11 @@ const CardsCollection = React.memo((props: PropTypes) => {
         moveCard(source, dropBookmarkDestination, source.draggableId);
         source.index = dropBookmarkDestination.index;
         source.id = dropBookmarkDestination.id;
-      } else if (source.type === DraggableItemTypes.COLLECTION) {
+      } else if (source && source.type === DraggableItemTypes.COLLECTION) {
         moveCollection(source, dropDestination, source.draggableId);
         source.index = dropDestination.index;
         source.id = dropDestination.id;
       }
-
     },
   });
 

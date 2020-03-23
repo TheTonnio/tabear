@@ -106,13 +106,25 @@ const BookmarksContainer = (props: PropTypes) => {
   };
 
   const moveCollection = (source: any, destination: any, draggableId: string) => {
-    const newCollectionOrder = [ ...collectionsOrder ];
-    console.log(source.index, destination.index);
-    if (source.index !== destination.index) {
-      newCollectionOrder.splice(source.index, 1);
-      newCollectionOrder.splice(destination.index, 0, draggableId);
-      onCollectionsOrderUpdate(newCollectionOrder);
+    if (!destination) {
+      return
     }
+
+    if (
+      destination.id === source.id &&
+      destination.index === source.index
+    ) {
+      return
+    }
+    console.log(`${destination.index}: ${destination.id}`);
+    console.log(`${source.index}: ${source.id}`);
+    console.log(`${source.index}: ${source.id}`);
+    const newCollectionOrder = [ ...collectionsOrder ];
+    newCollectionOrder.splice(source.index, 1);
+    newCollectionOrder.splice(destination.index, 0, draggableId);
+    onCollectionsOrderUpdate(newCollectionOrder);
+
+    return
   };
 
   const onCollectionUpdate = (collection: Collection) => {

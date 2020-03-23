@@ -144,8 +144,6 @@ const increaseWidth = keyframes`
   }
 `;
 
-
-
 const InputWrapper = styled.div`
   position: relative;
   max-width: 230px;
