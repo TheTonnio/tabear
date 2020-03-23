@@ -7,7 +7,7 @@ const CardImage = (props: PropTypes) => {
 
   return (
     <ImageWrapper>
-      <Image iconUrl={iconUrl || `${url}/favicon.ico`}/>
+      <Image iconUrl={iconUrl || `chrome://favicon/size/48/${url}`}/>
     </ImageWrapper>
   );
 };
@@ -21,6 +21,7 @@ const ImageWrapper = styled.div`
   display: flex;
   width: 30px;
   padding-top: 12px;
+  margin-left: 8px;
 `;
 
 const Image = styled.div`

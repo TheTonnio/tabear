@@ -7,7 +7,6 @@ class CreateCollectionForm extends React.Component<PropTypes, StateTypes> {
     super(props);
     this.state = {
       name: '',
-      description: '',
       emoji: '',
     };
 
@@ -23,13 +22,13 @@ class CreateCollectionForm extends React.Component<PropTypes, StateTypes> {
     event.preventDefault();
 
     const { onCreateCollection } = this.props;
-    const { name, description } = this.state;
+    const { name } = this.state;
 
     onCreateCollection({
       id: v4(),
       name,
-      description,
-      bookmarksIds: []
+      bookmarksIds: [],
+      isCollapsed: false,
     });
 
     this.resetFrom();
@@ -38,13 +37,12 @@ class CreateCollectionForm extends React.Component<PropTypes, StateTypes> {
   resetFrom() {
     this.setState({
       name: '',
-      description: '',
       emoji: '',
     });
   }
 
   render() {
-    const { name, description, emoji } = this.state;
+    const { name, emoji } = this.state;
     return (
       <div>
         <form onSubmit={this.handleSubmit}>
@@ -55,15 +53,6 @@ class CreateCollectionForm extends React.Component<PropTypes, StateTypes> {
               name="name"
               value={name}
               onChange={(e) => this.handleChange('name', e)}
-            />
-          </label>
-          <label>
-            Description:
-            <input
-              type="text"
-              name="description"
-              value={description}
-              onChange={(e) => this.handleChange('description', e)}
             />
           </label>
           <label>
@@ -90,6 +79,5 @@ type PropTypes = {
 
 type StateTypes = {
   name: string
-  description: string
   emoji: string
 }

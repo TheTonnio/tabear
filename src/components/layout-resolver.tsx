@@ -4,21 +4,20 @@ import { LAYOUT_TYPES_CODES } from "../constants";
 import MasonryLayout from "./lists-masonry/lists-masonry";
 import { Collection } from "../models/collection";
 import { Bookmark } from "../models/bookmark";
-import BookmarkCollection from "./cards-grid/cards-collection";
+import CardsCollection from "./cards-grid/cards-collection";
 import CardsGrid from "./cards-grid/cards-grid";
-import {Bookmarks} from "../models/bookmarks";
-import {Collections} from "../models/collections";
+import { Bookmarks } from "../models/bookmarks";
+import { Collections } from "../models/collections";
 
 class LayoutResolver extends React.Component<PropTypes, StateTypes> {
-
   private layoutComponents = {
     masonry: MasonryLayout,
     grid: CardsGrid
   };
 
   private layoutCollectionComponents = {
-    masonry: BookmarkCollection,
-    grid: BookmarkCollection
+    masonry: CardsCollection,
+    grid: CardsCollection
   };
 
   constructor(props: any) {
@@ -45,12 +44,16 @@ class LayoutResolver extends React.Component<PropTypes, StateTypes> {
     const {
       layoutType,
       collectionsOrder,
-      onAddBookmarkButtonClick,
       moveCard,
       setDraggingItemId,
       draggingItemId,
       bookmarks,
-      collections
+      collections,
+      onBookmarkUpdate,
+      onBookmarkRemove,
+      onCollectionUpdate,
+      onCollectionRemove,
+      isSearchMode,
     } = this.props;
 
     const componentName = layoutType === LAYOUT_TYPES_CODES.Grid ? 'grid' : 'masonry';
@@ -61,23 +64,27 @@ class LayoutResolver extends React.Component<PropTypes, StateTypes> {
     return (
       <Layout width={width}>
         {
-          collectionsOrder.map((collectionId: string, index: number) => {
+          (collectionsOrder.map((collectionId: string, index: number) => {
             const collection: Collection = collections[collectionId];
-            const bookmarksList: Bookmark[] = collection.bookmarksIds.map((id: string) => bookmarks[id]);
-            return (
+            const bookmarksList: Bookmark[] = collection.bookmarksIds.map((id: string) => bookmarks[id]).filter(Boolean);
+
+            return bookmarksList.length || !isSearchMode ? (
               <LayoutCollection
                 key={collectionId}
                 bookmarks={bookmarksList}
-                onAddBookmarkButtonClick={onAddBookmarkButtonClick}
                 moveCard={moveCard}
                 collection={collection}
                 collectionIndex={index}
                 setDraggingItemId={setDraggingItemId}
                 draggingItemId={draggingItemId}
                 layoutType={layoutType}
+                onBookmarkUpdate={onBookmarkUpdate}
+                onBookmarkRemove={onBookmarkRemove}
+                onCollectionUpdate={onCollectionUpdate}
+                onCollectionRemove={onCollectionRemove}
               />
-            );
-          })
+            ) : undefined;
+          })).filter(Boolean)
         }
       </Layout>
     )
@@ -87,12 +94,16 @@ class LayoutResolver extends React.Component<PropTypes, StateTypes> {
 type PropTypes = {
   layoutType: LayoutType
   collectionsOrder: string[]
-  onAddBookmarkButtonClick: (id: string) => void
   moveCard: (source: any, destination: any, draggableId: string) => void
-  setDraggingItemId: (id?: string | null) => void
+  setDraggingItemId: (id?: string) => void
   draggingItemId?: string | null
   bookmarks: Bookmarks
   collections: Collections
+  onBookmarkUpdate: (data: Bookmark) => void
+  onBookmarkRemove: (id: string, collectionId: string) => void
+  onCollectionUpdate: (data: Collection) => void
+  onCollectionRemove: (id: string) => void
+  isSearchMode: boolean
 }
 
 type StateTypes = {

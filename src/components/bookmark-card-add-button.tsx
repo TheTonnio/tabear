@@ -3,6 +3,7 @@ import { PrimaryCardAnimated } from "../shared/styles/primary-card";
 import React from 'react';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import {defaultAccent} from "../constants";
 
 const BookmarkCardAddButton = ({ onAddClick }: PropTypes) => {
   return (
@@ -23,7 +24,7 @@ interface PropTypes {
 const Button = styled(PrimaryCardAnimated)`
   background-color: #F3F2F8;
   font-size: 30px;
-  color: #0075EB;
+  color: ${defaultAccent};
   border: 0;
   opacity: .75;
 `;

@@ -1,23 +1,62 @@
 import React from 'react';
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
+import { faCheck } from "@fortawesome/free-solid-svg-icons";
+import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import IconButton from "../shared/icon-button";
+import {defaultRed} from "../../constants";
 
-const CardButtons = () => {
+const CardButtons = (props: PropTypes) => {
+  const { isEditing, onEdit, onRemove, onSave, onCancel } = props;
+
   return (
-    <ButtonsWrapper className={"card-buttons"}>
-      <Button>
-        <EditIcon icon={faPen}/>
-      </Button>
-      <Button>
-        <RemoveIcon icon={faTimes}/>
-      </Button>
-    </ButtonsWrapper>
+      <>
+        { isEditing
+          ? (
+            <ButtonsWrapper className={"card-buttons"}>
+              <IconButton
+                className={"editing"}
+                action={onSave}
+                icon={<CardButtonIcon icon={faCheck}/>}
+                isEditing={isEditing}
+              />
+              <IconButton
+                className={"card-button-editing"}
+                action={onCancel}
+                color={defaultRed}
+                icon={<LargeIcon icon={faTimes}/>}
+                isEditing={isEditing}
+              />
+            </ButtonsWrapper>
+          ) : (
+            <ButtonsWrapper className={"card-buttons"}>
+              <IconButton
+                action={onEdit}
+                icon={<CardButtonIcon icon={faPen}/>}
+              />
+              <IconButton
+                action={onRemove}
+                color={defaultRed}
+                icon={<LargeIcon icon={faTrash}/>}
+              />
+            </ButtonsWrapper>
+          )
+        }
+      </>
   );
 };
 
 export default CardButtons;
+
+interface PropTypes {
+  isEditing: boolean
+  onEdit: () => void
+  onRemove: () => void
+  onSave: () => void
+  onCancel: () => void
+}
 
 const ButtonsWrapper = styled.div`
   position: absolute;
@@ -25,7 +64,7 @@ const ButtonsWrapper = styled.div`
   right: 10px;
 `;
 
-const EditIcon = styled(FontAwesomeIcon)`
+const CardButtonIcon = styled(FontAwesomeIcon)`
   position: absolute;
   top: 0;
   left: 0;
@@ -35,31 +74,7 @@ const EditIcon = styled(FontAwesomeIcon)`
   font-size: 10px;
 `;
 
-const RemoveIcon = styled(FontAwesomeIcon)`
-  position: absolute;
+const LargeIcon = styled(CardButtonIcon)`
   top: -1px;
-  left: .5px;
-  right: 0;
-  bottom: 0;
-  margin: auto;
   font-size: 12px;
-`;
-
-const Button = styled.button`
-  position: relative;
-  background: #0075EB;
-  border: 0;
-  margin-left: 5px;
-  border-radius: 18px;
-  height: 20px;
-  width: 20px;
-  color: #fff;
-  font-size: 10px;
-  cursor: pointer;
-  transition: transform .3s;
-  transform: scale(0);
-  
-  &:hover {
-    transform: scale(1.5);
-  }
 `;

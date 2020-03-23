@@ -1,24 +1,19 @@
-/* eslint react/no-unused-state: 0 */
-
-import React from 'react';
+import React, {useContext} from 'react';
 import BookmarksContainer from './components/bookmarks-container';
-import AddBookmarkForm from './components/add-bookmark-form';
-import CreateCollectionForm from './components/create-collection-form';
-import { Bookmark } from './models/bookmark';
-import { Collection } from './models/collection';
 import Storage from './utils/storage';
 import LocalStorage from './utils/localStorage';
-import {ENV_DEVELOPMENT, LAYOUT_TYPES_CODES} from './constants';
+import { ENV_DEVELOPMENT, LAYOUT_TYPES_CODES } from './constants';
 import styled from 'styled-components'
 import { DndProvider } from 'react-dnd'
 import Backend from 'react-dnd-html5-backend'
-import initialState from './mock/initial-data';
 import { Bookmarks } from "./models/bookmarks";
 import { Collections } from "./models/collections";
 import TopBar from "./components/top-bar/top-bar";
-import {LayoutType} from "./models/layout-type";
-import { LayoutTypeContext } from './store/layout-type-context'
+import { LayoutType } from "./models/layout-type";
 import OpenTabsPanel from "./components/tabs-panel/tabs-panel";
+import initialState from './mock/initial-data';
+import { ConfigContext } from "./store/config-context";
+import {Config, defaultConfig} from "./constants/config";
 
 const AppWrapper = styled.div`
   height: 100vh;
@@ -26,9 +21,9 @@ const AppWrapper = styled.div`
 `;
 
 const DashboardWrapper = styled.div`
+  margin-top: 10px;
   display: flex;
 `;
-
 
 class App extends React.Component<undefined, StateTypes> {
   storage: Storage;
@@ -42,93 +37,92 @@ class App extends React.Component<undefined, StateTypes> {
 
     this.state = {
       bookmarks: {},
+      filteredBookmarks: {},
       collections: {},
       collectionsOrder: [],
-      selectedCollectionId: null,
-      isAddCollectionFormShown: false,
-      layoutType: LAYOUT_TYPES_CODES.Grid
+      config: defaultConfig,
+      isSearchMode: false,
     };
 
-    this.onAddBookmark = this.onAddBookmark.bind(this);
-    this.onAddBookmarkButtonClick = this.onAddBookmarkButtonClick.bind(this);
-    this.onCreateCollection = this.onCreateCollection.bind(this);
-    this.onCreateCollectionButtonClick = this.onCreateCollectionButtonClick.bind(this);
     this.setBookmarks = this.setBookmarks.bind(this);
     this.setCollections = this.setCollections.bind(this);
-    this.onSetLayoutType = this.onSetLayoutType.bind(this);
+    this.setCollectionsOrder = this.setCollectionsOrder.bind(this);
+    this.setConfigValue = this.setConfigValue.bind(this);
+    this.setLayoutType = this.setLayoutType.bind(this);
+    this.searchBookmarks = this.searchBookmarks.bind(this);
+
+    // Seed with mock data
+    this.storage.saveData('bookmarks', initialState.bookmarks);
+    this.storage.saveData('collections', initialState.collections);
+    this.storage.saveData('collectionsOrder', initialState.collectionsOrder);
+    this.storage.saveData('config', initialState.config);
   }
 
   async componentDidMount(): Promise<void> {
     const {
-      collections, bookmarks, collectionsOrder
+      collections, bookmarks, collectionsOrder, config,
     } = await this.storage.getDataObject([
       'bookmarks',
       'collections',
       'collectionsOrder',
+      'config',
     ]);
+
+    const appConfig = config || defaultConfig;
 
     this.setState({
       bookmarks: bookmarks || {},
       collections: collections || {},
       collectionsOrder: collectionsOrder || [],
-    });
-
-    // this.storage.saveData('bookmarks', initialState.bookmarks);
-    // this.storage.saveData('collections', initialState.collections);
-    // this.storage.saveData('collectionsOrder', initialState.collectionsOrder);
-  }
-
-  onAddBookmark(newBookmark: Bookmark): void {
-    const { bookmarks } = this.state;
-    const updateBookmarks = { ...bookmarks, [newBookmark.id]: newBookmark };
-
-    this.storage.saveData('bookmarks', updateBookmarks);
-
-    this.setState({
-      bookmarks: { ...updateBookmarks },
-      selectedCollectionId: null,
+      config: { ...appConfig, setConfigValue: this.setConfigValue },
     });
   }
 
   setBookmarks(bookmarks: Bookmarks): void {
     this.storage.saveData('bookmarks', bookmarks);
-
-    this.setState({
-      bookmarks: bookmarks,
-    });
+    this.setState({ bookmarks });
   }
 
   setCollections(collections: Collections): void {
     this.storage.saveData('collections', collections);
-
-    this.setState({
-      collections: collections,
-    });
+    this.setState({ collections });
   }
 
-  onCreateCollection(newCollection: Collection): void {
-    const { collections } = this.state;
-
-    const updateCollections = { ...collections, [newCollection.id]: newCollection };
-
-    this.storage.saveData('collections', updateCollections);
-
-    this.setState({
-      collections: { ...updateCollections },
-      isAddCollectionFormShown: false,
-    });
+  setCollectionsOrder(collectionsOrder: string[]): void {
+    this.storage.saveData('collectionsOrder', collectionsOrder);
+    this.setState({ collectionsOrder });
   }
 
-  onAddBookmarkButtonClick(selectedCollectionId: string): void {
-    this.setState({ selectedCollectionId });
+  setConfigValue(fieldName: string, value: any) {
+    const config = { ...this.state.config, [fieldName]: value };
+    this.storage.saveData('config', config);
+    this.setState({ config });
   }
 
-  onCreateCollectionButtonClick(): void {
-    this.setState({ isAddCollectionFormShown: true });
+  setLayoutType(value: LayoutType) {
+    this.setConfigValue("layoutType", value);
   }
 
-  onSetLayoutType(layoutType: LayoutType) {
-    this.setState({ layoutType });
+  searchBookmarks(query?: string) {
+    const { bookmarks } = this.state;
+
+    if (query && query.length) {
+      const formattedQuery = query.toLowerCase();
+      const filteredBookmarks = { ...bookmarks };
+      const bookmarksObjKeys = Object.keys(bookmarks);
+
+      bookmarksObjKeys.filter(key => {
+        const { name, description } = bookmarks[key];
+
+        if (`${name}${description}`.toLocaleLowerCase().indexOf(formattedQuery) === -1) {
+          delete filteredBookmarks[key];
+        }
+      });
+
+      this.setState({ filteredBookmarks, isSearchMode: true });
+    } else {
+      this.setState({ bookmarks, isSearchMode: false });
+    }
   }
 
   render() {
@@ -136,58 +130,36 @@ class App extends React.Component<undefined, StateTypes> {
       bookmarks,
       collections,
       collectionsOrder,
-      selectedCollectionId,
-      isAddCollectionFormShown,
-      layoutType,
+      filteredBookmarks,
+      config,
+      isSearchMode,
     } = this.state;
 
     return (
-      <LayoutTypeContext.Provider value={layoutType}>
+      <ConfigContext.Provider value={config}>
         <DndProvider backend={Backend}>
           <AppWrapper>
             <TopBar
-              onSetLayoutType={this.onSetLayoutType}
-              onCreateCollectionButtonClick={this.onCreateCollectionButtonClick}
+              onSetLayoutType={this.setLayoutType}
+              onSearch={this.searchBookmarks}
+              layoutType={config.layoutType}
             />
-
-            {
-              isAddCollectionFormShown && (
-                <div>
-                  <h3>Create Collection</h3>
-                  <CreateCollectionForm onCreateCollection={this.onCreateCollection} />
-                </div>
-              )
-            }
-
-            {
-              selectedCollectionId && (
-                <div>
-                  <h3>Add Bookmark</h3>
-                  <AddBookmarkForm
-                    collectionId={selectedCollectionId}
-                    onAddBookmark={this.onAddBookmark}
-                  />
-                </div>
-              )
-            }
             <DashboardWrapper>
               <BookmarksContainer
-                // @ts-ignore
-                bookmarks={bookmarks}
+                bookmarks={isSearchMode ? filteredBookmarks : bookmarks}
                 collections={collections}
                 collectionsOrder={collectionsOrder}
-                onAddBookmarkButtonClick={this.onAddBookmarkButtonClick}
-                onAddBookmark={this.onAddBookmark}
+                layoutType={config.layoutType}
                 onBookmarksUpdate={this.setBookmarks}
                 onCollectionsUpdate={this.setCollections}
-                layoutType={layoutType}
+                onCollectionsOrderUpdate={this.setCollectionsOrder}
+                isSearchMode={isSearchMode}
               />
-
               <OpenTabsPanel/>
             </DashboardWrapper>
           </AppWrapper>
         </DndProvider>
-      </LayoutTypeContext.Provider>
+      </ConfigContext.Provider>
     );
   }
 }
@@ -196,9 +168,9 @@ export default App;
 
 type StateTypes = {
   bookmarks: Bookmarks
+  filteredBookmarks: Bookmarks
   collections: Collections
   collectionsOrder: string[]
-  selectedCollectionId: string | null
-  isAddCollectionFormShown: boolean
-  layoutType: LayoutType
+  config: Config
+  isSearchMode: boolean
 }

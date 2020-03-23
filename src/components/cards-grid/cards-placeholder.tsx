@@ -20,7 +20,7 @@ const Placeholder = styled.div`
 
 const PlaceholderText = styled.div`
   width: 100%;
-  padding: 50px 0;
+  padding: 43px 0;
   border: 3px dashed #e8f2fc;
   border-radius: 10px;
   text-align: center;
