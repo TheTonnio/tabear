@@ -103,6 +103,14 @@ const BookmarksContainer = (props: PropTypes) => {
     });
   };
 
+  const moveCollection = (source: any, destination: any, draggableId: string) => {
+    const newCollectionOrder = [ ...collectionsOrder ];
+    if (source.index !== destination.index) {
+      newCollectionOrder.splice(source.index, 1);
+      newCollectionOrder.splice(destination.index, 0, draggableId);
+      onCollectionsOrderUpdate(newCollectionOrder);
+    }
+  };
 
   const onCollectionUpdate = (collection: Collection) => {
     const newCollectionsObj = {
@@ -161,6 +169,7 @@ const BookmarksContainer = (props: PropTypes) => {
       layoutType={layoutType}
       collectionsOrder={collectionsOrder}
       moveCard={moveCard}
+      moveCollection={moveCollection}
       setDraggingItemId={setDraggingItemId}
       draggingItemId={draggingItemId}
       bookmarks={bookmarks}

@@ -45,7 +45,7 @@ const DragDropProvider = (props: PropTypes) => {
 export default DragDropProvider;
 
 interface PropTypes {
-  children: JSX.Element[]
+  children: JSX.Element | JSX.Element[]
   dragSource: DnDSource
   dropDestination: DnDDestination
   setDraggingItemId: (id?: string) => void

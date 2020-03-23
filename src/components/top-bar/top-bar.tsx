@@ -83,7 +83,7 @@ class TopBar extends React.Component<PropTypes, any> {
   }
 
   render() {
-    const { onSetLayoutType, layoutType } = this.props;
+    const { onSetLayoutType, layoutType, onCollectionAdd } = this.props;
 
     return (
       <Bar className={this.context.isPanelCollapsed ? "" : "top-bar-narrow"}>
@@ -97,7 +97,7 @@ class TopBar extends React.Component<PropTypes, any> {
           icon={<FontAwesomeIcon icon={faSearch}/>}
         />
         <TopBarButton
-          action={() => {}}
+          action={() => onCollectionAdd()}
           icon={<FontAwesomeIcon icon={faPlus}/>}
         />
         <LayoutButtonsGroup>
@@ -143,6 +143,7 @@ const LayoutButtonsGroup = styled.div`
 
 interface PropTypes {
   onSetLayoutType: (type: LayoutType) => void
+  onCollectionAdd: () => void
   onSearch: (query?: string) => void
   layoutType: LayoutType
 }

@@ -168,10 +168,10 @@ const TitleInput = styled.input`
   padding-right: 10px;
   padding-left: 0;
   font-size: 18px;
-  font-weight: bold;
+  font-weight: 800;
   color: ${defaultAccent};
   border: 0;
-  font-family: 'Ubuntu', sans-serif;
+  font-family: 'Muli', sans-serif;
 `;
 
 const Title = styled.span`
