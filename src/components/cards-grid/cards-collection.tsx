@@ -11,7 +11,7 @@ import { ConfigContext } from "../../store/config-context";
 import { DnDDestination } from "../../models/dnd-destination";
 import {
   CARD_HEIGHT,
-  CARD_ROW_GAP,
+  CARD_ROW_GAP, CARDS_PLACEHOLDER_HEIGHT,
   COLLECTION_BOTTOM_MARGIN,
   COLLECTION_TOP_MARGIN, CONTAINER_MARGIN,
   DraggableItemTypes,
@@ -151,7 +151,7 @@ const Wrapper = styled.div`
 
 const InnerWrapper = styled.div`
   padding: 0 ${WRAPPER_MARGIN}px 10px;
-  height: ${({ hasBookmarks, maxCollectionHeight }: { hasBookmarks: boolean, maxCollectionHeight: number }) => hasBookmarks ? `${maxCollectionHeight}px` : 'auto'};
+  height: ${({ hasBookmarks, maxCollectionHeight }: { hasBookmarks: boolean, maxCollectionHeight: number }) => hasBookmarks ? `${maxCollectionHeight}px` : `${CARDS_PLACEHOLDER_HEIGHT}px`};
   transition: height .3s;
   overflow: hidden;
 `;

@@ -20,6 +20,7 @@ export const CONTAINER_MARGIN = 30;
 export const WRAPPER_MARGIN = 20;
 export const CARD_WIDTH = 230;
 export const CARD_HEIGHT = 120;
+export const CARDS_PLACEHOLDER_HEIGHT = 160;
 export const CARD_ROW_GAP = 20;
 export const COLLECTION_TOP_MARGIN = 20;
 export const COLLECTION_BOTTOM_MARGIN = 20;

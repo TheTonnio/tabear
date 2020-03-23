@@ -29,15 +29,18 @@ const TabsPanel = (props: PropTypes) => {
     <Panel
       className={isPanelCollapsed ? "collapsed" : ""}
     >
-      <TabsList tabs={filteredTabs}/>
+      <InnerWrapper>
+        <TabsList tabs={filteredTabs}/>
+      </InnerWrapper>
+
       <TogglePanelButton
         className="toggle-panel-button"
         onClick={() => setConfigValue("isPanelCollapsed", !isPanelCollapsed)}
       >
-       <Icon
-         className="toggle-panel-button-icon"
-         icon={faAngleRight}
-       />
+         <Icon
+           className="toggle-panel-button-icon"
+           icon={faAngleRight}
+         />
       </TogglePanelButton>
     </Panel>
   );
@@ -77,6 +80,11 @@ const Panel = styled.div`
         }
     }
   }
+`;
+
+const InnerWrapper = styled.div`
+  height: 100%;
+  overflow: auto;
 `;
 
 const TogglePanelButton = styled.button`
