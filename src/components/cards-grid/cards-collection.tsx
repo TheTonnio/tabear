@@ -31,7 +31,9 @@ const CardsCollection = React.memo((props: PropTypes) => {
     moveCard,
     moveCollection,
     setDraggingItemId,
+    setDraggingItemCollectionId,
     draggingItemId,
+    draggingCollectionItemId,
     onBookmarkUpdate,
     onBookmarkRemove,
     onCollectionUpdate,
@@ -39,7 +41,6 @@ const CardsCollection = React.memo((props: PropTypes) => {
     collectionIndex,
   } = props;
   const { id, name, isCollapsed } = collection;
-  const { BOOKMARK, TAB } = DraggableItemTypes;
 
   const { maxItemsPerRow } = useContext(ConfigContext);
   const [isConfirmationModalShown, setConfirmationModalShownState] = useState<boolean>(false);
@@ -47,11 +48,18 @@ const CardsCollection = React.memo((props: PropTypes) => {
   const rows = Math.ceil(bookmarks.length / maxItemsPerRow);
   const maxCollectionHeight = getMaxGridCollectionHeight(isCollapsed, rows);
 
+  const isDragging = draggingCollectionItemId === id;
 
   const dropDestination: DnDDestination = {
     type: DraggableItemTypes.COLLECTION,
     index: collectionIndex,
     id,
+  };
+
+  const dropBookmarkDestination: DnDDestination = {
+    type: DraggableItemTypes.BOOKMARK,
+    id,
+    index: bookmarks.length
   };
 
   const dragSource: DnDSource = {
@@ -60,38 +68,41 @@ const CardsCollection = React.memo((props: PropTypes) => {
     draggableId: id,
   };
 
-  const ref = useRef<HTMLDivElement>(null);
+  const dragRef = useRef<HTMLDivElement>(null);
+  const dropRef = useRef<HTMLDivElement>(null);
 
-  const [, drag] = useDrag({
+  const [, drag, preview] = useDrag({
     item: {
       type: dragSource.type,
       index: dragSource.index,
       draggableId: dragSource.draggableId,
     },
-    begin: () => {} /*setDraggingItemId(dragSource.draggableId)*/,
-    end: () => {} /*setDraggingItemId(undefined)*/
+    begin: () => setDraggingItemCollectionId(dragSource.draggableId),
+    end: () => setDraggingItemCollectionId(undefined)
   });
 
   const [, drop] = useDrop({
-    accept: [DraggableItemTypes.BOOKMARK, DraggableItemTypes.TAB, DraggableItemTypes.COLLECTION],
+    accept: [ DraggableItemTypes.BOOKMARK, DraggableItemTypes.TAB, DraggableItemTypes.COLLECTION ],
     hover(source: any) {
-      if (!ref.current) {
+      if (!dropRef.current) {
         return
       }
 
-      if (source && source.type === DraggableItemTypes.BOOKMARK  && source.id !== dropDestination.id) {
-        moveCard(source, dropDestination, source.draggableId);
-        source.index = dropDestination.index;
-        source.id = dropDestination.id;
+      if (source && (source.type === DraggableItemTypes.BOOKMARK || source.type === DraggableItemTypes.TAB) && source.id !== dropBookmarkDestination.id) {
+        moveCard(source, dropBookmarkDestination, source.draggableId);
+        source.index = dropBookmarkDestination.index;
+        source.id = dropBookmarkDestination.id;
       } else if (source.type === DraggableItemTypes.COLLECTION) {
         moveCollection(source, dropDestination, source.draggableId);
         source.index = dropDestination.index;
+        source.id = dropDestination.id;
       }
 
     },
   });
 
-  drag(drop(ref));
+  drop(dropRef);
+  drag(dragRef);
 
   const toggleCollection = () => onCollectionUpdate({
     ...collection,
@@ -106,14 +117,21 @@ const CardsCollection = React.memo((props: PropTypes) => {
   };
 
   return (
-    <OuterWrapper ref={ref}>
-      <Wrapper>
+    <OuterWrapper
+      isDragging={isDragging}
+      ref={dropRef}
+
+    >
+      <Wrapper
+        ref={preview}
+      >
         <CardsCollectionHeader
           name={name}
           isCollectionCollapsed={isCollapsed}
           toggleCollection={() => toggleCollection()}
           onSave={handleCollectionSave}
           onRemove={() => setConfirmationModalShownState(true)}
+          dragRef={dragRef}
         />
         <InnerWrapper
           maxCollectionHeight={maxCollectionHeight}
@@ -165,7 +183,9 @@ type PropTypes = {
   collection: Collection
   collectionIndex: number
   draggingItemId?: string | null
+  draggingCollectionItemId?: string | null
   setDraggingItemId: Dispatch<string | undefined>
+  setDraggingItemCollectionId: Dispatch<string | undefined>
   layoutType: LayoutType
   moveCard: (source: any, destination: any, draggableId: string) => void
   moveCollection: (source: any, destination: any, draggableId: string) => void
@@ -177,6 +197,7 @@ type PropTypes = {
 
 const OuterWrapper = styled.div`
   padding: 0 ${CONTAINER_MARGIN}px;
+  opacity: ${(props: { isDragging: boolean }) => props.isDragging ? .7 : 1 };
 `;
 
 const Wrapper = styled.div`

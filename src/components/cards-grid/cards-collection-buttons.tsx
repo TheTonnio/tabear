@@ -14,6 +14,7 @@ const CardsCollectionButtons = (props: PropTypes) => {
     onCancel,
     onActionMenuButtonClick,
     onCollapseButtonClick,
+    dragRef,
   } = props;
 
   return (
@@ -50,6 +51,7 @@ const CardsCollectionButtons = (props: PropTypes) => {
       <MoveMenuButton
         onClick={() => {}}
         disabled={isEditing}
+        ref={dragRef}
       >
         <FontAwesomeIcon icon={faExpandArrowsAlt}/>
       </MoveMenuButton>
@@ -72,6 +74,7 @@ interface PropTypes {
   onCancel: () => void
   onActionMenuButtonClick: () => void
   onCollapseButtonClick: () => void
+  dragRef: any
 }
 
 const ButtonsGroup = styled.div`

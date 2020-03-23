@@ -9,7 +9,7 @@ import { ActionMenuConfig } from "../../models/action-menu-config";
 import { CollectionEditableFields } from "../../models/collection-editable-fields";
 
 const CardsCollectionHeader = (props: PropTypes) => {
-  const { name, isCollectionCollapsed, toggleCollection, onSave, onRemove } = props;
+  const { name, isCollectionCollapsed, toggleCollection, onSave, onRemove, dragRef } = props;
   const [ isEditing, setEditingMode ] = useState(false);
   const [ isActionMenuShown, setActionMenuVisibility ] = useState(false);;
 
@@ -81,6 +81,7 @@ const CardsCollectionHeader = (props: PropTypes) => {
         onCancel={ () => onCancel() }
         onActionMenuButtonClick={() => showActionMenu()}
         onCollapseButtonClick={() => toggleCollection()}
+        dragRef={dragRef}
       />
 
       <ActionMenu
@@ -97,6 +98,7 @@ interface PropTypes {
   toggleCollection: () => void
   onSave: (data: CollectionEditableFields) => void
   onRemove: () => void
+  dragRef: any
 }
 
 
