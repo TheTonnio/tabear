@@ -47,7 +47,8 @@ const Card = (props : PropTypes) => {
     setEditingMode(false);
   };
 
-  const onRemove = () => {
+  const onRemove = (e) => {
+    e.preventDefault();
     onBookmarkRemove(bookmark.id, collectionId);
   };
 

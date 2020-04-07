@@ -6,7 +6,7 @@ import styled from "styled-components";
 import TabsList from "./tabs-list";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleRight } from "@fortawesome/free-solid-svg-icons";
-import {ConfigContext} from "../../store/config-context";
+import { ConfigContext } from "../../store/config-context";
 type Tab = chrome.tabs.Tab;
 
 const TabsPanel = (props: PropTypes) => {

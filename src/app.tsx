@@ -43,6 +43,7 @@ class App extends React.Component<undefined, StateTypes> {
       collectionsOrder: [],
       config: defaultConfig,
       isSearchMode: false,
+      isDataLoaded: false,
     };
 
     this.setBookmarks = this.setBookmarks.bind(this);
@@ -54,10 +55,10 @@ class App extends React.Component<undefined, StateTypes> {
     this.addNewCollection = this.addNewCollection.bind(this);
 
     // Seed with mock data
-    this.storage.saveData('bookmarks', initialState.bookmarks);
-    this.storage.saveData('collections', initialState.collections);
-    this.storage.saveData('collectionsOrder', initialState.collectionsOrder);
-    this.storage.saveData('config', initialState.config);
+    // this.storage.saveData('bookmarks', initialState.bookmarks);
+    // this.storage.saveData('collections', initialState.collections);
+    // this.storage.saveData('collectionsOrder', initialState.collectionsOrder);
+    // this.storage.saveData('config', initialState.config);
   }
 
   async componentDidMount(): Promise<void> {
@@ -77,6 +78,7 @@ class App extends React.Component<undefined, StateTypes> {
       collections: collections || {},
       collectionsOrder: collectionsOrder || [],
       config: { ...appConfig, setConfigValue: this.setConfigValue },
+      isDataLoaded: true
     });
   }
 
@@ -154,6 +156,7 @@ class App extends React.Component<undefined, StateTypes> {
       filteredBookmarks,
       config,
       isSearchMode,
+      isDataLoaded,
     } = this.state;
 
     return (
@@ -176,6 +179,7 @@ class App extends React.Component<undefined, StateTypes> {
                 onCollectionsUpdate={this.setCollections}
                 onCollectionsOrderUpdate={this.setCollectionsOrder}
                 isSearchMode={isSearchMode}
+                isDataLoaded={isDataLoaded}
               />
               <OpenTabsPanel/>
             </DashboardWrapper>
@@ -194,5 +198,6 @@ type StateTypes = {
   collections: Collections
   collectionsOrder: string[]
   config: Config
+  isDataLoaded: boolean
   isSearchMode: boolean
 }

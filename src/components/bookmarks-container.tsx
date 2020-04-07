@@ -1,10 +1,13 @@
-import React, { useState } from 'react';
+import React, {useReducer, useState} from 'react';
 import { Bookmarks } from "../models/bookmarks";
 import { Collections } from "../models/collections";
 import { LayoutType } from "../models/layout-type";
 import LayoutResolver from "./layout-resolver";
 import {Bookmark} from "../models/bookmark";
 import {Collection} from "../models/collection";
+import {bookmarksReducer} from "../reducers/bookmarks";
+import {AppDataContext} from "../store/app-data-context";
+import AppDataProvider from "./app-data-provider";
 type Tab = chrome.tabs.Tab;
 
 const BookmarksContainer = (props: PropTypes) => {
@@ -17,6 +20,7 @@ const BookmarksContainer = (props: PropTypes) => {
     onBookmarksUpdate,
     onCollectionsOrderUpdate,
     isSearchMode,
+    isDataLoaded,
   } = props;
 
   const [ draggingItemId, setDraggingItemId] = useState<string | undefined>();
@@ -116,9 +120,7 @@ const BookmarksContainer = (props: PropTypes) => {
     ) {
       return
     }
-    console.log(`${destination.index}: ${destination.id}`);
-    console.log(`${source.index}: ${source.id}`);
-    console.log(`${source.index}: ${source.id}`);
+
     const newCollectionOrder = [ ...collectionsOrder ];
     newCollectionOrder.splice(source.index, 1);
     newCollectionOrder.splice(destination.index, 0, draggableId);
@@ -180,23 +182,28 @@ const BookmarksContainer = (props: PropTypes) => {
   };
 
   return (
-    <LayoutResolver
-      layoutType={layoutType}
-      collectionsOrder={collectionsOrder}
-      moveCard={moveCard}
-      moveCollection={moveCollection}
-      setDraggingItemId={setDraggingItemId}
-      setDraggingItemCollectionId={setDraggingItemCollectionId}
-      draggingItemId={draggingItemId}
-      draggingCollectionItemId={draggingCollectionItemId}
-      bookmarks={bookmarks}
-      collections={collections}
-      isSearchMode={isSearchMode}
-      onBookmarkUpdate={onBookmarkUpdate}
-      onBookmarkRemove={onBookmarkRemove}
-      onCollectionUpdate={onCollectionUpdate}
-      onCollectionRemove={onCollectionRemove}
-    />
+    <>
+    {isDataLoaded ? (
+      <AppDataProvider bookmarks={bookmarks} collections={collections}>
+      <LayoutResolver
+        layoutType={layoutType}
+        collectionsOrder={collectionsOrder}
+        moveCard={moveCard}
+        moveCollection={moveCollection}
+        setDraggingItemId={setDraggingItemId}
+        setDraggingItemCollectionId={setDraggingItemCollectionId}
+        draggingItemId={draggingItemId}
+        draggingCollectionItemId={draggingCollectionItemId}
+        isSearchMode={isSearchMode}
+        onBookmarkUpdate={onBookmarkUpdate}
+        onBookmarkRemove={onBookmarkRemove}
+        onCollectionUpdate={onCollectionUpdate}
+        onCollectionRemove={onCollectionRemove}
+      />
+    </AppDataProvider>
+    ) : null
+    }
+    </>
   )
 };
 
@@ -211,4 +218,5 @@ type PropTypes = {
   onCollectionsOrderUpdate: (data: string[]) => void
   layoutType: LayoutType
   isSearchMode: boolean
+  isDataLoaded: boolean
 }

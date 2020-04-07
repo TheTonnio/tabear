@@ -23,8 +23,10 @@ import ConfirmationCover from "../confiramtion-cover";
 import DragDropWrapper from "../dnd/drag-drop-wrapper";
 import {DnDSource} from "../../models/dnd-source";
 import {DropTargetMonitor, useDrag, useDrop, XYCoord} from "react-dnd";
+import {ACTION_TYPE} from "../../constants/action-types";
+import {deleteBookmark} from "../../actions/bookmarks";
 
-const CardsCollection = React.memo((props: PropTypes) => {
+const CardsCollection = React.memo((props: any) => {
   const {
     bookmarks,
     collection,
@@ -39,13 +41,14 @@ const CardsCollection = React.memo((props: PropTypes) => {
     onCollectionUpdate,
     onCollectionRemove,
     collectionIndex,
+    onDispatch,
   } = props;
   const { id, name, isCollapsed } = collection;
 
   const { maxItemsPerRow } = useContext(ConfigContext);
   const [isConfirmationModalShown, setConfirmationModalShownState] = useState<boolean>(false);
-  const hasBookmarks = !!bookmarks.length;
-  const rows = Math.ceil(bookmarks.length / maxItemsPerRow);
+  const hasBookmarks = !!(bookmarks && bookmarks.length);
+  const rows = Math.ceil((bookmarks && bookmarks.length || 4) / maxItemsPerRow); // TODO: Do smthing
   const maxCollectionHeight = getMaxGridCollectionHeight(isCollapsed, rows);
 
   const isDragging = draggingCollectionItemId === id;
@@ -170,7 +173,7 @@ const CardsCollection = React.memo((props: PropTypes) => {
                         moveCard={moveCard}
                         setDraggingItemId={setDraggingItemId}
                         onBookmarkUpdate={onBookmarkUpdate}
-                        onBookmarkRemove={onBookmarkRemove}
+                        onBookmarkRemove={() => onDispatch(deleteBookmark(bookmark.id, id))}
                       />
                     ))
                   }

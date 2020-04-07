@@ -1,0 +1,3 @@
+export const ACTION_TYPE = {
+  REMOVE_BOOKMARK: "REMOVE_BOOKMARK"
+};
