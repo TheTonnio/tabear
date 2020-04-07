@@ -1,4 +1,4 @@
-import React, {useReducer, useState} from 'react';
+import React, {useContext, useReducer, useState} from 'react';
 import { Bookmarks } from "../models/bookmarks";
 import { Collections } from "../models/collections";
 import { LayoutType } from "../models/layout-type";
@@ -8,32 +8,29 @@ import {Collection} from "../models/collection";
 import {bookmarksReducer} from "../reducers/bookmarks";
 import {AppDataContext} from "../store/app-data-context";
 import AppDataProvider from "./app-data-provider";
-type Tab = chrome.tabs.Tab;
+import {setCollections, updateCollection} from "../actions/collections";
+import {getBookmarkFromTab} from "../utils/get-bookmark-from-tab";
+import {addBookmark, setBookmarks} from "../actions/bookmarks";
+import {setCollectionsOrder} from "../actions/collections-order";
 
-const BookmarksContainer = (props: PropTypes) => {
+const BookmarksContainer = (props: any) => {
   const {
     layoutType,
-    bookmarks,
-    collections,
-    collectionsOrder,
-    onCollectionsUpdate,
-    onBookmarksUpdate,
-    onCollectionsOrderUpdate,
+    // bookmarks,
+    // collections,
+    // collectionsOrder,
+    // onCollectionsUpdate,
+    // onBookmarksUpdate,
+    // onCollectionsOrderUpdate,
     isSearchMode,
-    isDataLoaded,
   } = props;
 
   const [ draggingItemId, setDraggingItemId] = useState<string | undefined>();
   const [ draggingCollectionItemId, setDraggingItemCollectionId] = useState<string | undefined>();
+  const { bookmarks, collections, collectionsOrder, filteredBookmarks, dispatch }: any = useContext(AppDataContext);
+  console.log(2);
+  const onCollectionsUpdate = (collections: Collections) => dispatch(setCollections(collections));
 
-  const getBookmarkFromTab = (tab: Tab, id: string) => ({
-    id: id,
-    name: tab.title,
-    description: tab.title,
-    url: tab.url,
-    iconUrl: tab.favIconUrl
-  });
-  const setCards = (updatedCollections: Collections) => onCollectionsUpdate(updatedCollections);
   const moveCard = (source: any, destination: any, draggableId: string) => {
     if (!destination) {
       return
@@ -59,7 +56,7 @@ const BookmarksContainer = (props: PropTypes) => {
         bookmarksIds: newBookmarkIds
       };
 
-      setCards({
+      onCollectionsUpdate({
         ...collections,
         [newCollection.id]: newCollection
       });
@@ -70,8 +67,7 @@ const BookmarksContainer = (props: PropTypes) => {
     // If new tab dropped in a collection
     if (!start) {
       const finishBookmarkIds = Array.from(finish.bookmarksIds);
-      const newBookmark = getBookmarkFromTab(source.overload, draggableId);
-      onBookmarkCreate(newBookmark as any);
+      dispatch(addBookmark(getBookmarkFromTab(source.overload, draggableId)));
       finishBookmarkIds.splice(destination.index, 0, draggableId);
 
       const newFinish = {
@@ -79,7 +75,7 @@ const BookmarksContainer = (props: PropTypes) => {
         bookmarksIds: finishBookmarkIds
       };
 
-      setCards({
+      onCollectionsUpdate({
         ...collections,
         [newFinish.id]: newFinish
       });
@@ -102,7 +98,7 @@ const BookmarksContainer = (props: PropTypes) => {
       bookmarksIds: finishBookmarkIds
     };
 
-    setCards({
+    onCollectionsUpdate({
       ...collections,
       [newStart.id]: newStart,
       [newFinish.id]: newFinish
@@ -124,18 +120,13 @@ const BookmarksContainer = (props: PropTypes) => {
     const newCollectionOrder = [ ...collectionsOrder ];
     newCollectionOrder.splice(source.index, 1);
     newCollectionOrder.splice(destination.index, 0, draggableId);
-    onCollectionsOrderUpdate(newCollectionOrder);
+    dispatch(setCollectionsOrder(newCollectionOrder));
 
     return
   };
 
   const onCollectionUpdate = (collection: Collection) => {
-    const newCollectionsObj = {
-      ...collections,
-      [collection.id]: collection
-    };
-
-    onCollectionsUpdate(newCollectionsObj);
+    dispatch(updateCollection(collection));
   };
 
   const onCollectionRemove = (id: string) => {
@@ -151,23 +142,14 @@ const BookmarksContainer = (props: PropTypes) => {
       ? newCollectionsObj[id].bookmarksIds
       : [];
 
-    relatedBookmarksIds.forEach(bookmarkId => delete newBookmarksObj[bookmarkId]);
+    relatedBookmarksIds.forEach((bookmarkId: string) => delete newBookmarksObj[bookmarkId]);
     delete newCollectionsObj[id];
     newCollectionsOrder.splice(relatedIdOrderIndex, 1);
 
-    onCollectionsOrderUpdate(newCollectionsOrder);
-    onCollectionsUpdate(newCollectionsObj);
-    onBookmarksUpdate(newBookmarksObj);
+    dispatch(setCollectionsOrder(newCollectionsOrder));
+    dispatch(setCollections(newCollectionsObj));
+    dispatch(setBookmarks(newBookmarksObj));
   };
-
-  const onBookmarkUpdate = (bookmark: Bookmark) => {
-    onBookmarksUpdate({
-      ...bookmarks,
-      [bookmark.id]: bookmark
-    });
-  };
-
-  const onBookmarkCreate = onBookmarkUpdate;
 
   const onBookmarkRemove = (id: string, collectionId: string) => {
     const newBookmarksObj = { ...bookmarks };
@@ -177,33 +159,28 @@ const BookmarksContainer = (props: PropTypes) => {
     newCollectionObj.bookmarksIds.splice(relatedIdIndex, 1);
     delete newBookmarksObj[id];
 
-    onBookmarksUpdate(newBookmarksObj);
+    dispatch(setBookmarks(newBookmarksObj));
     onCollectionUpdate(newCollectionObj);
   };
 
   return (
-    <>
-    {isDataLoaded ? (
-      <AppDataProvider bookmarks={bookmarks} collections={collections}>
-      <LayoutResolver
-        layoutType={layoutType}
-        collectionsOrder={collectionsOrder}
-        moveCard={moveCard}
-        moveCollection={moveCollection}
-        setDraggingItemId={setDraggingItemId}
-        setDraggingItemCollectionId={setDraggingItemCollectionId}
-        draggingItemId={draggingItemId}
-        draggingCollectionItemId={draggingCollectionItemId}
-        isSearchMode={isSearchMode}
-        onBookmarkUpdate={onBookmarkUpdate}
-        onBookmarkRemove={onBookmarkRemove}
-        onCollectionUpdate={onCollectionUpdate}
-        onCollectionRemove={onCollectionRemove}
-      />
-    </AppDataProvider>
-    ) : null
-    }
-    </>
+    <LayoutResolver
+      layoutType={layoutType}
+      bookmarks={isSearchMode ? filteredBookmarks : bookmarks}
+      collections={collections}
+      collectionsOrder={collectionsOrder}
+      moveCard={moveCard}
+      moveCollection={moveCollection}
+      setDraggingItemId={setDraggingItemId}
+      setDraggingItemCollectionId={setDraggingItemCollectionId}
+      draggingItemId={draggingItemId}
+      draggingCollectionItemId={draggingCollectionItemId}
+      isSearchMode={isSearchMode}
+      onBookmarkUpdate={() => {}}
+      onBookmarkRemove={() => {}}
+      onCollectionUpdate={onCollectionUpdate}
+      onCollectionRemove={onCollectionRemove}
+    />
   )
 };
 
@@ -213,9 +190,6 @@ type PropTypes = {
   bookmarks: Bookmarks
   collections: Collections
   collectionsOrder: string[]
-  onBookmarksUpdate: (data: Bookmarks) => void
-  onCollectionsUpdate: (data: Collections) => void
-  onCollectionsOrderUpdate: (data: string[]) => void
   layoutType: LayoutType
   isSearchMode: boolean
   isDataLoaded: boolean

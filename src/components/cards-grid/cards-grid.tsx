@@ -3,7 +3,6 @@ import { CARD_WIDTH, CONTAINER_MARGIN, LIST_GAP, WRAPPER_MARGIN } from "../../co
 import {ConfigContext} from '../../store/config-context';
 import styled from "styled-components";
 import {NoDataFound} from "../no-data-found";
-import {AppDataContext} from "../../store/app-data-context";
 
 const CardsGrid = (props: PropTypes) => {
   const {

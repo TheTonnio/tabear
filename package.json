@@ -29,7 +29,8 @@
     "uuid": "3.4.0"
   },
   "scripts": {
-    "start": "react-scripts start --no-cache",
+    "start": "react-scripts start",
+    "start-no-cache": "react-scripts start --no-cache",
     "build": "INLINE_RUNTIME_CHUNK=false react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
