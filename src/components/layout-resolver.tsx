@@ -56,7 +56,6 @@ class LayoutResolver extends React.Component<PropTypes, StateTypes> {
     const Layout = this.layoutComponents[componentName];
     const LayoutCollection = this.layoutCollectionComponents[componentName];
 
-
     return (
       <Layout width={width}>
         {

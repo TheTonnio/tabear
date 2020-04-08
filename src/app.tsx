@@ -42,6 +42,12 @@ const App = () => {
     filteredBookmarks: {},
   });
 
+  const setConfigValue = (fieldName: string, value: any) => {
+    const newConfig = { ...appConfig, [fieldName]: value };
+    setAppConfig(newConfig as AppConfig);
+    storage.saveData('config', newConfig);
+  };
+
   const handleSearch = (bookmarks: Bookmarks, query?: string): void => {
     let filteredBookmarks = { ...bookmarks };
 
@@ -58,12 +64,6 @@ const App = () => {
     });
   };
 
-  const setConfigValue = (fieldName: string, value: any) => {
-    const config = { ...appConfig, [fieldName]: value };
-    storage.saveData('config', config);
-    setAppConfig(config as AppConfig);
-  };
-
   const fetchAppData = async (): Promise<void> => {
     const {
       collections,
@@ -77,17 +77,16 @@ const App = () => {
       'config',
     ]);
 
-    setAppConfig({
-      ...defaultConfig,
-      ...config,
-      setConfigValue
-    });
-
     setData({
       ...data,
       bookmarks: bookmarks || {},
       collections: collections || {},
       collectionsOrder: collectionsOrder || [],
+    });
+
+    setAppConfig({
+      ...defaultConfig,
+      ...config,
     });
 
     setDataLoaded(true);
@@ -101,7 +100,7 @@ const App = () => {
     isDataLoaded ?
       (
         <AppDataProvider data={data}>
-          <ConfigContext.Provider value={appConfig}>
+          <ConfigContext.Provider value={{ ...appConfig, setConfigValue }}>
             <DndProvider backend={Backend}>
               <AppWrapper>
                 <TopBar
@@ -114,7 +113,10 @@ const App = () => {
                     layoutType={appConfig.layoutType}
                     isSearchMode={isSearchMode}
                   />
-                  <OpenTabsPanel/>
+                  <OpenTabsPanel
+                    isPanelCollapsed={appConfig.isPanelCollapsed}
+                    togglePanel={() => setConfigValue("isPanelCollapsed", !appConfig.isPanelCollapsed)}
+                  />
                 </DashboardWrapper>
               </AppWrapper>
             </DndProvider>
