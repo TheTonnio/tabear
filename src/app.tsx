@@ -124,7 +124,7 @@ const App = () => {
   };
 
   const setConfigValue = (fieldName: string, value: any) => {
-    const config = { ...setAppConfig, [fieldName]: value };
+    const config = { ...appConfig, [fieldName]: value };
     storage.saveData('config', config);
     setAppConfig(config as Config);
   };
@@ -142,15 +142,19 @@ const App = () => {
       'config',
     ]);
 
-    const appConfig = config || defaultConfig;
+    setAppConfig({
+      ...defaultConfig,
+      ...config,
+      setConfigValue
+    });
 
-    setAppConfig({ ...appConfig, setConfigValue });
     setData({
       ...data,
       bookmarks: bookmarks || {},
       collections: collections || {},
       collectionsOrder: collectionsOrder || [],
     });
+
     setDataLoaded(true);
   };
 
@@ -158,7 +162,6 @@ const App = () => {
     fetchAppData().then();
   }, []);
 
-  console.log(isDataLoaded);
   return (
     isDataLoaded ?
       (

@@ -1,35 +1,18 @@
 import { ACTION_TYPE } from "../constants/action-types";
+import {Bookmarks} from "../models/bookmarks";
 
-export const bookmarksReducer = (state: { bookmarks: any, collections: any }, action: any) => {
+export const bookmarksReducer = (state: Bookmarks, action: any) => {
   switch(action.type) {
     case ACTION_TYPE.ADD_BOOKMARK:
       return {
         ...state,
-        bookmarks: {
-          ...state.bookmarks,
-          [action.bookmarks.id]: action.bookmarks
-        }
+        [action.bookmarks.id]: action.bookmarks
       };
-    case ACTION_TYPE.REMOVE_BOOKMARK:
-      const newBookmarksObj = { ...state.bookmarks };
-      const newCollectionObj = { ...state.collections[action.collectionId] };
-      const relatedIdIndex = newCollectionObj.bookmarksIds.indexOf(action.id);
-
-      newCollectionObj.bookmarksIds.splice(relatedIdIndex, 1);
-      delete newBookmarksObj[action.id];
-
-      const newState = {
-        ...state,
-        bookmarks: newBookmarksObj,
-        collections: {
-          ...state.collections,
-          [newCollectionObj.id]: newCollectionObj
-        }
-      };
-
-      return {
-        ...newState
-      };
+    case ACTION_TYPE.REMOVE_BOOKMARK: {
+      const bookmarks = { ...state };
+      delete bookmarks[action.id];
+      return { ...bookmarks };
+    }
     case ACTION_TYPE.SET_BOOKMARKS:
       return {
         ...state,
@@ -37,6 +20,20 @@ export const bookmarksReducer = (state: { bookmarks: any, collections: any }, ac
           ...action.bookmarks
         }
       };
+    case ACTION_TYPE.EDIT_BOOKMARK:
+      return {
+        ...state,
+        [action.id]: {
+          ...state[action.id],
+          name: action.name,
+          description: action.description,
+        }
+      };
+    case ACTION_TYPE.REMOVE_BOOKMARKS: {
+      const bookmarks = { ...state };
+      action.ids.forEach((id: string) => delete bookmarks[id]);
+      return { ...bookmarks };
+    }
     default:
       return state;
   }

@@ -24,7 +24,14 @@ import DragDropWrapper from "../dnd/drag-drop-wrapper";
 import {DnDSource} from "../../models/dnd-source";
 import {DropTargetMonitor, useDrag, useDrop, XYCoord} from "react-dnd";
 import {ACTION_TYPE} from "../../constants/action-types";
-import {deleteBookmark} from "../../actions/bookmarks";
+import {deleteBookmark, editBookmark, removeBookmark, removeBookmarks} from "../../actions/bookmarks";
+import {
+  editCollection,
+  removeBookmarkFromCollection,
+  removeCollection,
+  toggleCollection
+} from "../../actions/collections";
+import {removeCollectionFromOrder} from "../../actions/collections-order";
 
 const CardsCollection = React.memo((props: any) => {
   const {
@@ -36,10 +43,6 @@ const CardsCollection = React.memo((props: any) => {
     setDraggingItemCollectionId,
     draggingItemId,
     draggingCollectionItemId,
-    onBookmarkUpdate,
-    onBookmarkRemove,
-    onCollectionUpdate,
-    onCollectionRemove,
     collectionIndex,
     onDispatch,
   } = props;
@@ -125,16 +128,23 @@ const CardsCollection = React.memo((props: any) => {
   drop(dropRef);
   drag(dragRef);
 
-  const toggleCollection = () => onCollectionUpdate({
-    ...collection,
-    isCollapsed: !isCollapsed
-  });
-
   const handleCollectionSave = ({ name }: CollectionEditableFields) => {
-    onCollectionUpdate({
-      ...collection,
-      name,
-    });
+    onDispatch(editCollection(id, name));
+  };
+
+  const handleCollectionRemove = ({ id, bookmarksIds }: Collection) => {
+    onDispatch(removeBookmarks(bookmarksIds));
+    onDispatch(removeCollectionFromOrder(id));
+    onDispatch(removeCollection(id));
+  };
+
+  const handleBookmarkRemove = (bookmarkId: string, collectionId: string) => {
+    onDispatch(removeBookmarkFromCollection(bookmarkId, collectionId));
+    onDispatch(removeBookmark(bookmarkId));
+  };
+
+  const handleBookmarkSave = (id: string, name: string, description: string) => {
+    onDispatch(editBookmark(id, name, description));
   };
 
   return (
@@ -149,7 +159,7 @@ const CardsCollection = React.memo((props: any) => {
         <CardsCollectionHeader
           name={name}
           isCollectionCollapsed={isCollapsed}
-          toggleCollection={() => toggleCollection()}
+          toggleCollection={() => onDispatch(toggleCollection(id))}
           onSave={handleCollectionSave}
           onRemove={() => setConfirmationModalShownState(true)}
           dragRef={dragRef}
@@ -172,8 +182,8 @@ const CardsCollection = React.memo((props: any) => {
                         draggingItemId={draggingItemId}
                         moveCard={moveCard}
                         setDraggingItemId={setDraggingItemId}
-                        onBookmarkUpdate={onBookmarkUpdate}
-                        onBookmarkRemove={() => onDispatch(deleteBookmark(bookmark.id, id))}
+                        onBookmarkUpdate={(name: string, description: string) => handleBookmarkSave(bookmark.id, name, description)}
+                        onBookmarkRemove={() => handleBookmarkRemove(bookmark.id, id)}
                       />
                     ))
                   }
@@ -187,7 +197,7 @@ const CardsCollection = React.memo((props: any) => {
         <ConfirmationCover
           isHidden={!isConfirmationModalShown}
           text={"Are you sure to delete this collection?"}
-          onConfirm={() => onCollectionRemove(collection.id)}
+          onConfirm={() => handleCollectionRemove(collection)}
           onCancel={() => setConfirmationModalShownState(false)}
           confirmButtonText={"Confirm"}
           cancelButtonText={"Cancel"}

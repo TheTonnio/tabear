@@ -1,7 +1,5 @@
 import { ACTION_TYPE } from "../constants/action-types";
-import v4 from "uuid/v4";
 import {Bookmark} from "../models/bookmark";
-import {Collections} from "../models/collections";
 import {Bookmarks} from "../models/bookmarks";
 
 export const addBookmark = (bookmark: Bookmark) => ({
@@ -9,13 +7,24 @@ export const addBookmark = (bookmark: Bookmark) => ({
   bookmark
 });
 
-export const deleteBookmark = (id: string, collectionId: string) => ({
+export const editBookmark = (id: string, name: string, description: string) => ({
+  type: ACTION_TYPE.EDIT_BOOKMARK,
+  id,
+  name,
+  description,
+});
+
+export const removeBookmark = (id: string) => ({
   type: ACTION_TYPE.REMOVE_BOOKMARK,
   id,
-  collectionId,
 });
 
 export const setBookmarks = (bookmarks: Bookmarks) => ({
   type: ACTION_TYPE.SET_COLLECTIONS,
-  bookmarks
+  bookmarks,
+});
+
+export const removeBookmarks = (ids: string[] = []) => ({
+  type: ACTION_TYPE.REMOVE_BOOKMARKS,
+  ids,
 });

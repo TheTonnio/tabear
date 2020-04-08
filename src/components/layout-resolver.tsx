@@ -9,7 +9,7 @@ import CardsGrid from "./cards-grid/cards-grid";
 import { Bookmarks } from "../models/bookmarks";
 import { Collections } from "../models/collections";
 
-class LayoutResolver extends React.Component<PropTypes, StateTypes> {
+class LayoutResolver extends React.Component<any, StateTypes> {
   private layoutComponents = {
     masonry: MasonryLayout,
     grid: CardsGrid
@@ -52,10 +52,7 @@ class LayoutResolver extends React.Component<PropTypes, StateTypes> {
       draggingCollectionItemId,
       bookmarks,
       collections,
-      onBookmarkUpdate,
-      onBookmarkRemove,
-      onCollectionUpdate,
-      onCollectionRemove,
+      onDispatch,
       isSearchMode,
     } = this.props;
 
@@ -84,10 +81,7 @@ class LayoutResolver extends React.Component<PropTypes, StateTypes> {
                 draggingItemId={draggingItemId}
                 draggingCollectionItemId={draggingCollectionItemId}
                 layoutType={layoutType}
-                onBookmarkUpdate={onBookmarkUpdate}
-                onBookmarkRemove={onBookmarkRemove}
-                onCollectionUpdate={onCollectionUpdate}
-                onCollectionRemove={onCollectionRemove}
+                onDispatch={onDispatch}
               />
             ) : undefined;
           })).filter(Boolean)
@@ -108,10 +102,6 @@ type PropTypes = {
   draggingCollectionItemId?: string | null
   bookmarks: Bookmarks
   collections: Collections
-  onBookmarkUpdate: (data: Bookmark) => void
-  onBookmarkRemove: (id: string, collectionId: string) => void
-  onCollectionUpdate: (data: Collection) => void
-  onCollectionRemove: (id: string) => void
   isSearchMode: boolean
 }
 
