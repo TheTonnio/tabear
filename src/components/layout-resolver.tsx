@@ -9,7 +9,7 @@ import CardsGrid from "./cards-grid/cards-grid";
 import { Bookmarks } from "../models/bookmarks";
 import { Collections } from "../models/collections";
 
-class LayoutResolver extends React.Component<any, StateTypes> {
+class LayoutResolver extends React.Component<PropTypes, StateTypes> {
   private layoutComponents = {
     masonry: MasonryLayout,
     grid: CardsGrid
@@ -46,10 +46,6 @@ class LayoutResolver extends React.Component<any, StateTypes> {
       collectionsOrder,
       moveCard,
       moveCollection,
-      setDraggingItemId,
-      setDraggingItemCollectionId,
-      draggingItemId,
-      draggingCollectionItemId,
       bookmarks,
       collections,
       onDispatch,
@@ -66,7 +62,8 @@ class LayoutResolver extends React.Component<any, StateTypes> {
         {
           (collectionsOrder.map((collectionId: string, index: number) => {
             const collection: Collection = collections[collectionId];
-            const bookmarksList: Bookmark[] = collection.bookmarksIds.map((id: string) => bookmarks[id]).filter(Boolean);
+            const bookmarksList: Bookmark[] =
+              collection.bookmarksIds.map((id: string) => bookmarks[id]).filter(Boolean);
 
             return bookmarksList.length || !isSearchMode ? (
               <LayoutCollection
@@ -76,10 +73,6 @@ class LayoutResolver extends React.Component<any, StateTypes> {
                 moveCollection={moveCollection}
                 collection={collection}
                 collectionIndex={index}
-                setDraggingItemId={setDraggingItemId}
-                setDraggingItemCollectionId={setDraggingItemCollectionId}
-                draggingItemId={draggingItemId}
-                draggingCollectionItemId={draggingCollectionItemId}
                 layoutType={layoutType}
                 onDispatch={onDispatch}
               />
@@ -91,15 +84,12 @@ class LayoutResolver extends React.Component<any, StateTypes> {
   }
 }
 
-type PropTypes = {
+interface PropTypes {
   layoutType: LayoutType
   collectionsOrder: string[]
   moveCard: (source: any, destination: any, draggableId: string) => void
   moveCollection: (source: any, destination: any, draggableId: string) => void
-  setDraggingItemId: (id?: string) => void
-  setDraggingItemCollectionId: (id?: string) => void
-  draggingItemId?: string | null
-  draggingCollectionItemId?: string | null
+  onDispatch: () => any
   bookmarks: Bookmarks
   collections: Collections
   isSearchMode: boolean

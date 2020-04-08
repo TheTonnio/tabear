@@ -11,6 +11,7 @@ import { DnDSource } from "../models/dnd-source";
 import { DnDDestination } from "../models/dnd-destination";
 import { moveBookmark } from "../utils/dnd/move-bookmark";
 import { Bookmark } from "../models/bookmark";
+import { DnDContext } from "../store/dnd-context";
 
 const BookmarksContainer = (props: PropTypes) => {
   const {
@@ -18,8 +19,8 @@ const BookmarksContainer = (props: PropTypes) => {
     isSearchMode,
   } = props;
 
-  const [ draggingItemId, setDraggingItemId] = useState<string | undefined>();
-  const [ draggingCollectionItemId, setDraggingItemCollectionId] = useState<string | undefined>();
+  const [ draggingBookmarkId, setDraggingBookmarkId] = useState<string | undefined>();
+  const [ draggingCollectionId, setDraggingCollectionId] = useState<string | undefined>();
   const { bookmarks, collections, collectionsOrder, filteredBookmarks, dispatch }: any = useContext(AppDataContext);
 
   const handleCollectionMove = (source: DnDSource, destination: DnDDestination, draggableId: string) => {
@@ -42,20 +43,23 @@ const BookmarksContainer = (props: PropTypes) => {
   };
 
   return (
-    <LayoutResolver
-      layoutType={layoutType}
-      bookmarks={isSearchMode ? filteredBookmarks : bookmarks}
-      collections={collections}
-      collectionsOrder={collectionsOrder}
-      moveCard={handleBookmarkMove}
-      moveCollection={handleCollectionMove}
-      setDraggingItemId={setDraggingItemId}
-      setDraggingItemCollectionId={setDraggingItemCollectionId}
-      draggingItemId={draggingItemId}
-      draggingCollectionItemId={draggingCollectionItemId}
-      isSearchMode={isSearchMode}
-      onDispatch={dispatch}
-    />
+    <DnDContext.Provider value={{ // TODO: Move to separate var?
+      draggingBookmarkId,
+      draggingCollectionId,
+      setDraggingBookmarkId,
+      setDraggingCollectionId,
+    }}>
+      <LayoutResolver
+        layoutType={layoutType}
+        bookmarks={isSearchMode ? filteredBookmarks : bookmarks}
+        collections={collections}
+        collectionsOrder={collectionsOrder}
+        moveCard={handleBookmarkMove}
+        moveCollection={handleCollectionMove}
+        isSearchMode={isSearchMode}
+        onDispatch={dispatch}
+      />
+    </DnDContext.Provider>
   )
 };
 
