@@ -9,7 +9,7 @@ import { faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import { ConfigContext } from "../../store/config-context";
 type Tab = chrome.tabs.Tab;
 
-const TabsPanel = (props: PropTypes) => {
+const TabsPanel = () => {
   const [ tabs, setTabs ] = useState<Tab[]>([]);
   const { setConfigValue, isPanelCollapsed } = useContext(ConfigContext);
 
@@ -19,7 +19,7 @@ const TabsPanel = (props: PropTypes) => {
       setTabs(tabs);
     };
 
-    fetchTabs();
+    fetchTabs().then();
   }, []);
 
   const filteredTabs = useMemo(() =>
@@ -46,10 +46,6 @@ const TabsPanel = (props: PropTypes) => {
   );
 };
 
-interface PropTypes {
-
-}
-
 const Panel = styled.div`
   position: fixed;
   top: 0;
@@ -60,8 +56,6 @@ const Panel = styled.div`
   border: 1px solid #f4f4f4;
   background: #fff;
   transition: .3s width;
-  //overflow: auto;
-  //z-index: -1;
   
   &:hover .toggle-panel-button {
     transform: scale(1);

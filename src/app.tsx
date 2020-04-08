@@ -1,25 +1,21 @@
-import React, {useContext, useEffect, useState} from 'react';
-import BookmarksContainer from './components/bookmarks-container';
-import Storage from './utils/storage';
-import LocalStorage from './utils/localStorage';
-import { ENV_DEVELOPMENT } from './constants';
-import styled from 'styled-components'
-import { DndProvider } from 'react-dnd'
-import Backend from 'react-dnd-html5-backend'
-import { Bookmarks } from "./models/bookmarks";
-import { Collections } from "./models/collections";
-import TopBar from "./components/top-bar/top-bar";
-import { LayoutType } from "./models/layout-type";
-import OpenTabsPanel from "./components/tabs-panel/tabs-panel";
-import initialState from './mock/initial-data';
-import { ConfigContext } from "./store/config-context";
-import {Config, defaultConfig} from "./constants/config";
-import v4 from "uuid/v4";
+import React, { useEffect, useState } from 'react';
 import AppDataProvider from "./components/app-data-provider";
+import Backend from 'react-dnd-html5-backend'
+import BookmarksContainer from './components/bookmarks-container';
 import LoadingSpinner from "./components/loading-spinner";
-import {AppData} from "./models/app-data";
-import {searchBookmarksByQuery} from "./utils/search-bookmsrks-by-query";
-import {addCollection} from "./actions/collections";
+import LocalStorage from './utils/localStorage';
+import OpenTabsPanel from "./components/tabs-panel/tabs-panel";
+import Storage from './utils/storage';
+import TopBar from "./components/top-bar/top-bar";
+import styled from 'styled-components'
+import { AppConfig } from "./models/app-config";
+import { AppData } from "./models/app-data";
+import { Bookmarks } from "./models/bookmarks";
+import { ConfigContext } from "./store/config-context";
+import { DndProvider } from 'react-dnd'
+import { ENV_DEVELOPMENT } from './constants';
+import { defaultConfig } from "./constants/config";
+import { searchBookmarksByQuery } from "./utils/search-bookmsrks-by-query";
 
 const AppWrapper = styled.div`
   height: 100vh;
@@ -36,70 +32,9 @@ const storage: Storage = process.env.NODE_ENV === ENV_DEVELOPMENT
   : new Storage();
 
 const App = () => {
-  //   this.setBookmarks = this.setBookmarks.bind(this);
-  //   this.setCollections = this.setCollections.bind(this);
-  //   this.setCollectionsOrder = this.setCollectionsOrder.bind(this);
-  //   this.setConfigValue = this.setConfigValue.bind(this);
-  //   this.setLayoutType = this.setLayoutType.bind(this);
-  //   this.searchBookmarks = this.searchBookmarks.bind(this);
-  //   this.addNewCollection = this.addNewCollection.bind(this);
-  //
-  //   // Seed with mock data
-  //   this.storage.saveData('bookmarks', initialState.bookmarks);
-  //   this.storage.saveData('collections', initialState.collections);
-  //   this.storage.saveData('collectionsOrder', initialState.collectionsOrder);
-  //   this.storage.saveData('config', initialState.config);
-  // };
-  //
-  // setBookmarks(bookmarks: Bookmarks): void {
-  //   this.storage.saveData('bookmarks', bookmarks);
-  //   this.setState({ bookmarks });
-  // }
-  //
-  // setCollections(collections: Collections): void {
-  //   this.storage.saveData('collections', collections);
-  //   this.setState({ collections });
-  // }
-  //
-  // addNewCollection() {
-  //   const { collections, collectionsOrder } = this.state;
-  //   const id = v4();
-  //
-  //   const updatedCollectionsOrder = [ id, ...collectionsOrder ];
-  //   const updatedCollections = {
-  //     ...collections,
-  //     [id]: {
-  //       id: id,
-  //       name: "New Collection",
-  //       bookmarksIds: [],
-  //       isCollapsed: false,
-  //     }
-  //   };
-  //
-  //   this.setCollections(updatedCollections);
-  //   this.setCollectionsOrder(updatedCollectionsOrder);
-  // }
-  //
-  // setCollectionsOrder(collectionsOrder: string[]): void {
-  //   this.storage.saveData('collectionsOrder', collectionsOrder);
-  //   this.setState({ collectionsOrder });
-  // }
-  //
-  // setConfigValue(fieldName: string, value: any) {
-  //   const config = { ...this.state.config, [fieldName]: value };
-  //   this.storage.saveData('config', config);
-  //   this.setState({ config });
-  // }
-  //
-  // setLayoutType(value: LayoutType) {
-  //   this.setConfigValue("layoutType", value);
-  // }
-
-
-
   const [ isSearchMode, setSearchMode ] = useState<boolean>(false);
   const [ isDataLoaded, setDataLoaded ] = useState<boolean>(false);
-  const [ appConfig, setAppConfig ] = useState<Config>(defaultConfig); // TODO: Add Interface for config
+  const [ appConfig, setAppConfig ] = useState<AppConfig>(defaultConfig); // TODO: Add Interface for config
   const [ data, setData ] = useState<AppData>({
     bookmarks: {},
     collections: {},
@@ -126,7 +61,7 @@ const App = () => {
   const setConfigValue = (fieldName: string, value: any) => {
     const config = { ...appConfig, [fieldName]: value };
     storage.saveData('config', config);
-    setAppConfig(config as Config);
+    setAppConfig(config as AppConfig);
   };
 
   const fetchAppData = async (): Promise<void> => {
@@ -179,13 +114,13 @@ const App = () => {
                     layoutType={appConfig.layoutType}
                     isSearchMode={isSearchMode}
                   />
-                {/*  <OpenTabsPanel/>*/}
+                  <OpenTabsPanel/>
                 </DashboardWrapper>
               </AppWrapper>
             </DndProvider>
           </ConfigContext.Provider>
         </AppDataProvider>
-          ) : <LoadingSpinner/>
+      ) : <LoadingSpinner/>
   );
 };
 

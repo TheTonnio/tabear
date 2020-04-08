@@ -20,18 +20,16 @@ import {
 import { getMaxGridCollectionHeight } from "../../utils/get-max-grid-collection-height";
 import { CollectionEditableFields } from "../../models/collection-editable-fields";
 import ConfirmationCover from "../confiramtion-cover";
-import DragDropWrapper from "../dnd/drag-drop-wrapper";
-import {DnDSource} from "../../models/dnd-source";
-import {DropTargetMonitor, useDrag, useDrop, XYCoord} from "react-dnd";
-import {ACTION_TYPE} from "../../constants/action-types";
-import {deleteBookmark, editBookmark, removeBookmark, removeBookmarks} from "../../actions/bookmarks";
+import { DnDSource } from "../../models/dnd-source";
+import { DropTargetMonitor, useDrag, useDrop, XYCoord } from "react-dnd";
+import { editBookmark, removeBookmark, removeBookmarks } from "../../actions/bookmarks";
 import {
   editCollection,
   removeBookmarkFromCollection,
   removeCollection,
   toggleCollection
 } from "../../actions/collections";
-import {removeCollectionFromOrder} from "../../actions/collections-order";
+import { removeCollectionFromOrder } from "../../actions/collections-order";
 
 const CardsCollection = React.memo((props: any) => {
   const {

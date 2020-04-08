@@ -1,15 +1,18 @@
 import React, { useContext, useState } from 'react';
 import LayoutResolver from "./layout-resolver";
 import { AppDataContext } from "../store/app-data-context";
-import { Bookmarks } from "../models/bookmarks";
 import { Collections } from "../models/collections";
 import { LayoutType } from "../models/layout-type";
 import { addBookmark } from "../actions/bookmarks";
-import { getBookmarkFromTab } from "../utils/get-bookmark-from-tab";
 import { setCollections } from "../actions/collections";
-import { setCollectionsOrder } from "../actions/collections-order";
+import { updateCollectionsOrders } from "../actions/collections-order";
+import { moveCollection } from '../utils/dnd/move-collection';
+import { DnDSource } from "../models/dnd-source";
+import { DnDDestination } from "../models/dnd-destination";
+import { moveBookmark } from "../utils/dnd/move-bookmark";
+import { Bookmark } from "../models/bookmark";
 
-const BookmarksContainer = (props: any) => {
+const BookmarksContainer = (props: PropTypes) => {
   const {
     layoutType,
     isSearchMode,
@@ -18,100 +21,24 @@ const BookmarksContainer = (props: any) => {
   const [ draggingItemId, setDraggingItemId] = useState<string | undefined>();
   const [ draggingCollectionItemId, setDraggingItemCollectionId] = useState<string | undefined>();
   const { bookmarks, collections, collectionsOrder, filteredBookmarks, dispatch }: any = useContext(AppDataContext);
-  const onCollectionsUpdate = (collections: Collections) => dispatch(setCollections(collections));
 
-  const moveCard = (source: any, destination: any, draggableId: string) => {
-    if (!destination) {
-      return
-    }
-
-    if (
-      destination.id === source.id &&
-      destination.index === source.index
-    ) {
-      return
-    }
-
-    const start = collections[source.id];
-    const finish = collections[destination.id];
-
-    if (start === finish) {
-      const newBookmarkIds = Array.from(start.bookmarksIds);
-      newBookmarkIds.splice(source.index, 1);
-      newBookmarkIds.splice(destination.index, 0, draggableId);
-
-      const newCollection = {
-        ...start,
-        bookmarksIds: newBookmarkIds
-      };
-
-      onCollectionsUpdate({
-        ...collections,
-        [newCollection.id]: newCollection
-      });
-
-      return;
-    }
-
-    // If new tab dropped in a collection
-    if (!start) {
-      const finishBookmarkIds = Array.from(finish.bookmarksIds);
-      dispatch(addBookmark(getBookmarkFromTab(source.overload, draggableId)));
-      finishBookmarkIds.splice(destination.index, 0, draggableId);
-
-      const newFinish = {
-        ...finish,
-        bookmarksIds: finishBookmarkIds
-      };
-
-      onCollectionsUpdate({
-        ...collections,
-        [newFinish.id]: newFinish
-      });
-
-      return;
-    }
-
-    const startBookmarkIds = Array.from(start.bookmarksIds);
-    startBookmarkIds.splice(source.index, 1);
-    const newStart = {
-      ...start,
-      bookmarksIds: startBookmarkIds
-    };
-
-    const finishBookmarkIds = Array.from(finish.bookmarksIds);
-    finishBookmarkIds.splice(destination.index, 0, draggableId);
-
-    const newFinish = {
-      ...finish,
-      bookmarksIds: finishBookmarkIds
-    };
-
-    onCollectionsUpdate({
-      ...collections,
-      [newStart.id]: newStart,
-      [newFinish.id]: newFinish
-    });
+  const handleCollectionMove = (source: DnDSource, destination: DnDDestination, draggableId: string) => {
+    moveCollection(
+      source,
+      destination,
+      draggableId,
+      (id: string, fromIndex: number, toIndex: number) => dispatch(updateCollectionsOrders(id, fromIndex, toIndex)));
   };
 
-  const moveCollection = (source: any, destination: any, draggableId: string) => {
-    if (!destination) {
-      return
-    }
-
-    if (
-      destination.id === source.id &&
-      destination.index === source.index
-    ) {
-      return
-    }
-
-    const newCollectionOrder = [ ...collectionsOrder ];
-    newCollectionOrder.splice(source.index, 1);
-    newCollectionOrder.splice(destination.index, 0, draggableId);
-    dispatch(setCollectionsOrder(newCollectionOrder));
-
-    return
+  const handleBookmarkMove = (source: DnDSource, destination: DnDDestination, draggableId: string) => {
+    moveBookmark(
+      collections,
+      source,
+      destination,
+      draggableId,
+      (collections: Collections) => dispatch(setCollections(collections)),
+      (bookmark: Bookmark) => dispatch(addBookmark(bookmark)),
+    );
   };
 
   return (
@@ -120,8 +47,8 @@ const BookmarksContainer = (props: any) => {
       bookmarks={isSearchMode ? filteredBookmarks : bookmarks}
       collections={collections}
       collectionsOrder={collectionsOrder}
-      moveCard={moveCard}
-      moveCollection={moveCollection}
+      moveCard={handleBookmarkMove}
+      moveCollection={handleCollectionMove}
       setDraggingItemId={setDraggingItemId}
       setDraggingItemCollectionId={setDraggingItemCollectionId}
       draggingItemId={draggingItemId}
@@ -135,10 +62,6 @@ const BookmarksContainer = (props: any) => {
 export default BookmarksContainer;
 
 type PropTypes = {
-  bookmarks: Bookmarks
-  collections: Collections
-  collectionsOrder: string[]
   layoutType: LayoutType
   isSearchMode: boolean
-  isDataLoaded: boolean
 }

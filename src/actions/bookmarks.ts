@@ -1,10 +1,11 @@
 import { ACTION_TYPE } from "../constants/action-types";
-import {Bookmark} from "../models/bookmark";
-import {Bookmarks} from "../models/bookmarks";
+import { Bookmark } from "../models/bookmark";
+import { Bookmarks } from "../models/bookmarks";
+import v4 from "uuid/v4";
 
 export const addBookmark = (bookmark: Bookmark) => ({
   type: ACTION_TYPE.ADD_BOOKMARK,
-  bookmark
+  bookmark,
 });
 
 export const editBookmark = (id: string, name: string, description: string) => ({

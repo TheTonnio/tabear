@@ -1,14 +1,9 @@
 import { LAYOUT_TYPES_CODES } from "./index";
-import { LayoutType } from "../models/layout-type";
+import { AppConfig } from "../models/app-config";
 
-export interface Config {
-  maxItemsPerRow: number
-  isPanelCollapsed: boolean
-  layoutType: LayoutType
-  setConfigValue: (fieldName: string, value: any) => void
-}
 
-export const defaultConfig: Config = {
+
+export const defaultConfig: AppConfig = {
   maxItemsPerRow: 0,
   isPanelCollapsed: false,
   layoutType: LAYOUT_TYPES_CODES.Grid,

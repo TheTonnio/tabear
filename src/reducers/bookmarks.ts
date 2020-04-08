@@ -6,7 +6,7 @@ export const bookmarksReducer = (state: Bookmarks, action: any) => {
     case ACTION_TYPE.ADD_BOOKMARK:
       return {
         ...state,
-        [action.bookmarks.id]: action.bookmarks
+        [action.bookmark.id]: action.bookmark
       };
     case ACTION_TYPE.REMOVE_BOOKMARK: {
       const bookmarks = { ...state };

@@ -10,3 +10,10 @@ export const removeCollectionFromOrder = (id: string) => ({
   type: ACTION_TYPE.REMOVE_COLLECTION_FROM_ORDER,
   id
 });
+
+export const updateCollectionsOrders = (id: string, fromIndex: number, toIndex: number) => ({
+  type: ACTION_TYPE.UPDATE_COLLECTIONS_ORDER,
+  id,
+  fromIndex,
+  toIndex,
+});
