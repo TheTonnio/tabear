@@ -10,12 +10,10 @@ import TopBar from "./components/top-bar/top-bar";
 import styled from 'styled-components'
 import { AppConfig } from "./models/app-config";
 import { AppData } from "./models/app-data";
-import { Bookmarks } from "./models/bookmarks";
 import { ConfigContext } from "./store/config-context";
 import { DndProvider } from 'react-dnd'
 import { ENV_DEVELOPMENT } from './constants';
 import { defaultConfig } from "./constants/config";
-import { searchBookmarksByQuery } from "./utils/search-bookmsrks-by-query";
 
 const AppWrapper = styled.div`
   height: 100vh;
@@ -32,36 +30,19 @@ const storage: Storage = process.env.NODE_ENV === ENV_DEVELOPMENT
   : new Storage();
 
 const App = () => {
-  const [ isSearchMode, setSearchMode ] = useState<boolean>(false);
+  const [ searchQuery, setSearchQuery ] = useState<string>("");
   const [ isDataLoaded, setDataLoaded ] = useState<boolean>(false);
   const [ appConfig, setAppConfig ] = useState<AppConfig>(defaultConfig); // TODO: Add Interface for config
   const [ data, setData ] = useState<AppData>({
     bookmarks: {},
     collections: {},
     collectionsOrder: [],
-    filteredBookmarks: {},
   });
 
   const setConfigValue = (fieldName: string, value: any) => {
     const newConfig = { ...appConfig, [fieldName]: value };
     setAppConfig(newConfig as AppConfig);
     storage.saveData('config', newConfig);
-  };
-
-  const handleSearch = (bookmarks: Bookmarks, query?: string): void => {
-    let filteredBookmarks = { ...bookmarks };
-
-    if (query && query.length) {
-      setSearchMode(true);
-      filteredBookmarks = searchBookmarksByQuery(data.bookmarks, query);
-    } else {
-      setSearchMode(false);
-    }
-
-    setData({
-      ...data,
-      filteredBookmarks,
-    });
   };
 
   const fetchAppData = async (): Promise<void> => {
@@ -105,13 +86,14 @@ const App = () => {
               <AppWrapper>
                 <TopBar
                   onSetLayoutType={(layoutType) => setAppConfig({ ...appConfig, layoutType })}
-                  onSearch={(query) => handleSearch(data.bookmarks, query)}
+                  onSearch={(query: string) => setSearchQuery(query)}
                   layoutType={appConfig.layoutType}
                 />
                 <DashboardWrapper>
                   <BookmarksContainer
+                    searchQuery={searchQuery}
                     layoutType={appConfig.layoutType}
-                    isSearchMode={isSearchMode}
+                    isSearchMode={!!(searchQuery && searchQuery.length)}
                   />
                   <OpenTabsPanel
                     isPanelCollapsed={appConfig.isPanelCollapsed}

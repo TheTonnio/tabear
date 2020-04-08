@@ -12,16 +12,19 @@ import { DnDDestination } from "../models/dnd-destination";
 import { moveBookmark } from "../utils/dnd/move-bookmark";
 import { Bookmark } from "../models/bookmark";
 import { DnDContext } from "../store/dnd-context";
+import {Bookmarks} from "../models/bookmarks";
+import {searchBookmarksByQuery} from "../utils/search-bookmsrks-by-query";
 
 const BookmarksContainer = (props: PropTypes) => {
   const {
     layoutType,
     isSearchMode,
+    searchQuery,
   } = props;
 
   const [ draggingBookmarkId, setDraggingBookmarkId] = useState<string | undefined>();
   const [ draggingCollectionId, setDraggingCollectionId] = useState<string | undefined>();
-  const { bookmarks, collections, collectionsOrder, filteredBookmarks, dispatch }: any = useContext(AppDataContext);
+  const { bookmarks, collections, collectionsOrder, dispatch }: any = useContext(AppDataContext);
 
   const handleCollectionMove = (source: DnDSource, destination: DnDDestination, draggableId: string) => {
     moveCollection(
@@ -51,7 +54,7 @@ const BookmarksContainer = (props: PropTypes) => {
     }}>
       <LayoutResolver
         layoutType={layoutType}
-        bookmarks={isSearchMode ? filteredBookmarks : bookmarks}
+        bookmarks={isSearchMode ? searchBookmarksByQuery(bookmarks, searchQuery) : bookmarks}
         collections={collections}
         collectionsOrder={collectionsOrder}
         moveCard={handleBookmarkMove}
@@ -68,4 +71,5 @@ export default BookmarksContainer;
 type PropTypes = {
   layoutType: LayoutType
   isSearchMode: boolean
+  searchQuery: string
 }

@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Bookmark } from '../../models/bookmark';
 import { Collection } from '../../models/collection';
 import styled from "styled-components";
@@ -7,20 +7,16 @@ import CardsCollectionHeader from "./cards-collection-header";
 import { LayoutType } from "../../models/layout-type";
 import CardsPlaceholder from "./cards-placeholder";
 import { ConfigContext } from "../../store/config-context";
-import { DnDDestination } from "../../models/dnd-destination";
 import {
   CARD_HEIGHT,
   CARD_ROW_GAP, CARDS_PLACEHOLDER_HEIGHT,
   COLLECTION_BOTTOM_MARGIN,
   COLLECTION_TOP_MARGIN, CONTAINER_MARGIN,
-  DraggableItemTypes,
   WRAPPER_MARGIN
 } from "../../constants";
-import { getMaxGridCollectionHeight } from "../../utils/get-max-grid-collection-height";
+import { calcMaxGridCollectionHeight } from "../../utils/calc-max-grid-collection-height";
 import { CollectionEditableFields } from "../../models/collection-editable-fields";
 import ConfirmationCover from "../confiramtion-cover";
-import { DnDSource } from "../../models/dnd-source";
-import { DropTargetMonitor, useDrag, useDrop, XYCoord } from "react-dnd";
 import { editBookmark, removeBookmark, removeBookmarks } from "../../actions/bookmarks";
 import {
   editCollection,
@@ -31,14 +27,16 @@ import {
 import { removeCollectionFromOrder } from "../../actions/collections-order";
 import { DnDContext } from "../../store/dnd-context";
 import { AppConfig } from "../../models/app-config";
+import { calcCollectionRowsNumber } from "../../utils/calc-collection-rows-number";
 
 const CardsCollection = React.memo((props: any) => {
   const {
+    collectionDropRef,
+    collectionDragRef,
+    collectionPreview,
     bookmarks,
     collection,
     moveCard,
-    moveCollection,
-    collectionIndex,
     onDispatch,
   } = props;
   const { id, name, isCollapsed } = collection;
@@ -48,76 +46,9 @@ const CardsCollection = React.memo((props: any) => {
   const [ isConfirmationModalShown, setConfirmationModalShownState ] = useState<boolean>(false);
 
   const hasBookmarks = !!(bookmarks && bookmarks.length);
-  const rows = Math.ceil((bookmarks && bookmarks.length || 4) / maxItemsPerRow); // TODO: Do smthing
-  const maxCollectionHeight = getMaxGridCollectionHeight(isCollapsed, rows);
+  const maxCollectionHeight = calcMaxGridCollectionHeight(isCollapsed, calcCollectionRowsNumber(bookmarks, maxItemsPerRow));
 
   const isDragging = draggingCollectionId === id;
-
-  const dragRef = useRef<HTMLDivElement>(null);
-  const dropRef = useRef<HTMLDivElement>(null);
-
-  const dropDestination: DnDDestination = {
-    type: DraggableItemTypes.COLLECTION,
-    index: collectionIndex,
-    id,
-  };
-
-  const dropBookmarkDestination: DnDDestination = {
-    type: DraggableItemTypes.BOOKMARK,
-    id,
-    index: bookmarks.length
-  };
-
-  const dragSource: DnDSource = {
-    type: DraggableItemTypes.COLLECTION,
-    index: collectionIndex,
-    id,
-    draggableId: id,
-  };
-
-  const [, drag, preview] = useDrag({
-    item: {
-      id: dragSource.id,
-      type: dragSource.type,
-      index: dragSource.index,
-      draggableId: dragSource.draggableId,
-    }
-  });
-
-  const [, drop] = useDrop({
-    accept: [ DraggableItemTypes.BOOKMARK, DraggableItemTypes.TAB, DraggableItemTypes.COLLECTION ],
-    hover(source: DnDSource, monitor: DropTargetMonitor) {
-      if (!dropRef.current) {
-        return
-      }
-
-      const clientOffset = monitor.getClientOffset();
-      const hoverBoundingRect = dropRef.current!.getBoundingClientRect();
-      const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
-      const hoverClientY = (clientOffset as XYCoord).y - hoverBoundingRect.top;
-
-      if ((source.index as number) < dropDestination.index && hoverClientY < hoverMiddleY) {
-        return
-      }
-
-      if ((source.index as number) > dropDestination.index && hoverClientY > hoverMiddleY) {
-        return
-      }
-
-      if (source && (source.type === DraggableItemTypes.BOOKMARK || source.type === DraggableItemTypes.TAB) && source.id !== dropBookmarkDestination.id) {
-        moveCard(source, dropBookmarkDestination, source.draggableId);
-        source.index = dropBookmarkDestination.index;
-        source.id = dropBookmarkDestination.id;
-      } else if (source && source.type === DraggableItemTypes.COLLECTION) {
-        moveCollection(source, dropDestination, source.draggableId);
-        source.index = dropDestination.index;
-        source.id = dropDestination.id;
-      }
-    },
-  });
-
-  drop(dropRef);
-  drag(dragRef);
 
   const handleCollectionSave = ({ name }: CollectionEditableFields) => {
     onDispatch(editCollection(id, name));
@@ -141,11 +72,11 @@ const CardsCollection = React.memo((props: any) => {
   return (
     <OuterWrapper
       isDragging={isDragging}
-      ref={dropRef}
+      ref={collectionDropRef}
     >
-      <Wrapper ref={preview}>
+      <Wrapper ref={collectionPreview}>
         <CardsCollectionHeader
-          dragRef={dragRef}
+          dragRef={collectionDragRef}
           name={name}
           isCollectionCollapsed={isCollapsed}
           onSave={handleCollectionSave}

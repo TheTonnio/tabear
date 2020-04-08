@@ -8,6 +8,7 @@ import CardsCollection from "./cards-grid/cards-collection";
 import CardsGrid from "./cards-grid/cards-grid";
 import { Bookmarks } from "../models/bookmarks";
 import { Collections } from "../models/collections";
+import CardsCollectionWrapper from "./cards-grid/cards-collection-wrapper";
 
 class LayoutResolver extends React.Component<PropTypes, StateTypes> {
   private layoutComponents = {
@@ -17,7 +18,7 @@ class LayoutResolver extends React.Component<PropTypes, StateTypes> {
 
   private layoutCollectionComponents = {
     masonry: CardsCollection,
-    grid: CardsCollection
+    grid: CardsCollectionWrapper
   };
 
   constructor(props: any) {
@@ -26,16 +27,16 @@ class LayoutResolver extends React.Component<PropTypes, StateTypes> {
     this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
   }
 
-  componentDidMount() {
+  componentDidMount(): void {
     this.updateWindowDimensions();
     window.addEventListener('resize', this.updateWindowDimensions);
   }
 
-  componentWillUnmount() {
+  componentWillUnmount(): void {
     window.removeEventListener('resize', this.updateWindowDimensions);
   }
 
-  updateWindowDimensions() {
+  updateWindowDimensions(): void {
     this.setState({ width: window.innerWidth, height: window.innerHeight });
   }
 

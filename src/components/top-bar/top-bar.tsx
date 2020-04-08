@@ -66,7 +66,7 @@ class TopBar extends React.Component<PropTypes, any> {
       ref.value = '';
 
       this.setState({ isSearchActive: false, searchValue: '' });
-      this.props.onSearch(undefined);
+      this.props.onSearch("");
     }
   };
 
@@ -143,7 +143,7 @@ const LayoutButtonsGroup = styled.div`
 
 interface PropTypes {
   onSetLayoutType: (type: LayoutType) => void
-  onSearch: (query?: string) => void
+  onSearch: (query: string) => void
   layoutType: LayoutType
 }
 
