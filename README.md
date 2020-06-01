@@ -1,2 +1,4 @@
 # tabear
-🐻 New Tab Bookmarks Manager
+🐻 Bookmark Manager Extension for Chrome 
+
+![app preview](images/preview.png)

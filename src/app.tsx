@@ -14,7 +14,6 @@ import { ConfigContext } from "./store/config-context";
 import { DndProvider } from 'react-dnd'
 import { ENV_DEVELOPMENT } from './constants';
 import { defaultConfig } from "./constants/config";
-import mockData  from "./mock/initial-data";
 
 const AppWrapper = styled.div`
   height: 100vh;

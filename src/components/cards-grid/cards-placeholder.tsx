@@ -5,7 +5,7 @@ const CardsPlaceholder = () => {
   return (
     <Placeholder>
       <PlaceholderText>
-        Drug tab or Click here to add new
+        Drug and drop a tab for the right panel
       </PlaceholderText>
     </Placeholder>
   );

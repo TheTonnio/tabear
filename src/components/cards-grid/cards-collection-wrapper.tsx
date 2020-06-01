@@ -67,7 +67,7 @@ const CardsCollectionWrapper = React.memo((props: any) => {
 
       const clientOffset = monitor.getClientOffset();
       const hoverBoundingRect = dropRef.current!.getBoundingClientRect();
-      const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
+      const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 1.2;
       const hoverClientY = (clientOffset as XYCoord).y - hoverBoundingRect.top;
 
       if ((source.index as number) < dropDestination.index && hoverClientY < hoverMiddleY) {

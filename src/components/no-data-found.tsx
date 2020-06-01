@@ -4,7 +4,7 @@ import {defaultAccent} from "../constants";
 
 export const NoDataFound = () => (
   <Wrapper>
-    <h1>No Bookmarks Found ;-(</h1>
+    <h1>No Bookmarks Found</h1>
   </Wrapper>
 );
 
