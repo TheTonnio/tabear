@@ -8,6 +8,7 @@ import CardsCollection from "./cards-grid/cards-collection";
 import CardsGrid from "./cards-grid/cards-grid";
 import { Bookmarks } from "../models/bookmarks";
 import { Collections } from "../models/collections";
+import CardsCollectionWrapper from "./cards-grid/cards-collection-wrapper";
 
 class LayoutResolver extends React.Component<PropTypes, StateTypes> {
   private layoutComponents = {
@@ -17,7 +18,7 @@ class LayoutResolver extends React.Component<PropTypes, StateTypes> {
 
   private layoutCollectionComponents = {
     masonry: CardsCollection,
-    grid: CardsCollection
+    grid: CardsCollectionWrapper
   };
 
   constructor(props: any) {
@@ -26,16 +27,16 @@ class LayoutResolver extends React.Component<PropTypes, StateTypes> {
     this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
   }
 
-  componentDidMount() {
+  componentDidMount(): void {
     this.updateWindowDimensions();
     window.addEventListener('resize', this.updateWindowDimensions);
   }
 
-  componentWillUnmount() {
+  componentWillUnmount(): void {
     window.removeEventListener('resize', this.updateWindowDimensions);
   }
 
-  updateWindowDimensions() {
+  updateWindowDimensions(): void {
     this.setState({ width: window.innerWidth, height: window.innerHeight });
   }
 
@@ -46,16 +47,9 @@ class LayoutResolver extends React.Component<PropTypes, StateTypes> {
       collectionsOrder,
       moveCard,
       moveCollection,
-      setDraggingItemId,
-      setDraggingItemCollectionId,
-      draggingItemId,
-      draggingCollectionItemId,
       bookmarks,
       collections,
-      onBookmarkUpdate,
-      onBookmarkRemove,
-      onCollectionUpdate,
-      onCollectionRemove,
+      onDispatch,
       isSearchMode,
     } = this.props;
 
@@ -63,13 +57,13 @@ class LayoutResolver extends React.Component<PropTypes, StateTypes> {
     const Layout = this.layoutComponents[componentName];
     const LayoutCollection = this.layoutCollectionComponents[componentName];
 
-
     return (
       <Layout width={width}>
         {
           (collectionsOrder.map((collectionId: string, index: number) => {
             const collection: Collection = collections[collectionId];
-            const bookmarksList: Bookmark[] = collection.bookmarksIds.map((id: string) => bookmarks[id]).filter(Boolean);
+            const bookmarksList: Bookmark[] =
+              collection.bookmarksIds.map((id: string) => bookmarks[id]).filter(Boolean);
 
             return bookmarksList.length || !isSearchMode ? (
               <LayoutCollection
@@ -79,15 +73,8 @@ class LayoutResolver extends React.Component<PropTypes, StateTypes> {
                 moveCollection={moveCollection}
                 collection={collection}
                 collectionIndex={index}
-                setDraggingItemId={setDraggingItemId}
-                setDraggingItemCollectionId={setDraggingItemCollectionId}
-                draggingItemId={draggingItemId}
-                draggingCollectionItemId={draggingCollectionItemId}
                 layoutType={layoutType}
-                onBookmarkUpdate={onBookmarkUpdate}
-                onBookmarkRemove={onBookmarkRemove}
-                onCollectionUpdate={onCollectionUpdate}
-                onCollectionRemove={onCollectionRemove}
+                onDispatch={onDispatch}
               />
             ) : undefined;
           })).filter(Boolean)
@@ -97,21 +84,14 @@ class LayoutResolver extends React.Component<PropTypes, StateTypes> {
   }
 }
 
-type PropTypes = {
+interface PropTypes {
   layoutType: LayoutType
   collectionsOrder: string[]
   moveCard: (source: any, destination: any, draggableId: string) => void
   moveCollection: (source: any, destination: any, draggableId: string) => void
-  setDraggingItemId: (id?: string) => void
-  setDraggingItemCollectionId: (id?: string) => void
-  draggingItemId?: string | null
-  draggingCollectionItemId?: string | null
+  onDispatch: () => any
   bookmarks: Bookmarks
   collections: Collections
-  onBookmarkUpdate: (data: Bookmark) => void
-  onBookmarkRemove: (id: string, collectionId: string) => void
-  onCollectionUpdate: (data: Collection) => void
-  onCollectionRemove: (id: string) => void
   isSearchMode: boolean
 }
 

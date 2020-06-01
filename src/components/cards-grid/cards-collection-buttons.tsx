@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {faAngleDown, faCheck, faEllipsisV, faExpandArrowsAlt} from "@fortawesome/free-solid-svg-icons";
+import { faAngleDown, faCheck, faEllipsisV, faExpandArrowsAlt } from "@fortawesome/free-solid-svg-icons";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import IconButton from "../shared/icon-button";
 import {defaultAccent, defaultRed} from "../../constants";
@@ -124,7 +124,7 @@ const ActionMenuButton = styled(HeaderButton)`
 const MoveMenuButton = styled(HeaderButton)`
   font-size: 17px;
   border-radius: 5px;
-  padding: 2px 5px;
+  padding: 3px 5px 1px 5px;
   margin-right: 5px;
   border: 2px solid ${defaultAccent};
   cursor: grab;

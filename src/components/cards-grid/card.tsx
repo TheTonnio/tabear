@@ -47,16 +47,13 @@ const Card = (props : PropTypes) => {
     setEditingMode(false);
   };
 
-  const onRemove = () => {
+  const onRemove = (e) => {
+    e.preventDefault();
     onBookmarkRemove(bookmark.id, collectionId);
   };
 
   const onCardSave = ({ name, description }) => {
-    onBookmarkUpdate({
-      ...bookmark,
-      name,
-      description,
-    })
+    onBookmarkUpdate(name, description)
   };
 
   const onCardClick = (e) => {
@@ -105,8 +102,8 @@ type PropTypes = {
   draggingItemId?: string | null
   setDraggingItemId: Dispatch<string | undefined>
   moveCard: (source: any, destination: any, draggableId: string) => void
-  onBookmarkUpdate: (data: Bookmark) => void
-  onBookmarkRemove: (id: string, collectionId: string) => void
+  onBookmarkUpdate: (name: string, description: string) => any
+  onBookmarkRemove: (id: string, collectionId: string) => any
 }
 
 const CardWrapper = styled(PrimaryCard)`

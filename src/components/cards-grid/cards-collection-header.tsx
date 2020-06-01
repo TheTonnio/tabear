@@ -41,10 +41,6 @@ const CardsCollectionHeader = (props: PropTypes) => {
 
   const actionMenuConfig: ActionMenuConfig = [
     {
-      action: () => console.log("Add"),
-      text: "Add",
-      icon: <FontAwesomeIcon icon={faPlus}/>
-    }, {
       action: () => onEditButtonClick(),
       text: "Rename",
       icon: <FontAwesomeIcon icon={faPen}/>
