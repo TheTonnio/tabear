@@ -6,12 +6,11 @@ import styled from "styled-components";
 import TabsList from "./tabs-list";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleRight } from "@fortawesome/free-solid-svg-icons";
-import {ConfigContext} from "../../store/config-context";
 type Tab = chrome.tabs.Tab;
 
-const TabsPanel = (props: PropTypes) => {
+const TabsPanel = (props: any) => { // TODO: Add Props
+  const { isPanelCollapsed, togglePanel } = props;
   const [ tabs, setTabs ] = useState<Tab[]>([]);
-  const { setConfigValue, isPanelCollapsed } = useContext(ConfigContext);
 
   useEffect(() => {
     const fetchTabs = async () => {
@@ -19,7 +18,7 @@ const TabsPanel = (props: PropTypes) => {
       setTabs(tabs);
     };
 
-    fetchTabs();
+    fetchTabs().then();
   }, []);
 
   const filteredTabs = useMemo(() =>
@@ -35,7 +34,7 @@ const TabsPanel = (props: PropTypes) => {
 
       <TogglePanelButton
         className="toggle-panel-button"
-        onClick={() => setConfigValue("isPanelCollapsed", !isPanelCollapsed)}
+        onClick={togglePanel}
       >
          <Icon
            className="toggle-panel-button-icon"
@@ -45,10 +44,6 @@ const TabsPanel = (props: PropTypes) => {
     </Panel>
   );
 };
-
-interface PropTypes {
-
-}
 
 const Panel = styled.div`
   position: fixed;
@@ -60,8 +55,6 @@ const Panel = styled.div`
   border: 1px solid #f4f4f4;
   background: #fff;
   transition: .3s width;
-  //overflow: auto;
-  //z-index: -1;
   
   &:hover .toggle-panel-button {
     transform: scale(1);

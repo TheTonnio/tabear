@@ -13,13 +13,27 @@ const TabsList = (props: PropTypes) => {
     <List>
       <ListHeader>Opened Tabs</ListHeader>
       {
-        tabs.map((tabItem: Tab, index) =>
-          <DragWrapper key={index} dragSource={{ overload: tabItem, type: DraggableItemTypes.TAB, index: undefined, draggableId: v4(), id: undefined }}>
-            <ListItem>
-              <Thumb url={tabItem.favIconUrl}/>
-              <Title>{tabItem.title}</Title>
-            </ListItem>
-          </DragWrapper>)
+        tabs.map((tabItem: Tab, index: number) => {
+          const dragSource= {
+            id: v4(),
+            index: undefined,
+            overload: tabItem,
+            type: DraggableItemTypes.TAB,
+            draggableId: v4(),
+          };
+
+          return (
+            <DragWrapper
+              key={index}
+              dragSource={dragSource}
+            >
+              <ListItem>
+                <Thumb url={tabItem.favIconUrl}/>
+                <Title>{tabItem.title}</Title>
+              </ListItem>
+            </DragWrapper>
+          )
+        })
       }
     </List>
   );
@@ -44,6 +58,7 @@ const Thumb = styled.div`
   background-image: url(${((props: { url?: string }) => props.url)});
   background-size: 18px 18px;
   background-position: center;
+  background-repeat: no-repeat;
 `;
 
 const List = styled.div`
