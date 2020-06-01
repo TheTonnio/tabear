@@ -6,6 +6,7 @@ export const ENV_PRODUCTION = 'production';
 export const DraggableItemTypes = {
   BOOKMARK: 'BOOKMARK',
   TAB: 'TAB',
+  COLLECTION: 'COLLECTION',
 };
 
 export const LAYOUT_TYPES_CODES: { [key: string]: LayoutType } = {

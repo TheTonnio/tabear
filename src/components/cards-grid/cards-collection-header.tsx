@@ -9,7 +9,7 @@ import { ActionMenuConfig } from "../../models/action-menu-config";
 import { CollectionEditableFields } from "../../models/collection-editable-fields";
 
 const CardsCollectionHeader = (props: PropTypes) => {
-  const { name, isCollectionCollapsed, toggleCollection, onSave, onRemove } = props;
+  const { name, isCollectionCollapsed, toggleCollection, onSave, onRemove, dragRef } = props;
   const [ isEditing, setEditingMode ] = useState(false);
   const [ isActionMenuShown, setActionMenuVisibility ] = useState(false);;
 
@@ -81,6 +81,7 @@ const CardsCollectionHeader = (props: PropTypes) => {
         onCancel={ () => onCancel() }
         onActionMenuButtonClick={() => showActionMenu()}
         onCollapseButtonClick={() => toggleCollection()}
+        dragRef={dragRef}
       />
 
       <ActionMenu
@@ -97,6 +98,7 @@ interface PropTypes {
   toggleCollection: () => void
   onSave: (data: CollectionEditableFields) => void
   onRemove: () => void
+  dragRef: any
 }
 
 
@@ -142,8 +144,6 @@ const increaseWidth = keyframes`
   }
 `;
 
-
-
 const InputWrapper = styled.div`
   position: relative;
   max-width: 230px;
@@ -168,10 +168,10 @@ const TitleInput = styled.input`
   padding-right: 10px;
   padding-left: 0;
   font-size: 18px;
-  font-weight: bold;
+  font-weight: 800;
   color: ${defaultAccent};
   border: 0;
-  font-family: 'Ubuntu', sans-serif;
+  font-family: 'Muli', sans-serif;
 `;
 
 const Title = styled.span`

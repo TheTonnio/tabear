@@ -14,6 +14,7 @@ import OpenTabsPanel from "./components/tabs-panel/tabs-panel";
 import initialState from './mock/initial-data';
 import { ConfigContext } from "./store/config-context";
 import {Config, defaultConfig} from "./constants/config";
+import v4 from "uuid/v4";
 
 const AppWrapper = styled.div`
   height: 100vh;
@@ -50,6 +51,7 @@ class App extends React.Component<undefined, StateTypes> {
     this.setConfigValue = this.setConfigValue.bind(this);
     this.setLayoutType = this.setLayoutType.bind(this);
     this.searchBookmarks = this.searchBookmarks.bind(this);
+    this.addNewCollection = this.addNewCollection.bind(this);
 
     // Seed with mock data
     this.storage.saveData('bookmarks', initialState.bookmarks);
@@ -86,6 +88,25 @@ class App extends React.Component<undefined, StateTypes> {
   setCollections(collections: Collections): void {
     this.storage.saveData('collections', collections);
     this.setState({ collections });
+  }
+
+  addNewCollection() {
+    const { collections, collectionsOrder } = this.state;
+    const id = v4();
+
+    const updatedCollectionsOrder = [ id, ...collectionsOrder ];
+    const updatedCollections = {
+      ...collections,
+      [id]: {
+        id: id,
+        name: "New Collection",
+        bookmarksIds: [],
+        isCollapsed: false,
+      }
+    };
+
+    this.setCollections(updatedCollections);
+    this.setCollectionsOrder(updatedCollectionsOrder);
   }
 
   setCollectionsOrder(collectionsOrder: string[]): void {
@@ -142,6 +163,7 @@ class App extends React.Component<undefined, StateTypes> {
             <TopBar
               onSetLayoutType={this.setLayoutType}
               onSearch={this.searchBookmarks}
+              onCollectionAdd={this.addNewCollection}
               layoutType={config.layoutType}
             />
             <DashboardWrapper>

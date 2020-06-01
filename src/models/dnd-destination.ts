@@ -1,5 +1,5 @@
 export interface DnDDestination {
   type: string
-  id: string
+  id?: string
   index: number
 }

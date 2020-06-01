@@ -1,4 +1,4 @@
-import React, {Dispatch, useContext, useState} from 'react';
+import React, {Dispatch, useContext, useRef, useState} from 'react';
 import { Bookmark } from '../../models/bookmark';
 import { Collection } from '../../models/collection';
 import styled from "styled-components";
@@ -20,21 +20,27 @@ import {
 import { getMaxGridCollectionHeight } from "../../utils/get-max-grid-collection-height";
 import { CollectionEditableFields } from "../../models/collection-editable-fields";
 import ConfirmationCover from "../confiramtion-cover";
+import DragDropWrapper from "../dnd/drag-drop-wrapper";
+import {DnDSource} from "../../models/dnd-source";
+import {DropTargetMonitor, useDrag, useDrop, XYCoord} from "react-dnd";
 
 const CardsCollection = React.memo((props: PropTypes) => {
   const {
     bookmarks,
     collection,
     moveCard,
+    moveCollection,
     setDraggingItemId,
+    setDraggingItemCollectionId,
     draggingItemId,
+    draggingCollectionItemId,
     onBookmarkUpdate,
     onBookmarkRemove,
     onCollectionUpdate,
     onCollectionRemove,
+    collectionIndex,
   } = props;
   const { id, name, isCollapsed } = collection;
-  const { BOOKMARK, TAB } = DraggableItemTypes;
 
   const { maxItemsPerRow } = useContext(ConfigContext);
   const [isConfirmationModalShown, setConfirmationModalShownState] = useState<boolean>(false);
@@ -42,11 +48,79 @@ const CardsCollection = React.memo((props: PropTypes) => {
   const rows = Math.ceil(bookmarks.length / maxItemsPerRow);
   const maxCollectionHeight = getMaxGridCollectionHeight(isCollapsed, rows);
 
-  const destination: DnDDestination = {
+  const isDragging = draggingCollectionItemId === id;
+
+  const dropDestination: DnDDestination = {
+    type: DraggableItemTypes.COLLECTION,
+    index: collectionIndex,
+    id,
+  };
+
+  const dropBookmarkDestination: DnDDestination = {
     type: DraggableItemTypes.BOOKMARK,
     id,
     index: bookmarks.length
   };
+
+  const dragSource: DnDSource = {
+    type: DraggableItemTypes.COLLECTION,
+    index: collectionIndex,
+    id,
+    draggableId: id,
+  };
+
+  const dragRef = useRef<HTMLDivElement>(null);
+  const dropRef = useRef<HTMLDivElement>(null);
+
+  const [, drag, preview] = useDrag({
+    item: {
+      id: dragSource.id,
+      type: dragSource.type,
+      index: dragSource.index,
+      draggableId: dragSource.draggableId,
+    },
+    // begin: () => setDraggingItemCollectionId(dragSource.draggableId),
+    // end: () => setDraggingItemCollectionId(undefined)
+  });
+
+  const [, drop] = useDrop({
+    accept: [ DraggableItemTypes.BOOKMARK, DraggableItemTypes.TAB, DraggableItemTypes.COLLECTION ],
+    hover(source: any, monitor: DropTargetMonitor) {
+      if (!dropRef.current) {
+        return
+      }
+
+      const hoverBoundingRect = dropRef.current!.getBoundingClientRect();
+
+      const hoverMiddleY =
+        (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
+
+      const clientOffset = monitor.getClientOffset();
+
+      const hoverClientY = (clientOffset as XYCoord).y - hoverBoundingRect.top;
+
+      if (source.index < dropDestination.index && hoverClientY < hoverMiddleY) {
+        return
+      }
+
+      if (source.index > dropDestination.index && hoverClientY > hoverMiddleY) {
+        return
+      }
+
+      if (source && (source.type === DraggableItemTypes.BOOKMARK || source.type === DraggableItemTypes.TAB) && source.id !== dropBookmarkDestination.id) {
+        moveCard(source, dropBookmarkDestination, source.draggableId);
+        source.index = dropBookmarkDestination.index;
+        source.id = dropBookmarkDestination.id;
+      } else if (source && source.type === DraggableItemTypes.COLLECTION) {
+        moveCollection(source, dropDestination, source.draggableId);
+        source.index = dropDestination.index;
+        source.id = dropDestination.id;
+      }
+    },
+  });
+
+  drop(dropRef);
+  drag(dragRef);
 
   const toggleCollection = () => onCollectionUpdate({
     ...collection,
@@ -61,61 +135,62 @@ const CardsCollection = React.memo((props: PropTypes) => {
   };
 
   return (
-    <DropWrapper
-      acceptType={[ BOOKMARK, TAB ]}
-      destination={destination}
-      moveCard={moveCard}
-    >
-      <OuterWrapper>
-        <Wrapper>
-            <CardsCollectionHeader
-              name={name}
-              isCollectionCollapsed={isCollapsed}
-              toggleCollection={() => toggleCollection()}
-              onSave={handleCollectionSave}
-              onRemove={() => setConfirmationModalShownState(true)}
-            />
-          <InnerWrapper
-            maxCollectionHeight={maxCollectionHeight}
-            hasBookmarks={isCollapsed || hasBookmarks}
-          >
-            {
-              hasBookmarks ?
-                (
-                  <Grid>
-                    {
-                      bookmarks.map((bookmark: Bookmark, index: number) => (
-                        <Card
-                          key={bookmark.id}
-                          index={index}
-                          collectionId={id}
-                          bookmark={bookmark}
-                          draggingItemId={draggingItemId}
-                          moveCard={moveCard}
-                          setDraggingItemId={setDraggingItemId}
-                          onBookmarkUpdate={onBookmarkUpdate}
-                          onBookmarkRemove={onBookmarkRemove}
-                        />
-                      ))
-                    }
-                  </Grid>
-                ) : (
-                  <CardsPlaceholder/>
-                )
-            }
-          </InnerWrapper>
+    <OuterWrapper
+      isDragging={isDragging}
+      ref={dropRef}
 
-          <ConfirmationCover
-            isHidden={!isConfirmationModalShown}
-            text={"Are you sure to delete this collection?"}
-            onConfirm={() => onCollectionRemove(collection.id)}
-            onCancel={() => setConfirmationModalShownState(false)}
-            confirmButtonText={"Confirm"}
-            cancelButtonText={"Cancel"}
-          />
-        </Wrapper>
-      </OuterWrapper>
-    </DropWrapper>
+    >
+      <Wrapper
+        ref={preview}
+      >
+        <CardsCollectionHeader
+          name={name}
+          isCollectionCollapsed={isCollapsed}
+          toggleCollection={() => toggleCollection()}
+          onSave={handleCollectionSave}
+          onRemove={() => setConfirmationModalShownState(true)}
+          dragRef={dragRef}
+        />
+        <InnerWrapper
+          maxCollectionHeight={maxCollectionHeight}
+          hasBookmarks={isCollapsed || hasBookmarks}
+        >
+          {
+            hasBookmarks ?
+              (
+                <Grid>
+                  {
+                    bookmarks.map((bookmark: Bookmark, index: number) => (
+                      <Card
+                        key={bookmark.id}
+                        index={index}
+                        collectionId={id}
+                        bookmark={bookmark}
+                        draggingItemId={draggingItemId}
+                        moveCard={moveCard}
+                        setDraggingItemId={setDraggingItemId}
+                        onBookmarkUpdate={onBookmarkUpdate}
+                        onBookmarkRemove={onBookmarkRemove}
+                      />
+                    ))
+                  }
+                </Grid>
+              ) : (
+                <CardsPlaceholder/>
+              )
+          }
+        </InnerWrapper>
+
+        <ConfirmationCover
+          isHidden={!isConfirmationModalShown}
+          text={"Are you sure to delete this collection?"}
+          onConfirm={() => onCollectionRemove(collection.id)}
+          onCancel={() => setConfirmationModalShownState(false)}
+          confirmButtonText={"Confirm"}
+          cancelButtonText={"Cancel"}
+        />
+      </Wrapper>
+    </OuterWrapper>
   );
 });
 
@@ -126,9 +201,12 @@ type PropTypes = {
   collection: Collection
   collectionIndex: number
   draggingItemId?: string | null
+  draggingCollectionItemId?: string | null
   setDraggingItemId: Dispatch<string | undefined>
+  setDraggingItemCollectionId: Dispatch<string | undefined>
   layoutType: LayoutType
   moveCard: (source: any, destination: any, draggableId: string) => void
+  moveCollection: (source: any, destination: any, draggableId: string) => void
   onBookmarkUpdate: (data: Bookmark) => void
   onBookmarkRemove: (id: string, collectionId: string) => void
   onCollectionUpdate: (data: Collection) => void
@@ -137,6 +215,7 @@ type PropTypes = {
 
 const OuterWrapper = styled.div`
   padding: 0 ${CONTAINER_MARGIN}px;
+  opacity: ${(props: { isDragging: boolean }) => props.isDragging ? .7 : 1 };
 `;
 
 const Wrapper = styled.div`

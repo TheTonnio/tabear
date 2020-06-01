@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {faAngleDown, faCheck, faEllipsisV} from "@fortawesome/free-solid-svg-icons";
+import {faAngleDown, faCheck, faEllipsisV, faExpandArrowsAlt} from "@fortawesome/free-solid-svg-icons";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import IconButton from "../shared/icon-button";
 import {defaultAccent, defaultRed} from "../../constants";
@@ -14,6 +14,7 @@ const CardsCollectionButtons = (props: PropTypes) => {
     onCancel,
     onActionMenuButtonClick,
     onCollapseButtonClick,
+    dragRef,
   } = props;
 
   return (
@@ -47,6 +48,13 @@ const CardsCollectionButtons = (props: PropTypes) => {
           icon={faAngleDown}
         />
       </CollapseButton>
+      <MoveMenuButton
+        onClick={() => {}}
+        disabled={isEditing}
+        ref={dragRef}
+      >
+        <FontAwesomeIcon icon={faExpandArrowsAlt}/>
+      </MoveMenuButton>
       <ActionMenuButton
         onClick={onActionMenuButtonClick}
         disabled={isEditing}
@@ -66,6 +74,7 @@ interface PropTypes {
   onCancel: () => void
   onActionMenuButtonClick: () => void
   onCollapseButtonClick: () => void
+  dragRef: any
 }
 
 const ButtonsGroup = styled.div`
@@ -97,7 +106,6 @@ const LargeIcon = styled(CardButtonIcon)`
 
 const HeaderButton = styled.button`
   border: 0;
-  border-radius: 5px;
   cursor: pointer;
   transition: transform .3s, opacity .3s;
   color: ${defaultAccent};
@@ -111,6 +119,15 @@ const HeaderButton = styled.button`
 
 const ActionMenuButton = styled(HeaderButton)`
   font-size: 17px;
+`;
+
+const MoveMenuButton = styled(HeaderButton)`
+  font-size: 17px;
+  border-radius: 5px;
+  padding: 2px 5px;
+  margin-right: 5px;
+  border: 2px solid ${defaultAccent};
+  cursor: grab;
 `;
 
 const CollapseButton = styled(HeaderButton)`

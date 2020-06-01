@@ -45,8 +45,11 @@ class LayoutResolver extends React.Component<PropTypes, StateTypes> {
       layoutType,
       collectionsOrder,
       moveCard,
+      moveCollection,
       setDraggingItemId,
+      setDraggingItemCollectionId,
       draggingItemId,
+      draggingCollectionItemId,
       bookmarks,
       collections,
       onBookmarkUpdate,
@@ -73,10 +76,13 @@ class LayoutResolver extends React.Component<PropTypes, StateTypes> {
                 key={collectionId}
                 bookmarks={bookmarksList}
                 moveCard={moveCard}
+                moveCollection={moveCollection}
                 collection={collection}
                 collectionIndex={index}
                 setDraggingItemId={setDraggingItemId}
+                setDraggingItemCollectionId={setDraggingItemCollectionId}
                 draggingItemId={draggingItemId}
+                draggingCollectionItemId={draggingCollectionItemId}
                 layoutType={layoutType}
                 onBookmarkUpdate={onBookmarkUpdate}
                 onBookmarkRemove={onBookmarkRemove}
@@ -95,8 +101,11 @@ type PropTypes = {
   layoutType: LayoutType
   collectionsOrder: string[]
   moveCard: (source: any, destination: any, draggableId: string) => void
+  moveCollection: (source: any, destination: any, draggableId: string) => void
   setDraggingItemId: (id?: string) => void
+  setDraggingItemCollectionId: (id?: string) => void
   draggingItemId?: string | null
+  draggingCollectionItemId?: string | null
   bookmarks: Bookmarks
   collections: Collections
   onBookmarkUpdate: (data: Bookmark) => void

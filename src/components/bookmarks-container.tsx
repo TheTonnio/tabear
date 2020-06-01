@@ -20,6 +20,8 @@ const BookmarksContainer = (props: PropTypes) => {
   } = props;
 
   const [ draggingItemId, setDraggingItemId] = useState<string | undefined>();
+  const [ draggingCollectionItemId, setDraggingItemCollectionId] = useState<string | undefined>();
+
   const getBookmarkFromTab = (tab: Tab, id: string) => ({
     id: id,
     name: tab.title,
@@ -103,6 +105,27 @@ const BookmarksContainer = (props: PropTypes) => {
     });
   };
 
+  const moveCollection = (source: any, destination: any, draggableId: string) => {
+    if (!destination) {
+      return
+    }
+
+    if (
+      destination.id === source.id &&
+      destination.index === source.index
+    ) {
+      return
+    }
+    console.log(`${destination.index}: ${destination.id}`);
+    console.log(`${source.index}: ${source.id}`);
+    console.log(`${source.index}: ${source.id}`);
+    const newCollectionOrder = [ ...collectionsOrder ];
+    newCollectionOrder.splice(source.index, 1);
+    newCollectionOrder.splice(destination.index, 0, draggableId);
+    onCollectionsOrderUpdate(newCollectionOrder);
+
+    return
+  };
 
   const onCollectionUpdate = (collection: Collection) => {
     const newCollectionsObj = {
@@ -161,8 +184,11 @@ const BookmarksContainer = (props: PropTypes) => {
       layoutType={layoutType}
       collectionsOrder={collectionsOrder}
       moveCard={moveCard}
+      moveCollection={moveCollection}
       setDraggingItemId={setDraggingItemId}
+      setDraggingItemCollectionId={setDraggingItemCollectionId}
       draggingItemId={draggingItemId}
+      draggingCollectionItemId={draggingCollectionItemId}
       bookmarks={bookmarks}
       collections={collections}
       isSearchMode={isSearchMode}
