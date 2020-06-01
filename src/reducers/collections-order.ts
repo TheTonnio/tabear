@@ -18,6 +18,11 @@ export const collectionsOrderReducer = (state: string[], action: any) => {
       collectionOrder.splice(action.toIndex, 0, action.id);
       return [ ...collectionOrder ];
     }
+    case ACTION_TYPE.ADD_NEW_COLLECTION_TO_ORDER: {
+      const collectionOrder = [ ...state ];
+      collectionOrder.unshift(action.id);
+      return [ ...collectionOrder ];
+    }
     default:
       return state;
   }

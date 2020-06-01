@@ -1,9 +1,13 @@
 import { ACTION_TYPE } from "../constants/action-types";
-import {Collections} from "../models/collections";
 
 export const setCollectionsOrder = (collectionsOrder: string[]) => ({
   type: ACTION_TYPE.SET_COLLECTIONS_ORDER,
   collectionsOrder
+});
+
+export const addNewCollectionToOrder = (id: string) => ({
+  type: ACTION_TYPE.ADD_NEW_COLLECTION_TO_ORDER,
+  id
 });
 
 export const removeCollectionFromOrder = (id: string) => ({

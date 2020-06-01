@@ -58,6 +58,7 @@ const Thumb = styled.div`
   background-image: url(${((props: { url?: string }) => props.url)});
   background-size: 18px 18px;
   background-position: center;
+  background-repeat: no-repeat;
 `;
 
 const List = styled.div`

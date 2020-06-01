@@ -1,5 +1,5 @@
 import { ACTION_TYPE } from "../constants/action-types";
-import {Collections} from "../models/collections";
+import { Collections } from "../models/collections";
 
 export const collectionsReducer = (state: Collections, action: any) => {
   switch(action.type) {
@@ -7,6 +7,16 @@ export const collectionsReducer = (state: Collections, action: any) => {
       return {
         ...state,
         [action.collection.id]: action.collection
+      };
+    case ACTION_TYPE.ADD_COLLECTION:
+      return {
+        ...state,
+        [action.id]: {
+          id: action.id,
+          name: action.name,
+          bookmarksIds: action.bookmarksIds,
+          isCollapsed: action.isCollapsed
+        }
       };
     case ACTION_TYPE.SET_COLLECTIONS:
       return {
@@ -37,8 +47,6 @@ export const collectionsReducer = (state: Collections, action: any) => {
     }
     case ACTION_TYPE.REMOVE_BOOKMARK_FROM_COLLECTION: {
       const collection = { ...state[action.collectionId] };
-      console.log(state);
-      console.log(action.collectionId);
       const relatedIdIndex = collection.bookmarksIds.indexOf(action.bookmarkId);
       collection.bookmarksIds.splice(relatedIdIndex, 1);
 

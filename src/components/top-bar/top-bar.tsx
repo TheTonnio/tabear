@@ -1,14 +1,10 @@
-import React, {RefObject, useContext} from 'react';
+import React, { RefObject } from 'react';
 import styled from "styled-components";
-import TopBarButton from "./top-bar-button";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch, faThLarge } from "@fortawesome/free-solid-svg-icons";
-import { faList } from "@fortawesome/free-solid-svg-icons";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { LayoutType } from "../../models/layout-type";
-import {defaultAccent, LAYOUT_TYPES_CODES} from "../../constants";
+import { defaultAccent } from "../../constants";
 import Search from "./search";
 import { ConfigContext } from "../../store/config-context";
+import TopBarButtons from "./top-bar-buttons";
 
 class TopBar extends React.Component<PropTypes, any> {
   searchInputRef: RefObject<HTMLInputElement>;
@@ -92,15 +88,10 @@ class TopBar extends React.Component<PropTypes, any> {
           isActive={this.state.isSearchActive}
           ref={this.searchInputRef}
         />
-        <TopBarButton
-          action={() => this.toggleSearchFieldActivity()}
-          icon={<FontAwesomeIcon icon={faSearch}/>}
+        <TopBarButtons
+          onToggleSearchFieldActivity={this.toggleSearchFieldActivity}
         />
-        <TopBarButton
-          action={() => {}} // TODO: Call `onCollectionAdd` from dispatcher
-          icon={<FontAwesomeIcon icon={faPlus}/>}
-        />
-        <LayoutButtonsGroup>
+        {/*{<LayoutButtonsGroup>
           <TopBarButton
             action={() => onSetLayoutType(LAYOUT_TYPES_CODES.Grid)}
             icon={<FontAwesomeIcon icon={faThLarge}/>}
@@ -113,7 +104,7 @@ class TopBar extends React.Component<PropTypes, any> {
             isGrouped={true}
             isActive={layoutType === LAYOUT_TYPES_CODES.List}
           />
-        </LayoutButtonsGroup>
+        </LayoutButtonsGroup>*/}
       </Bar>
     );
   }

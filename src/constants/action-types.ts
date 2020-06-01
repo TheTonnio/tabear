@@ -17,4 +17,27 @@ export const ACTION_TYPE = {
   SET_COLLECTIONS_ORDER: "SET_COLLECTIONS_ORDER",
   REMOVE_COLLECTION_FROM_ORDER: "REMOVE_COLLECTION_FROM_ORDER",
   UPDATE_COLLECTIONS_ORDER: "UPDATE_COLLECTIONS_ORDER",
+  ADD_NEW_COLLECTION_TO_ORDER: "ADD_NEW_COLLECTION_TO_ORDER"
 };
+
+export const ACTION_TYPE_STORAGE_KEY_MAP = {
+  // Bookmarks
+  ADD_BOOKMARK: "bookmarks",
+  EDIT_BOOKMARK: "bookmarks",
+  REMOVE_BOOKMARK: "bookmarks",
+  REMOVE_BOOKMARKS: "bookmarks",
+  SET_BOOKMARKS: "bookmarks",
+  //Collections
+  ADD_COLLECTION: "collections",
+  EDIT_COLLECTION: "collections",
+  UPDATE_COLLECTION: "collections",
+  REMOVE_COLLECTION: "collections",
+  REMOVE_BOOKMARK_FROM_COLLECTION: "collections",
+  TOGGLE_COLLECTION: "collections",
+  SET_COLLECTIONS: "collections",
+  //Collections Order
+  SET_COLLECTIONS_ORDER: "collectionsOrder",
+  REMOVE_COLLECTION_FROM_ORDER: "collectionsOrder",
+  UPDATE_COLLECTIONS_ORDER: "collectionsOrder",
+  ADD_NEW_COLLECTION_TO_ORDER: "collectionsOrder",
+}

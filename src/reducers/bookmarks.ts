@@ -1,5 +1,5 @@
 import { ACTION_TYPE } from "../constants/action-types";
-import {Bookmarks} from "../models/bookmarks";
+import { Bookmarks } from "../models/bookmarks";
 
 export const bookmarksReducer = (state: Bookmarks, action: any) => {
   switch(action.type) {
@@ -37,5 +37,5 @@ export const bookmarksReducer = (state: Bookmarks, action: any) => {
     default:
       return state;
   }
-};
+}
 

@@ -1,11 +1,11 @@
 import { ACTION_TYPE } from "../constants/action-types";
 import v4 from "uuid/v4";
-import {Collection} from "../models/collection";
-import {Collections} from "../models/collections";
+import { Collection } from "../models/collection";
+import { Collections } from "../models/collections";
 
-export const addCollection = () => ({
+export const addCollection = (collectionId?: string) => ({
   type: ACTION_TYPE.ADD_COLLECTION,
-  id: v4(),
+  id: collectionId || v4(),
   name: "New Collection",
   bookmarksIds: [],
   isCollapsed: false,
